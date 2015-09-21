@@ -54,24 +54,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LensertClient.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="Classes\LensertClient.cs" />
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScreenshotProvider.cs" />
-    <Compile Include="ScreenshotType.cs" />
+    <Compile Include="Classes\ScreenshotProvider.cs" />
+    <Compile Include="Classes\ScreenshotType.cs" />
     <Compile Include="Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="NativeHelper.cs" />
-    <EmbeddedResource Include="MainForm.resx">
+    <Compile Include="Classes\NativeHelper.cs" />
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
