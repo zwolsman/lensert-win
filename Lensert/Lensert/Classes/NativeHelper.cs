@@ -81,7 +81,7 @@ namespace Lensert
             var handleBitmap = CreateCompatibleBitmap(handleSource, area.Width, area.Height);
             var handleOldBitmap = SelectObject(handleDestination, handleBitmap);
 
-            BitBlt(handleDestination, 0, 0, area.Width, area.Height,handleSource, area.X, area.Y, CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt);
+            BitBlt(handleDestination, 0, 0, area.Width, area.Height, handleSource, area.X, area.Y, CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt);
 
             var screenshot = Image.FromHbitmap(handleBitmap);
             SelectObject(handleDestination, handleOldBitmap);

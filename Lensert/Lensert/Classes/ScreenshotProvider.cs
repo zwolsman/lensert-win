@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lensert.Forms;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -13,9 +14,14 @@ namespace Lensert
 {
     static class ScreenshotProvider
     {
+        private static readonly SelectionForm _selectionForm = new SelectionForm();
+
         public static Image GetScreenshot(ScreenshotType type)
         {
-            return DummyImageProvider.Next();
+            var area = GetArea(type);
+            var image = NativeHelper.TakeScreenshot(area);
+
+            return image;
         }
 
         private static Rectangle GetArea(ScreenshotType type)
@@ -25,13 +31,13 @@ namespace Lensert
                 case ScreenshotType.CurrentWindow:
                     return NativeHelper.GetForegroundWindowAea();
                 case ScreenshotType.Area:
-                    break;
+                    _selectionForm.ShowDialog();
+                    return _selectionForm.GetSelectedArea();
                 case ScreenshotType.Fullscreen:
                     return SystemInformation.VirtualScreen;
             }
 
             throw new ArgumentOutOfRangeException(nameof(type), type, null);
-
         }
     }
 }

@@ -21,9 +21,7 @@ namespace Lensert
 
         public string Username { get; }
         public string Password { get; }
-
-       // public event EventHandler LoggedIn;   //leuk maar niet nodig :P
-
+        
         public LensertClient(string username, string password)
         {
             Username = username;

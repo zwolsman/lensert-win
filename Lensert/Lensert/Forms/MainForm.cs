@@ -17,24 +17,15 @@ namespace Lensert
 {
     public partial class MainForm : Form
     {
-
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-
-        }
         private HotkeyBinder _hotkeyBinder;
         private LensertClient _client;
+
         public MainForm()
         {
             InitializeComponent();
             InitializeHotkeys();
 
-            Task.Run(async () =>
-            {
-                _client = new LensertClient(Preferences.Default.username, Preferences.Default.password);
-                var result = await _client.Login();
-                Console.WriteLine($"Logged in as {_client.Username}");
-            });
+            _client = new LensertClient(Preferences.Default.username, Preferences.Default.password);
         }
 
         private void InitializeHotkeys()
@@ -49,13 +40,22 @@ namespace Lensert
         {
             var screenshot = ScreenshotProvider.GetScreenshot(type);
             var jsonResponse = await _client.UploadImageAsync(screenshot);
-            string link = jsonResponse["link"]; 
+            string link = jsonResponse["link"];
+
             Console.WriteLine($"Got link '{link}'");
-                NotificationProvider.Show(link);
-           //kan je hier iets mee?:D //totaal niet :P maar miss ligt het daar niet aan
-            if (Preferences.Default.CopyToClipboard) //f googlen
+            NotificationProvider.Show(link);
+
+            if (Preferences.Default.CopyToClipboard)
                 Clipboard.SetText(link);
         }
-        
+
+        private async void MainForm_Load(object sender, EventArgs e)
+        {
+            var loggedIn = await _client.Login();
+            if (!loggedIn)
+                throw new Exception("Invalid credentials");
+
+            Console.WriteLine($"Logged in as {_client.Username}");
+        }
     }
 }

@@ -20,9 +20,9 @@ namespace Lensert.Classes
         {
             _notifyIcon = new NotifyIcon
             {
-                BalloonTipText = "Your image has been uploaded to Lensert.\r\nClick here to open",
-                BalloonTipTitle = "Lensert",
-                BalloonTipIcon = ToolTipIcon.Info,
+                BalloonTipText = "Click here to open uploaded screenshot.",
+                BalloonTipTitle = "Upload succesful!",
+                //BalloonTipIcon = ToolTipIcon.Info,
                 Visible = true,
                 Icon = Resources.lensert_icon_fresh,
                 Text = "Lensert"
@@ -36,10 +36,8 @@ namespace Lensert.Classes
             Process.Start(_link);
         }
 
-        private static int index = 0;
         public static void Show(string link)
         {
-           // _notifyIcon.BalloonTipText = $"{++index}";
             _link = link;
             _notifyIcon.ShowBalloonTip(500);
         }
