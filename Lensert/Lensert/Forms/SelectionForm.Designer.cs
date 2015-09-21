@@ -1,6 +1,6 @@
-﻿namespace Lensert
+﻿namespace Lensert.Forms
 {
-    partial class MainForm
+    partial class SelectionForm
     {
         /// <summary>
         /// Required designer variable.
@@ -30,14 +30,25 @@
         {
             this.SuspendLayout();
             // 
-            // MainForm
+            // SelectionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(287, 261);
-            this.Name = "MainForm";
-            this.Text = "Lensert";
-            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Name = "SelectionForm";
+            this.Opacity = 0.5D;
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.Text = "SelectionForm";
+            this.TopMost = true;
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Load += new System.EventHandler(this.SelectionForm_Load);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.SelectionForm_Paint);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SelectionForm_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SelectionForm_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SelectionForm_MouseUp);
             this.ResumeLayout(false);
 
         }
@@ -45,4 +56,3 @@
         #endregion
     }
 }
-

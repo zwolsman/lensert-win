@@ -94,5 +94,28 @@ namespace Lensert {
                 this["CopyToClipboard"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Drawing.Color SelectionBackgroundColor {
+            get {
+                return ((global::System.Drawing.Color)(this["SelectionBackgroundColor"]));
+            }
+            set {
+                this["SelectionBackgroundColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
+        public global::System.Drawing.Color SelectionRectangleColor {
+            get {
+                return ((global::System.Drawing.Color)(this["SelectionRectangleColor"]));
+            }
+            set {
+                this["SelectionRectangleColor"] = value;
+            }
+        }
     }
 }
