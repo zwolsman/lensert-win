@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="lnsrt" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="HotkeySelectRegion" Type="Shortcut.Hotkey" Scope="User">
+      <Value Profile="(Default)">Alt, Shift, R</Value>
+    </Setting>
+    <Setting Name="HotkeySelectFullscreen" Type="Shortcut.Hotkey" Scope="User">
+      <Value Profile="(Default)">Alt, Shift, F</Value>
+    </Setting>
+    <Setting Name="HotkeySelectWindow" Type="Shortcut.Hotkey" Scope="User">
+      <Value Profile="(Default)">Alt, Shift, W</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

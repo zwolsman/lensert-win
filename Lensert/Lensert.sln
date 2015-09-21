@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lensert", "Lensert\Lensert.csproj", "{158DCDEB-85B2-460E-AF49-5925137140A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lensert", "Lensert\Lensert.csproj", "{15E3D870-38BB-44E4-BB9F-91366AFC6DE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,12 +11,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{158DCDEB-85B2-460E-AF49-5925137140A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{158DCDEB-85B2-460E-AF49-5925137140A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{158DCDEB-85B2-460E-AF49-5925137140A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{158DCDEB-85B2-460E-AF49-5925137140A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15E3D870-38BB-44E4-BB9F-91366AFC6DE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15E3D870-38BB-44E4-BB9F-91366AFC6DE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15E3D870-38BB-44E4-BB9F-91366AFC6DE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15E3D870-38BB-44E4-BB9F-91366AFC6DE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 1
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://lensert.visualstudio.com/defaultcollection
+		SccProjectUniqueName0 = Lensert\\Lensert.csproj
+		SccProjectName0 = Lensert
+		SccAuxPath0 = https://lensert.visualstudio.com/defaultcollection
+		SccLocalPath0 = Lensert
+		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 	EndGlobalSection
 EndGlobal

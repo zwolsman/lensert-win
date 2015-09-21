@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lensert.Classes
+namespace Lensert
 {
-    class ScreenshotFactory
+    class Class1
     {
     }
 }
