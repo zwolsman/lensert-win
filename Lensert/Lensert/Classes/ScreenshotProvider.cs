@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 
 namespace Lensert
 {
@@ -12,22 +15,23 @@ namespace Lensert
     {
         public static Image GetScreenshot(ScreenshotType type)
         {
-            var rectangle = GetArea(type);
+            return DummyImageProvider.Next();
         }
 
         private static Rectangle GetArea(ScreenshotType type)
         {
             switch (type)
             {
-                case ScreenshotType.Fullscreen:
-                    return SystemInformation.VirtualScreen;
-                case ScreenshotType.Window:
+                case ScreenshotType.CurrentWindow:
                     return NativeHelper.GetForegroundWindowAea();
                 case ScreenshotType.Area:
                     break;
+                case ScreenshotType.Fullscreen:
+                    return SystemInformation.VirtualScreen;
             }
 
-            throw new InvalidOperationException();
+            throw new ArgumentOutOfRangeException(nameof(type), type, null);
+
         }
     }
 }

@@ -3,7 +3,7 @@
     enum ScreenshotType
     {
         Fullscreen,
-        Window,
+        CurrentWindow,
         Area
     }
 }

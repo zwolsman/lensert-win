@@ -19,8 +19,10 @@ namespace Lensert
         private readonly HttpClient _httpClient;
         private readonly JavaScriptSerializer _javaScriptSerializer;
 
-        public string Username { get; private set; }
-        public string Password { get; private set; }
+        public string Username { get; }
+        public string Password { get; }
+
+       // public event EventHandler LoggedIn;   //leuk maar niet nodig :P
 
         public LensertClient(string username, string password)
         {
@@ -52,6 +54,7 @@ namespace Lensert
                     Console.WriteLine("Logged in..!");
                     _httpClient.DefaultRequestHeaders.Add("X-Lensert-Token", token);
 
+                    //LoggedIn?.Invoke(this, EventArgs.Empty);
                     return true;
                 }
             }
@@ -85,8 +88,13 @@ namespace Lensert
 
             streamContent.Dispose();
             multipartDataContent.Dispose();
-
-            return json;
+            if (json["result"] == ":(")
+            {
+                Console.WriteLine("Error!");
+                Console.WriteLine(json["error"]["code"]);
+                Console.WriteLine(json["error"]["message"]);
+            }
+            return json["link"].ToString();
         }
     }
 }

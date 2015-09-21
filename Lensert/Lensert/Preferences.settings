@@ -1,0 +1,24 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Lensert" GeneratedClassName="Preferences">
+  <Profiles />
+  <Settings>
+    <Setting Name="HotkeySelectArea" Type="Shortcut.Hotkey" Scope="User">
+      <Value Profile="(Default)">Alt, Shift, A</Value>
+    </Setting>
+    <Setting Name="HotkeySelectFullscreen" Type="Shortcut.Hotkey" Scope="User">
+      <Value Profile="(Default)">Alt, Shift, F</Value>
+    </Setting>
+    <Setting Name="HotkeySelectCurrentWindow" Type="Shortcut.Hotkey" Scope="User">
+      <Value Profile="(Default)">Alt, Shift, W</Value>
+    </Setting>
+    <Setting Name="username" Type="System.String" Scope="User">
+      <Value Profile="(Default)">catlover</Value>
+    </Setting>
+    <Setting Name="password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Wachtwoord1</Value>
+    </Setting>
+    <Setting Name="CopyToClipboard" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
