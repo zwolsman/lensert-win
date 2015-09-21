@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Lensert.Properties
+namespace Lensert.Forms.Forms.Properties
 {
 
 
