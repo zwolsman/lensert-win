@@ -65,7 +65,7 @@ namespace Lensert
             return false;
         }
 
-        public async Task<dynamic> UploadImage(Image bitmap)
+        public async Task<dynamic> UploadImageAsync(Image bitmap)
         {
             var memoryStream = new MemoryStream();
             bitmap.Save(memoryStream, ImageFormat.Png);
@@ -94,7 +94,7 @@ namespace Lensert
                 Console.WriteLine(json["error"]["code"]);
                 Console.WriteLine(json["error"]["message"]);
             }
-            return json["link"].ToString();
+            return json;
         }
     }
 }

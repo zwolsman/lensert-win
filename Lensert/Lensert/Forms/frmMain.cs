@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Lensert.Classes;
 using Lensert.Properties;
 using Shortcut;
 
@@ -33,13 +34,6 @@ namespace Lensert
                 _client = new LensertClient(Preferences.Default.username, Preferences.Default.password);
                 var result = await _client.Login();
                 Console.WriteLine($"Logged in as {_client.Username}");
-                //var image = Image.FromFile(@"C:\Users\joell\Desktop\screenshot.png");
-
-                //var json = await client.UploadImage(image);
-
-                //image.Dispose();
-
-                //int i = 0;
             });
         }
 
@@ -51,20 +45,17 @@ namespace Lensert
             _hotkeyBinder.Bind(Preferences.Default.HotkeySelectCurrentWindow).To(() => HotkeyHandler(ScreenshotType.CurrentWindow));
         }
 
-        private void HotkeyHandler(ScreenshotType type)
+        private async void HotkeyHandler(ScreenshotType type)
         {
             var screenshot = ScreenshotProvider.GetScreenshot(type);
-            _client.UploadImage(screenshot).ContinueWith((data) =>
-            {
-                string link = data.Result.ToString();
-                Console.WriteLine($"Got link '{link}'");
-                notifyIcon.BalloonTipClicked += (sender, args) => Process.Start(link);
-                notifyIcon.ShowBalloonTip(500, "Lensert", "Your image has been uploaded to Lensert.\r\nClick here to open", ToolTipIcon.Info);
-                if (Preferences.Default.CopyToClipboard)
-                {
-                    Clipboard.SetText(link);
-                }
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+            var jsonResponse = await _client.UploadImageAsync(screenshot);
+            string link = jsonResponse["link"]; 
+            Console.WriteLine($"Got link '{link}'");
+                NotificationProvider.Show(link);
+           //kan je hier iets mee?:D //totaal niet :P maar miss ligt het daar niet aan
+            if (Preferences.Default.CopyToClipboard) //f googlen
+                Clipboard.SetText(link);
         }
+        
     }
 }
