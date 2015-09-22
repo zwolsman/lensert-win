@@ -52,8 +52,8 @@ namespace Lensert
             Console.WriteLine($"Got link '{link}'");
             NotificationProvider.Show(link);
 
-            if (Preferences.Default.CopyToClipboard)
-                Clipboard.SetText(link);
+            //if (Preferences.Default.CopyToClipboard)
+            //    Clipboard.SetText(link);
         }
 
         private async void MainForm_Load(object sender, EventArgs e)
