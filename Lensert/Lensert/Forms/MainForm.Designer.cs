@@ -32,9 +32,10 @@
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(287, 261);
+            this.ClientSize = new System.Drawing.Size(335, 261);
+            this.Font = new System.Drawing.Font("Verdana", 8.25F);
             this.Name = "MainForm";
             this.Text = "Lensert";
             this.Load += new System.EventHandler(this.MainForm_Load);

@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Lensert.Forms
 {
-    public partial class frmPreferences : Form
+    public partial class PreferencesForm : Form
     {
-        public frmPreferences()
+        public PreferencesForm()
         {
             InitializeComponent();
         }
