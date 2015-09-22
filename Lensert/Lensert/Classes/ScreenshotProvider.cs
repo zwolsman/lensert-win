@@ -35,7 +35,7 @@ namespace Lensert
                     return NativeHelper.GetForegroundWindowAea();
                 case ScreenshotType.Area:
                     _selectionForm.ShowDialog();
-                    return _selectionForm.GetSelectedArea();
+                    return _selectionForm.SelectedArea();
                 case ScreenshotType.Fullscreen:
                     return SystemInformation.VirtualScreen;
             }
