@@ -19,6 +19,9 @@ namespace Lensert
         public static Image GetScreenshot(ScreenshotType type)
         {
             var area = GetArea(type);
+            if (area == Rectangle.Empty)
+                return null;
+
             var image = NativeHelper.TakeScreenshot(area);
 
             return image;
@@ -31,8 +34,7 @@ namespace Lensert
                 case ScreenshotType.CurrentWindow:
                     return NativeHelper.GetForegroundWindowAea();
                 case ScreenshotType.Area:
-                    _selectionForm.ShowDialog();
-                    return _selectionForm.GetSelectedArea();
+                    return _selectionForm.ShowDialog() == DialogResult.OK ? _selectionForm.GetSelectedArea() : Rectangle.Empty;
                 case ScreenshotType.Fullscreen:
                     return SystemInformation.VirtualScreen;
             }

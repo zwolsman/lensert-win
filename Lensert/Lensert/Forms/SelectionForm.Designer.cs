@@ -37,7 +37,6 @@
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "SelectionForm";
-            this.Opacity = 0.5D;
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
@@ -46,6 +45,7 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.SelectionForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.SelectionForm_Paint);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SelectionForm_KeyDown);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SelectionForm_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SelectionForm_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SelectionForm_MouseUp);

@@ -18,7 +18,7 @@ namespace Lensert
     public partial class MainForm : Form
     {
         private HotkeyBinder _hotkeyBinder;
-        private LensertClient _client;
+        private readonly LensertClient _client;
 
         public MainForm()
         {
@@ -39,6 +39,9 @@ namespace Lensert
         private async void HotkeyHandler(ScreenshotType type)
         {
             var screenshot = ScreenshotProvider.GetScreenshot(type);
+            if (screenshot == null)
+                return;
+
             var jsonResponse = await _client.UploadImageAsync(screenshot);
             string link = jsonResponse["link"];
 

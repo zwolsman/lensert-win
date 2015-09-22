@@ -21,7 +21,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="SelectionBackgroundColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="SelectionRectangleColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Red</Value>

@@ -15,15 +15,17 @@ namespace Lensert.Forms
         private const int DIMENSION_TEXT_OFFSET = 2; //TODO: Refactor into settings
 
         private SolidBrush _backgroundBrush, _rectangleBrush, _textBrush;
+        private Pen _rectanglePen;
         private int _x1, _y1, _x2, _y2;
 
         public SelectionForm()
         {
             InitializeComponent();
 
-            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            //SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             DoubleBuffered = true;
             Bounds = SystemInformation.VirtualScreen;
+            BackgroundImage = ScreenshotProvider.GetScreenshot(ScreenshotType.Fullscreen);
         }
 
         public Rectangle GetSelectedArea()
@@ -35,6 +37,7 @@ namespace Lensert.Forms
                 Math.Abs(_y1 - _y2));
         }
 
+      
         private void SelectionForm_Load(object sender, EventArgs e)
         {
             _backgroundBrush?.Dispose();
@@ -43,8 +46,9 @@ namespace Lensert.Forms
             _x1 = _x2 = _y1 = _y2 = 0;
             
             _textBrush = new SolidBrush(ForeColor);
-            _backgroundBrush = new SolidBrush(Preferences.Default.SelectionBackgroundColor);
+            _backgroundBrush = new SolidBrush(Color.FromArgb(100, Preferences.Default.SelectionBackgroundColor));
             _rectangleBrush = new SolidBrush(Preferences.Default.SelectionRectangleColor);
+            _rectanglePen = new Pen(Preferences.Default.SelectionRectangleColor);
         }
 
         private void SelectionForm_MouseDown(object sender, MouseEventArgs e)
@@ -58,8 +62,17 @@ namespace Lensert.Forms
 
         private void SelectionForm_MouseUp(object sender, MouseEventArgs e)
         {
+            DialogResult = DialogResult.OK;
             Close();
         }
+
+        private void SelectionForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Escape) return;
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
 
         private void SelectionForm_MouseMove(object sender, MouseEventArgs e)
         {
@@ -78,13 +91,13 @@ namespace Lensert.Forms
             using (var bitmap = new Bitmap(Width, Height))
             using (var graphics = Graphics.FromImage(bitmap))
             {
-                graphics.FillRectangle(_backgroundBrush, Bounds);
 
                 var selectedArea = GetSelectedArea();
                 if (selectedArea != Rectangle.Empty)
                 {
-                    graphics.FillRectangle(_rectangleBrush, GetSelectedArea());
 
+                    graphics.DrawRectangle(_rectanglePen, GetSelectedArea());   //Draw the border
+                    graphics.ExcludeClip(GetSelectedArea());                    //Exclude the rectangle so the white brush doesn't paint it
                     var dimension = $"{selectedArea.Width}x{selectedArea.Height}";
                     var size = graphics.MeasureString(dimension, Font);
 
@@ -96,7 +109,8 @@ namespace Lensert.Forms
 
                     graphics.DrawString(dimension, Font, _textBrush, x, y);
                 }
-                
+                    graphics.FillRectangle(_backgroundBrush, Bounds);
+
                 e.Graphics.DrawImage(bitmap, 0, 0);
             }           
         }

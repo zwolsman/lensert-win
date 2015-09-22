@@ -58,6 +58,12 @@
     <Compile Include="Classes\DummyImageProvider.cs" />
     <Compile Include="Classes\NotificationProvider.cs" />
     <Compile Include="Classes\LensertClient.cs" />
+    <Compile Include="Forms\frmPreferences.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmPreferences.Designer.cs">
+      <DependentUpon>frmPreferences.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -80,6 +86,9 @@
       <DependentUpon>Preferences.settings</DependentUpon>
     </Compile>
     <Compile Include="Classes\NativeHelper.cs" />
+    <EmbeddedResource Include="Forms\frmPreferences.resx">
+      <DependentUpon>frmPreferences.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -116,6 +125,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\lensert_icon_fresh.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Knipsel.PNG" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
