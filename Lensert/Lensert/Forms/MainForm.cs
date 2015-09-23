@@ -44,7 +44,7 @@ namespace Lensert
         private async void HotkeyHandler(ScreenshotType type)
         {
             var screenshot = ScreenshotProvider.GetScreenshot(type);
-            if (screenshot == null)
+          //  if (screenshot == null)
                 return;
 
             var jsonResponse = await _client.UploadImageAsync(screenshot);
@@ -53,8 +53,8 @@ namespace Lensert
             Console.WriteLine($"Got link '{link}'");
             NotificationProvider.Show(link);
 
-            if (Preferences.Default.CopyToClipboard)
-                Clipboard.SetText(link);
+            //if (Preferences.Default.CopyToClipboard)
+            //    Clipboard.SetText(link);
         }
 
         private async void MainForm_Load(object sender, EventArgs e)
