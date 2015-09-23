@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Lensert.Classes;
+using Lensert.Forms;
 using Lensert.Properties;
 using Shortcut;
 
@@ -63,6 +64,11 @@ namespace Lensert
                 throw new Exception("Invalid credentials");
 
             Console.WriteLine($"Logged in as {_client.Username}");
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            new PreferencesForm().Show();
         }
     }
 }
