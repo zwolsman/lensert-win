@@ -44,7 +44,7 @@ namespace Lensert
         private async void HotkeyHandler(ScreenshotType type)
         {
             var screenshot = ScreenshotProvider.GetScreenshot(type);
-          //  if (screenshot == null)
+            if (screenshot == null)
                 return;
 
             var jsonResponse = await _client.UploadImageAsync(screenshot);

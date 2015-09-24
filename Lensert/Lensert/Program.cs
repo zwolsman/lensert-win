@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -19,6 +20,20 @@ namespace Lensert
         {
             if (IsInstanceRunning())
                 return;
+
+            if (Preferences.Default.StartupOnLogon)
+            {   //REFACTOR to settings UI
+                var directory = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+                var location = Assembly.GetExecutingAssembly().Location;
+
+                using (var streamWriter = new StreamWriter(Path.Combine(directory, "Lensert.url")))
+                {
+                    streamWriter.WriteLine("[InternetShortcut]");
+                    streamWriter.WriteLine("URL=file:///" + location);
+                    streamWriter.WriteLine("IconIndex=0");
+                    streamWriter.WriteLine("IconFile=" + location);
+                }
+            }
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

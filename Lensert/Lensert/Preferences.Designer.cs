@@ -118,5 +118,17 @@ namespace Lensert {
                 this["SelectionRectangleColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool StartupOnLogon {
+            get {
+                return ((bool)(this["StartupOnLogon"]));
+            }
+            set {
+                this["StartupOnLogon"] = value;
+            }
+        }
     }
 }

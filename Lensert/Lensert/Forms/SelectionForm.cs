@@ -15,41 +15,31 @@ namespace Lensert.Forms
     {
         private const int DIMENSION_TEXT_OFFSET = 2; //TODO: Refactor into settings
 
-        private SolidBrush _backgroundBrush, _rectangleBrush, _textBrush;
+        private SolidBrush _transparantBrush, _textBrush;
         private Pen _rectanglePen;
         private Point _startPoint, _endPoint;
+
+        public Rectangle SelectedArea { get; private set; }
 
         public SelectionForm()
         {
             InitializeComponent();
 
-            //SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             DoubleBuffered = true;
             Bounds = SystemInformation.VirtualScreen;
-            // BackgroundImage = ScreenshotProvider.GetScreenshot(ScreenshotType.Fullscreen);
-
-            TransparencyKey = Color.AliceBlue;
-
+            
             _startPoint = Point.Empty;
             _endPoint = Point.Empty;
         }
 
-        public Rectangle SelectedArea() => new Rectangle(
-            Math.Min(_startPoint.X, _endPoint.X),
-            Math.Min(_startPoint.Y, _endPoint.Y),
-            Math.Abs(_startPoint.X - _endPoint.X),
-            Math.Abs(_startPoint.Y - _endPoint.Y));
-
-        Rectangle rect;
-
         private void SelectionForm_Load(object sender, EventArgs e)
         {
-            _backgroundBrush?.Dispose();
-            _rectangleBrush?.Dispose();
+            _transparantBrush?.Dispose();
+            _rectanglePen?.Dispose();
+            SelectedArea = Rectangle.Empty;
 
             _textBrush = new SolidBrush(ForeColor);
-            _backgroundBrush = new SolidBrush(Color.FromArgb(100, Preferences.Default.SelectionBackgroundColor));
-            _rectangleBrush = new SolidBrush(Preferences.Default.SelectionRectangleColor);
+            _transparantBrush = new SolidBrush(Color.Plum);
             _rectanglePen = new Pen(Preferences.Default.SelectionRectangleColor);
         }
 
@@ -69,8 +59,11 @@ namespace Lensert.Forms
 
         private void SelectionForm_KeyDown(object sender, KeyEventArgs e)
         {
-            //TODO shit
-            Close();
+            if (e.KeyCode == Keys.Escape)
+            {
+                SelectedArea = Rectangle.Empty;
+                Close();
+            }
         }
 
 
@@ -80,36 +73,31 @@ namespace Lensert.Forms
                 return;
 
             _endPoint = e.Location;
+
+            SelectedArea = new Rectangle(Math.Min(_startPoint.X, _endPoint.X),
+                                         Math.Min(_startPoint.Y, _endPoint.Y),
+                                         Math.Abs(_startPoint.X - _endPoint.X),
+                                         Math.Abs(_startPoint.Y - _endPoint.Y));
+
             Invalidate();
         }
-
-        Rectangle oldRect;
-        Stopwatch sw = Stopwatch.StartNew();
-        SolidBrush b = new SolidBrush(Color.AliceBlue);
+        
         private void SelectionForm_Paint(object sender, PaintEventArgs e)
         {
-            var selection = SelectedArea();
-            if (selection == Rectangle.Empty)
+            //TODO: Optimize further, makes user selectable where dimension text is
+
+            if (SelectedArea == Rectangle.Empty)
                 return;
-
-            sw.Restart();
             
-            e.Graphics.FillRectangle(b, selection);
-            e.Graphics.DrawRectangle(_rectanglePen, selection);                  //Draw the border
+            e.Graphics.FillRectangle(_transparantBrush, SelectedArea);             //makes transparant region
+            e.Graphics.DrawRectangle(_rectanglePen, SelectedArea);                 //Draw the border
 
-            var dimension = $"{selection.Width}x{selection.Height}";
-            var size = e.Graphics.MeasureString(dimension, Font);
+            var dimension = $"{SelectedArea.Width}x{SelectedArea.Height}";
+            var size = e.Graphics.MeasureString(dimension, Font);               //generates dimension string
 
-            float y = selection.Y + selection.Height + DIMENSION_TEXT_OFFSET;    //spaces the dimension text above the selection box
-            if (Height < y + size.Height)                                        //checks if it goes out of screen
-                y -= DIMENSION_TEXT_OFFSET * 2 - size.Height;                    //soo set the top in the selectionbox itself
-
-            float x = selection.X + selection.Width - size.Width;                //calculates the x_pos of the dimension 
-
-            e.Graphics.DrawString(dimension, Font, _textBrush, x, y);
-
-
-            Console.WriteLine(sw.ElapsedTicks);
+            float y = SelectedArea.Y + SelectedArea.Height + DIMENSION_TEXT_OFFSET;   //spaces the dimension text right bottom corner
+            float x = SelectedArea.X + SelectedArea.Width - size.Width;               //calculates the x_pos of the dimension 
+            e.Graphics.DrawString(dimension, Font, _textBrush, x, y);           //draws string
         }
     }
 }
