@@ -58,7 +58,22 @@ namespace Lensert {
                 this["HotkeySelectCurrentWindow"] = value;
             }
         }
-        
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Alt, Shift, S")]
+        public global::Shortcut.Hotkey HotkeySelectWindow
+        {
+            get
+            {
+                return ((global::Shortcut.Hotkey)(this["HotkeySelectWindow"]));
+            }
+            set
+            {
+                this["HotkeySelectWindow"] = value;
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("catlover")]
@@ -129,6 +144,6 @@ namespace Lensert {
             set {
                 this["StartupOnLogon"] = value;
             }
-        }
+        }        
     }
 }

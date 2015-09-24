@@ -18,7 +18,14 @@ namespace Lensert
             public readonly int Top;
             public readonly int Right;
             public readonly int Bottom;
+
+            public Rectangle ToRectangle()
+            {
+                return new Rectangle(Left, Top, Right - Left, Bottom - Top);
+            }
         }
+
+        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
@@ -58,7 +65,18 @@ namespace Lensert
 
         [DllImport("gdi32.dll")]
         private static extern bool BitBlt(IntPtr destinationDcHandle, int destinationX, int destinationY, int width, int height, IntPtr sourceDcHandle, int sourceX, int sourceY, CopyPixelOperation rasterOperation);
+        
+        [DllImport("user32.dll")]
+        private static extern bool EnumWindows(EnumWindowsProc enumProc, IntPtr lParam);
 
+        [DllImport("user32.dll")]
+        private static extern bool IsWindowVisible(IntPtr handle);
+
+        [DllImport("user32.dll")]
+        private static extern bool IsWindow(IntPtr handle);
+
+        [DllImport("user32.dll")]
+        private static extern int GetWindowTextLength(IntPtr handle);
 
         public static Rectangle GetForegroundWindowAea()
         {
@@ -70,7 +88,7 @@ namespace Lensert
             if (!GetWindowRect(hwnd, out rect))
                 throw new Win32Exception(GetLastError());
 
-            return new Rectangle(rect.Left, rect.Top, rect.Right - rect.Left, rect.Bottom - rect.Top);
+            return rect.ToRectangle();
         }
 
         public static Bitmap TakeScreenshot(Rectangle area)
@@ -90,6 +108,27 @@ namespace Lensert
             ReleaseDC(handleDesktopWindow, handleSource);
 
             return screenshot;
+        }
+
+        public static IEnumerable<Rectangle> GetWindowDimensions()
+        {
+            var list = new List<Rectangle>();
+
+            EnumWindows((handle, lparam) =>
+            {
+                if (!IsWindow(handle) || !IsWindowVisible(handle) || GetWindowTextLength(handle) < 1)
+                    return true;
+
+                RECT rect;
+                if (!GetWindowRect(handle, out rect))
+                    throw new Win32Exception(GetLastError()); //wondering why this failes lol
+
+                list.Add(rect.ToRectangle());
+
+                return true;
+            }, IntPtr.Zero);
+
+            return list;
         }
     }
 }

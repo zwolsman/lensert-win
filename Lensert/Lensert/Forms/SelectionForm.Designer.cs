@@ -49,8 +49,6 @@
             this.Load += new System.EventHandler(this.SelectionForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.SelectionForm_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SelectionForm_KeyDown);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SelectionForm_MouseDown);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SelectionForm_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SelectionForm_MouseUp);
             this.ResumeLayout(false);
 

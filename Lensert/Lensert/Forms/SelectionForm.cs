@@ -15,11 +15,11 @@ namespace Lensert.Forms
     {
         private const int DIMENSION_TEXT_OFFSET = 2; //TODO: Refactor into settings
 
-        private SolidBrush _transparantBrush, _textBrush;
-        private Pen _rectanglePen;
-        private Point _startPoint, _endPoint;
+        private readonly SolidBrush _transparantBrush, _textBrush;
+        private readonly Pen _rectanglePen;
+        internal IEnumerable<Rectangle> testRectangles;
 
-        public Rectangle SelectedArea { get; private set; }
+        public Rectangle SelectedArea { get; set; }
 
         public SelectionForm()
         {
@@ -28,32 +28,18 @@ namespace Lensert.Forms
             DoubleBuffered = true;
             Bounds = SystemInformation.VirtualScreen;
             
-            _startPoint = Point.Empty;
-            _endPoint = Point.Empty;
-        }
-
-        private void SelectionForm_Load(object sender, EventArgs e)
-        {
-            _transparantBrush?.Dispose();
-            _rectanglePen?.Dispose();
-            SelectedArea = Rectangle.Empty;
-
             _textBrush = new SolidBrush(ForeColor);
             _transparantBrush = new SolidBrush(Color.Plum);
             _rectanglePen = new Pen(Preferences.Default.SelectionRectangleColor);
         }
 
-        private void SelectionForm_MouseDown(object sender, MouseEventArgs e)
+        private void SelectionForm_Load(object sender, EventArgs e)
         {
-            if (e.Button != MouseButtons.Left)
-                return;
-
-            _startPoint = e.Location;
+            SelectedArea = Rectangle.Empty;
         }
-
+        
         private void SelectionForm_MouseUp(object sender, MouseEventArgs e)
         {
-            DialogResult = DialogResult.OK;
             Close();
         }
 
@@ -66,26 +52,26 @@ namespace Lensert.Forms
             }
         }
 
-
-        private void SelectionForm_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.Button != MouseButtons.Left)
-                return;
-
-            _endPoint = e.Location;
-
-            SelectedArea = new Rectangle(Math.Min(_startPoint.X, _endPoint.X),
-                                         Math.Min(_startPoint.Y, _endPoint.Y),
-                                         Math.Abs(_startPoint.X - _endPoint.X),
-                                         Math.Abs(_startPoint.Y - _endPoint.Y));
-
-            Invalidate();
-        }
-        
         private void SelectionForm_Paint(object sender, PaintEventArgs e)
         {
             //TODO: Optimize further, makes user selectable where dimension text is
-
+            //bool didDraw = false;
+            //if (testRectangles != null)
+            //{
+            //    int index = 0;
+            //    foreach (var r in testRectangles)
+            //    {
+            //        if (r.Contains(MousePosition) && !didDraw)
+            //        {
+            //            e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(100, Color.Green)), r);
+            //            didDraw = true;
+            //        }
+            //        e.Graphics.DrawRectangle(Pens.Red, r);
+            //        e.Graphics.DrawString(index++.ToString(), new Font("Verdana", 26), Brushes.Black, r.X + 10, r.Y);
+                    
+            //    }
+            //    return;
+            //}
             if (SelectedArea == Rectangle.Empty)
                 return;
             

@@ -4,6 +4,7 @@
     {
         Fullscreen,
         CurrentWindow,
+        SelectWindow,
         Area
     }
 }
