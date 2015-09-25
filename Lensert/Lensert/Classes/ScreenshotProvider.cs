@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
+//TODO: Optimize further, makes user selectable where dimension text is
+//      Maybe refactor to different classes
+
+
 namespace Lensert
 {
     static class ScreenshotProvider
@@ -96,31 +100,21 @@ namespace Lensert
 
             _drawEnd = e.Location;
 
-            _selectionForm.SelectedArea = new Rectangle(Math.Min(_drawStart.X, _drawEnd.X),
-                                                        Math.Min(_drawStart.Y, _drawEnd.Y),
-                                                        Math.Abs(_drawStart.X - _drawEnd.X),
-                                                        Math.Abs(_drawStart.Y - _drawEnd.Y));
+            var selectionRectangle = new Rectangle(Math.Min(_drawStart.X, _drawEnd.X),      //calculates selection with the begin- and endpoints
+                                                   Math.Min(_drawStart.Y, _drawEnd.Y),
+                                                   Math.Abs(_drawStart.X - _drawEnd.X),
+                                                   Math.Abs(_drawStart.Y - _drawEnd.Y));
 
+            _selectionForm.SelectedArea = selectionRectangle;
             _selectionForm.Invalidate();
         }
 
         private static void WindowForm_MouseMove(object sender, MouseEventArgs e)
         {
-            Rectangle selectedRectangle = default(Rectangle);// = _rectangles.FirstOrDefault(r => r.Contains(e.Location));
-
-            foreach (var rectangle in _rectangles)
-            {
-                if (rectangle.Contains(e.Location))
-                {
-                    selectedRectangle = rectangle;
-                    break;
-                }
-            }
-
+            var selectedRectangle = _rectangles.FirstOrDefault(r => r.Contains(e.Location));
             if (selectedRectangle == default(Rectangle))
                 return;
 
-            Console.WriteLine(e.Location);
             _windowForm.SelectedArea = selectedRectangle;
             _windowForm.Invalidate();
         }

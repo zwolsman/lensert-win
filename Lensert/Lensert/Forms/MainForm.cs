@@ -30,7 +30,7 @@ namespace Lensert
             label1.Text += $"Fullscreen: {Preferences.Default.HotkeySelectFullscreen}\n\n";
             label1.Text += $"Current window: {Preferences.Default.HotkeySelectCurrentWindow}\n\n";                                             
                                                                                                                                                
-            _client = new LensertClient(Preferences.Default.username, Preferences.Default.password);                                           
+            _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);                                           
         }                                                                                                                                      
                                                                                                                                                
         private void InitializeHotkeys()                                                                                                       

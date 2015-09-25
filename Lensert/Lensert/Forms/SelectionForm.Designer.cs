@@ -44,7 +44,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "SelectionForm";
             this.TopMost = true;
-            this.TransparencyKey = System.Drawing.Color.Plum;
+            this.TransparencyKey = System.Drawing.Color.Red;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.SelectionForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.SelectionForm_Paint);
