@@ -35,23 +35,23 @@ namespace Lensert
 
         public static Image GetScreenshot(ScreenshotType type)
         {
-            if (type == ScreenshotType.Clipboard)
+            if (type == ScreenshotType.Clipboard)                           //gets image from clipboard
             {
-                if (Clipboard.ContainsImage())
+                if (Clipboard.ContainsImage())                              //checks if it is image
                     return Clipboard.GetImage();
 
-                if (!Clipboard.ContainsFileDropList())
+                if (!Clipboard.ContainsFileDropList())                      //check if it is a file (image on disk)
                     return null;
 
                 var path = Clipboard.GetFileDropList()[0];
-                return Image.FromFile(path);
+                return path.EndsWith(".png") ? Image.FromFile(path) : null; //checks if file is image
             }
 
-            var area = GetArea(type);
+            var area = GetArea(type);                                       //get area for other types
             if (area == Rectangle.Empty)
                 return null;
 
-            var image = NativeHelper.TakeScreenshot(area);
+            var image = NativeHelper.TakeScreenshot(area);                  //get screenshot of area
             return image;
         }
 
