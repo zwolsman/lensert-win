@@ -78,17 +78,18 @@ namespace Lensert
         [DllImport("user32.dll")]
         private static extern int GetWindowTextLength(IntPtr handle);
 
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out RECT pvAttribute, int cbAttribute);
+
+        private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
+
         public static Rectangle GetForegroundWindowAea()
         {
-            var hwnd = GetForegroundWindow();
-            if (hwnd == IntPtr.Zero)
+            var handle = GetForegroundWindow();
+            if (handle == IntPtr.Zero)
                 return Rectangle.Empty;
 
-            RECT rect;
-            if (!GetWindowRect(hwnd, out rect))
-                throw new Win32Exception(GetLastError());
-
-            return rect.ToRectangle();
+            return GetWindowRectangle(handle);
         }
 
         public static Bitmap TakeScreenshot(Rectangle area)
@@ -119,16 +120,30 @@ namespace Lensert
                 if (!IsWindow(handle) || !IsWindowVisible(handle) || GetWindowTextLength(handle) < 1)
                     return true;
 
-                RECT rect;
-                if (!GetWindowRect(handle, out rect))
-                    throw new Win32Exception(GetLastError()); //wondering why this failes lol
-
-                list.Add(rect.ToRectangle());
+                var rectangle = GetWindowRectangle(handle);
+                list.Add(rectangle);
 
                 return true;
             }, IntPtr.Zero);
 
             return list;
+        }
+
+        private static Rectangle GetWindowRectangle(IntPtr handle)
+        {   //Thank you: http://stackoverflow.com/questions/16484894/form-tells-wrong-size-on-windows-8-how-to-get-real-size
+            RECT rect;
+            if (Environment.OSVersion.Version.Major < 6)            //before Windows 8 GetWindowRect works
+            {
+                GetWindowRect(handle, out rect);
+                return rect.ToRectangle();
+            }
+
+            var result = DwmGetWindowAttribute(handle, DWMWA_EXTENDED_FRAME_BOUNDS, out rect, Marshal.SizeOf(typeof(RECT)));
+            if (result >= 0)
+                return rect.ToRectangle();
+
+            GetWindowRect(handle, out rect);
+            return rect.ToRectangle();
         }
     }
 }
