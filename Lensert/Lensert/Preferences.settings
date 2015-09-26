@@ -21,7 +21,7 @@
       <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="SelectionRectangleColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">MediumBlue</Value>
+      <Value Profile="(Default)">OrangeRed</Value>
     </Setting>
     <Setting Name="StartupOnLogon" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -31,6 +31,9 @@
     </Setting>
     <Setting Name="HotkeySelectArea" Type="Shortcut.Hotkey" Scope="User">
       <Value Profile="(Default)">Alt, Shift, A</Value>
+    </Setting>
+    <Setting Name="HotkeyClipboard" Type="Shortcut.Hotkey" Scope="User">
+      <Value Profile="(Default)">Alt, Shift, C</Value>
     </Setting>
   </Settings>
 </SettingsFile>

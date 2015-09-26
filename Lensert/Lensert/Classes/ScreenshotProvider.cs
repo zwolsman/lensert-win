@@ -36,6 +36,9 @@ namespace Lensert
 
         public static Image GetScreenshot(ScreenshotType type)
         {
+            if (type == ScreenshotType.Clipboard)
+                return Clipboard.GetImage();
+
             var area = GetArea(type);
             if (area == Rectangle.Empty)
                 return null;

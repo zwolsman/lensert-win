@@ -28,7 +28,8 @@ namespace Lensert
 
             label1.Text = $"Select Area: {Preferences.Default.HotkeySelectArea}\n\n";
             label1.Text += $"Fullscreen: {Preferences.Default.HotkeySelectFullscreen}\n\n";
-            label1.Text += $"Current window: {Preferences.Default.HotkeySelectCurrentWindow}\n\n";                                             
+            label1.Text += $"Current window: {Preferences.Default.HotkeySelectCurrentWindow}\n\n";
+            label1.Text += $"Select window: {Preferences.Default.HotkeySelectWindow}\r\n";                                        
                                                                                                                                                
             _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);                                           
         }                                                                                                                                      
@@ -40,6 +41,7 @@ namespace Lensert
             _hotkeyBinder.Bind(Preferences.Default.HotkeySelectArea).To(() => HotkeyHandler(ScreenshotType.Area));
             _hotkeyBinder.Bind(Preferences.Default.HotkeySelectCurrentWindow).To(() => HotkeyHandler(ScreenshotType.CurrentWindow));
             _hotkeyBinder.Bind(Preferences.Default.HotkeySelectWindow).To(() => HotkeyHandler(ScreenshotType.SelectWindow));
+            _hotkeyBinder.Bind(Preferences.Default.HotkeyClipboard).To(() => HotkeyHandler(ScreenshotType.Clipboard));
         }
 
         private async void HotkeyHandler(ScreenshotType type)                                                                                  

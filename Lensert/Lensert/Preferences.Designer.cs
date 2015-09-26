@@ -97,7 +97,7 @@ namespace Lensert {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MediumBlue")]
+        [global::System.Configuration.DefaultSettingValueAttribute("OrangeRed")]
         public global::System.Drawing.Color SelectionRectangleColor {
             get {
                 return ((global::System.Drawing.Color)(this["SelectionRectangleColor"]));
@@ -140,6 +140,18 @@ namespace Lensert {
             }
             set {
                 this["HotkeySelectArea"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Alt, Shift, C")]
+        public global::Shortcut.Hotkey HotkeyClipboard {
+            get {
+                return ((global::Shortcut.Hotkey)(this["HotkeyClipboard"]));
+            }
+            set {
+                this["HotkeyClipboard"] = value;
             }
         }
     }

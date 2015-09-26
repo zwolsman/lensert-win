@@ -5,6 +5,7 @@
         Fullscreen,
         CurrentWindow,
         SelectWindow,
-        Area
+        Area,
+        Clipboard
     }
 }
