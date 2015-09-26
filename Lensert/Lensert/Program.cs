@@ -53,10 +53,7 @@ namespace Lensert
             }
         }
 
-        private static string GenerateMutexName()
-        {
-            return String.Format("Global\\{{{0}}}", ResolveAssemblyGuid());
-        }
+        private static string GenerateMutexName() => string.Format("Global\\{{{0}}}", ResolveAssemblyGuid());
 
         private static string ResolveAssemblyGuid()
         {

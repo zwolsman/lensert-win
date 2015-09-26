@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Lensert.Properties;
 
-namespace Lensert.Classes
+namespace Lensert
 {
     static class NotificationProvider
     {

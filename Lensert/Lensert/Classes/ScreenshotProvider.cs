@@ -1,5 +1,4 @@
-﻿using Lensert.Forms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -37,7 +36,16 @@ namespace Lensert
         public static Image GetScreenshot(ScreenshotType type)
         {
             if (type == ScreenshotType.Clipboard)
-                return Clipboard.GetImage();
+            {
+                if (Clipboard.ContainsImage())
+                    return Clipboard.GetImage();
+
+                if (!Clipboard.ContainsFileDropList())
+                    return null;
+
+                var path = Clipboard.GetFileDropList()[0];
+                return Image.FromFile(path);
+            }
 
             var area = GetArea(type);
             if (area == Rectangle.Empty)

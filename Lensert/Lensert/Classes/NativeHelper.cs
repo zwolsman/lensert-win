@@ -19,10 +19,7 @@ namespace Lensert
             public readonly int Right;
             public readonly int Bottom;
 
-            public Rectangle ToRectangle()
-            {
-                return new Rectangle(Left, Top, Right - Left, Bottom - Top);
-            }
+            public Rectangle ToRectangle() => new Rectangle(Left, Top, Right - Left, Bottom - Top);
         }
 
         private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);

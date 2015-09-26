@@ -9,8 +9,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Lensert.Classes;
-using Lensert.Forms;
 using Lensert.Properties;
 using Shortcut;
 
