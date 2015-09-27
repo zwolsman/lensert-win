@@ -4,6 +4,8 @@
     {
         Fullscreen,
         CurrentWindow,
-        Area
+        SelectWindow,
+        Area,
+        Clipboard
     }
 }

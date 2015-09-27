@@ -25,18 +25,6 @@ namespace Lensert {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Alt, Shift, A")]
-        public global::Shortcut.Hotkey HotkeySelectArea {
-            get {
-                return ((global::Shortcut.Hotkey)(this["HotkeySelectArea"]));
-            }
-            set {
-                this["HotkeySelectArea"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Alt, Shift, F")]
         public global::Shortcut.Hotkey HotkeySelectFullscreen {
             get {
@@ -62,24 +50,24 @@ namespace Lensert {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("catlover")]
-        public string username {
+        public string Username {
             get {
-                return ((string)(this["username"]));
+                return ((string)(this["Username"]));
             }
             set {
-                this["username"] = value;
+                this["Username"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Wachtwoord1")]
-        public string password {
+        public string Password {
             get {
-                return ((string)(this["password"]));
+                return ((string)(this["Password"]));
             }
             set {
-                this["password"] = value;
+                this["Password"] = value;
             }
         }
         
@@ -109,13 +97,61 @@ namespace Lensert {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
+        [global::System.Configuration.DefaultSettingValueAttribute("OrangeRed")]
         public global::System.Drawing.Color SelectionRectangleColor {
             get {
                 return ((global::System.Drawing.Color)(this["SelectionRectangleColor"]));
             }
             set {
                 this["SelectionRectangleColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool StartupOnLogon {
+            get {
+                return ((bool)(this["StartupOnLogon"]));
+            }
+            set {
+                this["StartupOnLogon"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Alt, Shift, S")]
+        public global::Shortcut.Hotkey HotkeySelectWindow {
+            get {
+                return ((global::Shortcut.Hotkey)(this["HotkeySelectWindow"]));
+            }
+            set {
+                this["HotkeySelectWindow"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Alt, Shift, A")]
+        public global::Shortcut.Hotkey HotkeySelectArea {
+            get {
+                return ((global::Shortcut.Hotkey)(this["HotkeySelectArea"]));
+            }
+            set {
+                this["HotkeySelectArea"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Alt, Shift, C")]
+        public global::Shortcut.Hotkey HotkeyClipboard {
+            get {
+                return ((global::Shortcut.Hotkey)(this["HotkeyClipboard"]));
+            }
+            set {
+                this["HotkeyClipboard"] = value;
             }
         }
     }

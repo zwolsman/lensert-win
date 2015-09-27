@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Lensert.Forms
+namespace Lensert
 {
     public partial class PreferencesForm : Form
     {

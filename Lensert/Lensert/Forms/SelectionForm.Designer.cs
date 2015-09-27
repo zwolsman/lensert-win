@@ -1,4 +1,4 @@
-﻿namespace Lensert.Forms
+﻿namespace Lensert
 {
     partial class SelectionForm
     {
@@ -38,17 +38,17 @@
             this.Font = new System.Drawing.Font("Verdana", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "SelectionForm";
+            this.Opacity = 0.65D;
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "SelectionForm";
             this.TopMost = true;
+            this.TransparencyKey = System.Drawing.Color.Red;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.SelectionForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.SelectionForm_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SelectionForm_KeyDown);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SelectionForm_MouseDown);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SelectionForm_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SelectionForm_MouseUp);
             this.ResumeLayout(false);
 

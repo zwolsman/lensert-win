@@ -18,7 +18,11 @@ namespace Lensert
             public readonly int Top;
             public readonly int Right;
             public readonly int Bottom;
+
+            public Rectangle ToRectangle() => new Rectangle(Left, Top, Right - Left, Bottom - Top);
         }
+
+        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
@@ -58,19 +62,31 @@ namespace Lensert
 
         [DllImport("gdi32.dll")]
         private static extern bool BitBlt(IntPtr destinationDcHandle, int destinationX, int destinationY, int width, int height, IntPtr sourceDcHandle, int sourceX, int sourceY, CopyPixelOperation rasterOperation);
+        
+        [DllImport("user32.dll")]
+        private static extern bool EnumWindows(EnumWindowsProc enumProc, IntPtr lParam);
 
+        [DllImport("user32.dll")]
+        private static extern bool IsWindowVisible(IntPtr handle);
+
+        [DllImport("user32.dll")]
+        private static extern bool IsWindow(IntPtr handle);
+
+        [DllImport("user32.dll")]
+        private static extern int GetWindowTextLength(IntPtr handle);
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out RECT pvAttribute, int cbAttribute);
+
+        private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
 
         public static Rectangle GetForegroundWindowAea()
         {
-            var hwnd = GetForegroundWindow();
-            if (hwnd == IntPtr.Zero)
+            var handle = GetForegroundWindow();
+            if (handle == IntPtr.Zero)
                 return Rectangle.Empty;
 
-            RECT rect;
-            if (!GetWindowRect(hwnd, out rect))
-                throw new Win32Exception(GetLastError());
-
-            return new Rectangle(rect.Left, rect.Top, rect.Right - rect.Left, rect.Bottom - rect.Top);
+            return GetWindowRectangle(handle);
         }
 
         public static Bitmap TakeScreenshot(Rectangle area)
@@ -90,6 +106,41 @@ namespace Lensert
             ReleaseDC(handleDesktopWindow, handleSource);
 
             return screenshot;
+        }
+
+        public static IEnumerable<Rectangle> GetWindowDimensions()
+        {
+            var list = new List<Rectangle>();
+
+            EnumWindows((handle, lparam) =>
+            {
+                if (!IsWindow(handle) || !IsWindowVisible(handle) || GetWindowTextLength(handle) < 1)
+                    return true;
+
+                var rectangle = GetWindowRectangle(handle);
+                list.Add(rectangle);
+
+                return true;
+            }, IntPtr.Zero);
+
+            return list;
+        }
+
+        private static Rectangle GetWindowRectangle(IntPtr handle)
+        {   //Thank you: http://stackoverflow.com/questions/16484894/form-tells-wrong-size-on-windows-8-how-to-get-real-size
+            RECT rect;
+            if (Environment.OSVersion.Version.Major < 6)            //before Windows 8 GetWindowRect works
+            {
+                GetWindowRect(handle, out rect);
+                return rect.ToRectangle();
+            }
+
+            var result = DwmGetWindowAttribute(handle, DWMWA_EXTENDED_FRAME_BOUNDS, out rect, Marshal.SizeOf(typeof(RECT)));
+            if (result >= 0)
+                return rect.ToRectangle();
+
+            GetWindowRect(handle, out rect);
+            return rect.ToRectangle();
         }
     }
 }
