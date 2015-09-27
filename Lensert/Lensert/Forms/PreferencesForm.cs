@@ -16,5 +16,20 @@ namespace Lensert
         {
             InitializeComponent();
         }
+
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void PreferencesForm_Load(object sender, EventArgs e)
+        {
+            cbLang.SelectedIndex = 0;
+        }
     }
 }
