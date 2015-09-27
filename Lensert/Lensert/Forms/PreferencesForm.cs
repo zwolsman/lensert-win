@@ -10,6 +10,8 @@ using System.Windows.Forms;
 
 namespace Lensert
 {
+    //TODO make it multi language support, maybe gettext
+    //https://code.google.com/p/gettext-cs-utils/
     public partial class PreferencesForm : Form
     {
         public PreferencesForm()
