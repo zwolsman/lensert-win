@@ -58,6 +58,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Controls\CueTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Classes\DummyImageProvider.cs" />
     <Compile Include="Classes\NotificationProvider.cs" />
     <Compile Include="Classes\LensertClient.cs" />

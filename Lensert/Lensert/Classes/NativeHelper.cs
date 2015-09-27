@@ -78,6 +78,10 @@ namespace Lensert
         [DllImport("dwmapi.dll")]
         private static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out RECT pvAttribute, int cbAttribute);
 
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, string lp);
+
+
         private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
 
         public static Rectangle GetForegroundWindowAea()
