@@ -24,32 +24,26 @@ namespace Lensert
 
         public PreferencesForm()
         {
+            _hotkeyBinder = new HotkeyBinder();
+            _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
+            
             InitializeComponent();
             InitializeHotkeys();
-/*
+        }
 
-            #################
-            # Preview items #
-            #################
+        private async void HotkeyHandler(ScreenshotType type)
+        {
+            var screenshot = ScreenshotProvider.GetScreenshot(type);
+            if (screenshot == null)
+                return;
 
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Upload fullscreen screenshot",
-            "None"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Upload active window",
-            "None"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Select a window to upload",
-            "None"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Select an area to upload",
-            "None"}, -1);
-            this.listHotkeys.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4});*/
+            var link = await _client.UploadImageAsync(screenshot);
 
+            Console.WriteLine($"Got link '{link}'");
+            NotificationProvider.Show(link);
+
+            //if (Preferences.Default.CopyToClipboard)                                                                                         
+            //    Clipboard.SetText(link);                                                                                                     
         }
 
 
@@ -63,7 +57,13 @@ namespace Lensert
                                                                                 }));
 
             listHotkeys.Items.Clear();
-            listHotkeys.Items.AddRange(items.ToArray());            
+            listHotkeys.Items.AddRange(items.ToArray());
+
+            _hotkeyBinder.Bind(Preferences.Default.HotkeySelectFullscreen).To(() => HotkeyHandler(ScreenshotType.Fullscreen));
+            _hotkeyBinder.Bind(Preferences.Default.HotkeySelectArea).To(() => HotkeyHandler(ScreenshotType.Area));
+            _hotkeyBinder.Bind(Preferences.Default.HotkeySelectCurrentWindow).To(() => HotkeyHandler(ScreenshotType.CurrentWindow));
+            _hotkeyBinder.Bind(Preferences.Default.HotkeySelectWindow).To(() => HotkeyHandler(ScreenshotType.SelectWindow));
+            _hotkeyBinder.Bind(Preferences.Default.HotkeyClipboard).To(() => HotkeyHandler(ScreenshotType.Clipboard));
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -117,6 +117,38 @@ namespace Lensert
         private void listHotkeys_KeyDown(object sender, KeyEventArgs e)
         {
             txtHotkey.Select();
+        }
+
+        private async void LoginHandler_UI(object sender, EventArgs e)
+        {
+            var keyEventArgs = e as KeyEventArgs;
+            if (keyEventArgs != null)                                   //fired by textbox
+            {                                                           //(if not it's the button click)
+                if (keyEventArgs.KeyCode != Keys.Enter)                 //check if enter is pressed
+                    return;
+            }
+
+            var controls = new Control[] { textboxUsername, textboxPassword, buttonLogin };
+            foreach (var control in controls)
+                control.Enabled = false;                                //disable controls, so can't be activated again
+
+            var username = textboxUsername.Text;
+            var password = textboxPassword.Text;
+
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+                return;                                                 //deny empty boxes :(
+
+            _client = new LensertClient(username, password);
+            if (await _client.Login())                                  //maybe give response if login failed?
+            {
+                Preferences.Default.Username = username;
+                Preferences.Default.Password = password;
+
+                Preferences.Default.Save();
+            }
+
+            foreach (var control in controls)                           //re-enable controls
+                control.Enabled = true;
         }
     }
 }
