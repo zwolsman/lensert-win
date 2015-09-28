@@ -24,8 +24,6 @@ namespace Lensert
         public SelectionForm()
         {
             InitializeComponent();
-
-            DoubleBuffered = true;
             Bounds = SystemInformation.VirtualScreen;
             
             _textBrush = new SolidBrush(ForeColor);
