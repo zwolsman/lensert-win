@@ -25,12 +25,14 @@ namespace Lensert
         {
             InitializeComponent();
             Bounds = SystemInformation.VirtualScreen;
-            
-            _textBrush = new SolidBrush(ForeColor);
+
+            SetStyle(ControlStyles.Opaque, true);
+
+            _textBrush = new SolidBrush(Preferences.Default.SelectionRectangleColor);
             _transparantBrush = new SolidBrush(Color.Red);                          //This is actually a bug where the transparancykey with the Red does register the mous input 
             _rectanglePen = new Pen(Preferences.Default.SelectionRectangleColor);   //(fyi, with any other color the mouse would click through it)
         }
-
+        
         private void SelectionForm_Load(object sender, EventArgs e)
         {
             SelectedArea = Rectangle.Empty;
@@ -67,15 +69,9 @@ namespace Lensert
             float y = SelectedArea.Y + SelectedArea.Height + DIMENSION_TEXT_OFFSET;     //spaces the dimension text right bottom corner
             float x = SelectedArea.X + SelectedArea.Width - size.Width;                 //calculates the x_pos of the dimension 
 
-            /*if (SelectedArea.X + SelectedArea.Width + x + size.Width > currentScreenBounds.Width)
-            {
-                
-            }*/
+            if (y + size.Height > currentScreenBounds.Height)
+                y -= size.Height + DIMENSION_TEXT_OFFSET*2;
 
-            if (SelectedArea.Y + SelectedArea.Height +  size.Height + DIMENSION_TEXT_OFFSET > currentScreenBounds.Height)
-            {
-                y -= size.Height;
-            }
             e.Graphics.DrawString(dimension, Font, _textBrush, x, y);                   //draws string
         }
     }
