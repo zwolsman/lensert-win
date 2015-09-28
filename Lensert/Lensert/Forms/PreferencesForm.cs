@@ -17,6 +17,11 @@ namespace Lensert
     //https://code.google.com/p/gettext-cs-utils/
     public partial class PreferencesForm : Form
     {
+        private readonly HotkeyBinder _hotkeyBinder;
+        private LensertClient _client;
+
+        private IEnumerable<SettingsProperty> Settings => Preferences.Default.Properties.Cast<SettingsProperty>();
+
         public PreferencesForm()
         {
             InitializeComponent();
@@ -51,17 +56,14 @@ namespace Lensert
 
         void InitializeHotkeys()
         {
-            listHotkeys.Items.Clear();
-            foreach (SettingsProperty current in Preferences.Default.Properties.Cast<SettingsProperty>().Where(currentProperty => currentProperty.PropertyType == typeof(Hotkey)))
-            {
-                ListViewItem item = new ListViewItem(new[] {current.Name, current.DefaultValue.ToString()})
-                {
-                    Tag = current.DefaultValue
-                };
-                listHotkeys.Items.Add(item);
-            }
+            var hotkeySettings = Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
+            var items = hotkeySettings.Select(setting => new ListViewItem(new[] {
+                                                                                    setting.GetDescription(),
+                                                                                    setting.DefaultValue.ToString()
+                                                                                }));
 
-            
+            listHotkeys.Items.Clear();
+            listHotkeys.Items.AddRange(items.ToArray());            
         }
 
         private void btnOK_Click(object sender, EventArgs e)
