@@ -1,4 +1,6 @@
-﻿namespace Lensert
+﻿using Lensert.Classes.Controls;
+
+namespace Lensert
 {
     partial class PreferencesForm
     {
@@ -32,9 +34,17 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label4 = new System.Windows.Forms.Label();
+            this.cbLang = new System.Windows.Forms.ComboBox();
             this.cbNotify = new System.Windows.Forms.CheckBox();
             this.cbCopyLink = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btnAssign = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtHotkey = new Shortcut.Forms.HotkeyTextBox();
+            this.listHotkeys = new Lensert.Classes.Controls.ExplorerListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -45,17 +55,16 @@
             this.pnlSignin = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.cueTextBox1 = new Lensert.Classes.Controls.CueTextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.cueTextBox2 = new Lensert.Classes.Controls.CueTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.cbLang = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.cueTextBox1 = new Lensert.Classes.Controls.CueTextBox();
-            this.cueTextBox2 = new Lensert.Classes.Controls.CueTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.pnlConnectFB.SuspendLayout();
@@ -101,6 +110,26 @@
             this.tabPage1.Text = "General";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 143);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(62, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Language";
+            // 
+            // cbLang
+            // 
+            this.cbLang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbLang.FormattingEnabled = true;
+            this.cbLang.Items.AddRange(new object[] {
+            "English"});
+            this.cbLang.Location = new System.Drawing.Point(9, 159);
+            this.cbLang.Name = "cbLang";
+            this.cbLang.Size = new System.Drawing.Size(202, 21);
+            this.cbLang.TabIndex = 2;
+            // 
             // cbNotify
             // 
             this.cbNotify.AutoSize = true;
@@ -123,6 +152,10 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnAssign);
+            this.tabPage2.Controls.Add(this.label5);
+            this.tabPage2.Controls.Add(this.txtHotkey);
+            this.tabPage2.Controls.Add(this.listHotkeys);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -130,6 +163,60 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Hotkeys";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // btnAssign
+            // 
+            this.btnAssign.Location = new System.Drawing.Point(180, 150);
+            this.btnAssign.Name = "btnAssign";
+            this.btnAssign.Size = new System.Drawing.Size(75, 21);
+            this.btnAssign.TabIndex = 3;
+            this.btnAssign.Text = "Assign";
+            this.btnAssign.UseVisualStyleBackColor = true;
+            this.btnAssign.Click += new System.EventHandler(this.btnAssign_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 132);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(249, 13);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "Press (new) hotkey for selected command";
+            // 
+            // txtHotkey
+            // 
+            this.txtHotkey.Hotkey = ((Shortcut.Hotkey)(resources.GetObject("txtHotkey.Hotkey")));
+            this.txtHotkey.Location = new System.Drawing.Point(9, 150);
+            this.txtHotkey.Name = "txtHotkey";
+            this.txtHotkey.Size = new System.Drawing.Size(165, 21);
+            this.txtHotkey.TabIndex = 1;
+            this.txtHotkey.Text = "None";
+            // 
+            // listHotkeys
+            // 
+            this.listHotkeys.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+            this.listHotkeys.FullRowSelect = true;
+            this.listHotkeys.Location = new System.Drawing.Point(6, 6);
+            this.listHotkeys.MultiSelect = false;
+            this.listHotkeys.Name = "listHotkeys";
+            this.listHotkeys.Size = new System.Drawing.Size(501, 123);
+            this.listHotkeys.TabIndex = 0;
+            this.listHotkeys.UseCompatibleStateImageBehavior = false;
+            this.listHotkeys.View = System.Windows.Forms.View.Details;
+            this.listHotkeys.SelectedIndexChanged += new System.EventHandler(this.listHotkeys_SelectedIndexChanged);
+            this.listHotkeys.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listHotkeys_KeyDown);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Command";
+            this.columnHeader1.Width = 224;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Key";
+            this.columnHeader2.Width = 225;
             // 
             // tabPage3
             // 
@@ -245,6 +332,14 @@
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "Request Password";
             // 
+            // cueTextBox1
+            // 
+            this.cueTextBox1.Cue = "Username";
+            this.cueTextBox1.Location = new System.Drawing.Point(7, 16);
+            this.cueTextBox1.Name = "cueTextBox1";
+            this.cueTextBox1.Size = new System.Drawing.Size(228, 21);
+            this.cueTextBox1.TabIndex = 0;
+            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -254,6 +349,15 @@
             this.checkBox1.TabIndex = 4;
             this.checkBox1.Text = "Remember me";
             this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // cueTextBox2
+            // 
+            this.cueTextBox2.Cue = "Password";
+            this.cueTextBox2.Location = new System.Drawing.Point(7, 43);
+            this.cueTextBox2.Name = "cueTextBox2";
+            this.cueTextBox2.Size = new System.Drawing.Size(228, 21);
+            this.cueTextBox2.TabIndex = 2;
+            this.cueTextBox2.UseSystemPasswordChar = true;
             // 
             // button1
             // 
@@ -286,43 +390,6 @@
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
-            // cbLang
-            // 
-            this.cbLang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbLang.FormattingEnabled = true;
-            this.cbLang.Items.AddRange(new object[] {
-            "English"});
-            this.cbLang.Location = new System.Drawing.Point(9, 159);
-            this.cbLang.Name = "cbLang";
-            this.cbLang.Size = new System.Drawing.Size(202, 21);
-            this.cbLang.TabIndex = 2;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 143);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(62, 13);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Language";
-            // 
-            // cueTextBox1
-            // 
-            this.cueTextBox1.Cue = "Username";
-            this.cueTextBox1.Location = new System.Drawing.Point(7, 16);
-            this.cueTextBox1.Name = "cueTextBox1";
-            this.cueTextBox1.Size = new System.Drawing.Size(228, 21);
-            this.cueTextBox1.TabIndex = 0;
-            // 
-            // cueTextBox2
-            // 
-            this.cueTextBox2.Cue = "Password";
-            this.cueTextBox2.Location = new System.Drawing.Point(7, 43);
-            this.cueTextBox2.Name = "cueTextBox2";
-            this.cueTextBox2.Size = new System.Drawing.Size(228, 21);
-            this.cueTextBox2.TabIndex = 2;
-            this.cueTextBox2.UseSystemPasswordChar = true;
-            // 
             // PreferencesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
@@ -342,6 +409,8 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
@@ -379,5 +448,11 @@
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.ComboBox cbLang;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button btnAssign;
+        private System.Windows.Forms.Label label5;
+        private Shortcut.Forms.HotkeyTextBox txtHotkey;
+        private Lensert.Classes.Controls.ExplorerListView listHotkeys;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
     }
 }

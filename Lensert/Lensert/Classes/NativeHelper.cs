@@ -14,10 +14,10 @@ namespace Lensert
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
         {
-            public readonly int Left;
-            public readonly int Top;
-            public readonly int Right;
-            public readonly int Bottom;
+            private readonly int Left;
+            private readonly int Top;
+            private readonly int Right;
+            private readonly int Bottom;
 
             public Rectangle ToRectangle() => new Rectangle(Left, Top, Right - Left, Bottom - Top);
         }
@@ -80,9 +80,15 @@ namespace Lensert
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, string lp);
-
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+        [DllImport("uxtheme", CharSet = CharSet.Unicode)]
+        public extern static int SetWindowTheme(IntPtr hWnd, string textSubAppName, string textSubIdList);
 
         private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
+        public const int LVM_FIRST = 0x1000;
+        public const int LVM_SETEXTENDEDLISTVIEWSTYLE = LVM_FIRST + 54;
+        public const int LVS_EX_DOUBLEBUFFER = 0x00010000;
 
         public static Rectangle GetForegroundWindowAea()
         {
