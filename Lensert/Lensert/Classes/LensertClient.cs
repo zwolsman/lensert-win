@@ -79,7 +79,7 @@ namespace Lensert
 
             var responseMessage = await _httpClient.PostAsync("shot/upload", multipartDataContent);
             if (!responseMessage.IsSuccessStatusCode)
-                return false;
+                return null;
 
             var responseString = await responseMessage.Content.ReadAsStringAsync();
             var json = _javaScriptSerializer.Deserialize<dynamic>(responseString);

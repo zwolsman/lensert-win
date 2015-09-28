@@ -17,6 +17,7 @@ namespace Lensert
     //https://code.google.com/p/gettext-cs-utils/
     public partial class PreferencesForm : Form
     {
+        private readonly HotkeyConverter _hotkeyConverter;
         private readonly HotkeyBinder _hotkeyBinder;
         private LensertClient _client;
 
@@ -24,6 +25,7 @@ namespace Lensert
 
         public PreferencesForm()
         {
+            _hotkeyConverter = new HotkeyConverter();
             _hotkeyBinder = new HotkeyBinder();
             _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
             
@@ -45,9 +47,7 @@ namespace Lensert
             //if (Preferences.Default.CopyToClipboard)                                                                                         
             //    Clipboard.SetText(link);                                                                                                     
         }
-
-
-
+        
         void InitializeHotkeys()
         {
             var hotkeySettings = Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
@@ -66,39 +66,24 @@ namespace Lensert
             _hotkeyBinder.Bind(Preferences.Default.HotkeyClipboard).To(() => HotkeyHandler(ScreenshotType.Clipboard));
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
+        private void buttonOk_Click(object sender, EventArgs e)
         {
             Preferences.Default.Save();
             Close();
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
         private void PreferencesForm_Load(object sender, EventArgs e)
         {
-            cbLang.SelectedIndex = 0;
+            comboboxLanguage.SelectedIndex = 0;
         }
 
-
-        private readonly HotkeyConverter hotkeyConverter = new HotkeyConverter();
         private void listHotkeys_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListViewItem selectedItem = null;
-            if (listHotkeys.SelectedItems.Count >= 1)
-            {
-                selectedItem = listHotkeys.SelectedItems[0];
-            }
-
-            if (selectedItem == null)
-                return;
-
-            txtHotkey.Hotkey = hotkeyConverter.ConvertFromString(selectedItem.Tag.ToString()) as Hotkey;
+            var hotkey = listHotkeys.SelectedItems[0].Tag.ToString();
+            textboxHotkey.Hotkey = (Hotkey)_hotkeyConverter.ConvertFromString(hotkey);
         }
 
-        private void btnAssign_Click(object sender, EventArgs e)
+        private void buttonAssign_Click(object sender, EventArgs e)
         {
             //TODO fix the saving/assigning
             ListViewItem selectedItem = null;
@@ -110,13 +95,13 @@ namespace Lensert
             if (selectedItem == null)
                 return;
 
-            Preferences.Default[selectedItem.Text] = txtHotkey.Hotkey;
+            Preferences.Default[selectedItem.Text] = textboxHotkey.Hotkey;
             InitializeHotkeys();
         }
 
         private void listHotkeys_KeyDown(object sender, KeyEventArgs e)
         {
-            txtHotkey.Select();
+            textboxHotkey.Select();
         }
 
         private async void LoginHandler_UI(object sender, EventArgs e)

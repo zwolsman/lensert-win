@@ -35,13 +35,13 @@ namespace Lensert
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.label4 = new System.Windows.Forms.Label();
-            this.cbLang = new System.Windows.Forms.ComboBox();
+            this.comboboxLanguage = new System.Windows.Forms.ComboBox();
             this.cbNotify = new System.Windows.Forms.CheckBox();
             this.cbCopyLink = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.btnAssign = new System.Windows.Forms.Button();
+            this.buttonAssign = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
-            this.txtHotkey = new Shortcut.Forms.HotkeyTextBox();
+            this.textboxHotkey = new Shortcut.Forms.HotkeyTextBox();
             this.listHotkeys = new Lensert.Classes.Controls.ExplorerListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -59,8 +59,7 @@ namespace Lensert
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textboxPassword = new Lensert.Classes.Controls.CueTextBox();
             this.buttonLogin = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
+            this.buttonOk = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -99,7 +98,7 @@ namespace Lensert
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.label4);
-            this.tabPage1.Controls.Add(this.cbLang);
+            this.tabPage1.Controls.Add(this.comboboxLanguage);
             this.tabPage1.Controls.Add(this.cbNotify);
             this.tabPage1.Controls.Add(this.cbCopyLink);
             this.tabPage1.Location = new System.Drawing.Point(4, 29);
@@ -119,16 +118,16 @@ namespace Lensert
             this.label4.TabIndex = 3;
             this.label4.Text = "Language";
             // 
-            // cbLang
+            // comboboxLanguage
             // 
-            this.cbLang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbLang.FormattingEnabled = true;
-            this.cbLang.Items.AddRange(new object[] {
+            this.comboboxLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboboxLanguage.FormattingEnabled = true;
+            this.comboboxLanguage.Items.AddRange(new object[] {
             "English"});
-            this.cbLang.Location = new System.Drawing.Point(9, 159);
-            this.cbLang.Name = "cbLang";
-            this.cbLang.Size = new System.Drawing.Size(202, 28);
-            this.cbLang.TabIndex = 2;
+            this.comboboxLanguage.Location = new System.Drawing.Point(9, 159);
+            this.comboboxLanguage.Name = "comboboxLanguage";
+            this.comboboxLanguage.Size = new System.Drawing.Size(202, 28);
+            this.comboboxLanguage.TabIndex = 2;
             // 
             // cbNotify
             // 
@@ -152,9 +151,9 @@ namespace Lensert
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.btnAssign);
+            this.tabPage2.Controls.Add(this.buttonAssign);
             this.tabPage2.Controls.Add(this.label5);
-            this.tabPage2.Controls.Add(this.txtHotkey);
+            this.tabPage2.Controls.Add(this.textboxHotkey);
             this.tabPage2.Controls.Add(this.listHotkeys);
             this.tabPage2.Location = new System.Drawing.Point(4, 29);
             this.tabPage2.Name = "tabPage2";
@@ -164,15 +163,15 @@ namespace Lensert
             this.tabPage2.Text = "Hotkeys";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // btnAssign
+            // buttonAssign
             // 
-            this.btnAssign.Location = new System.Drawing.Point(180, 150);
-            this.btnAssign.Name = "btnAssign";
-            this.btnAssign.Size = new System.Drawing.Size(75, 21);
-            this.btnAssign.TabIndex = 3;
-            this.btnAssign.Text = "Assign";
-            this.btnAssign.UseVisualStyleBackColor = true;
-            this.btnAssign.Click += new System.EventHandler(this.btnAssign_Click);
+            this.buttonAssign.Location = new System.Drawing.Point(180, 150);
+            this.buttonAssign.Name = "buttonAssign";
+            this.buttonAssign.Size = new System.Drawing.Size(75, 21);
+            this.buttonAssign.TabIndex = 3;
+            this.buttonAssign.Text = "Assign";
+            this.buttonAssign.UseVisualStyleBackColor = true;
+            this.buttonAssign.Click += new System.EventHandler(this.buttonAssign_Click);
             // 
             // label5
             // 
@@ -183,15 +182,15 @@ namespace Lensert
             this.label5.TabIndex = 2;
             this.label5.Text = "Press (new) hotkey for selected command";
             // 
-            // txtHotkey
+            // textboxHotkey
             // 
-            this.txtHotkey.Hotkey = ((Shortcut.Hotkey)(resources.GetObject("txtHotkey.Hotkey")));
-            this.txtHotkey.Location = new System.Drawing.Point(9, 150);
-            this.txtHotkey.Name = "txtHotkey";
-            this.txtHotkey.ReadOnly = true;
-            this.txtHotkey.Size = new System.Drawing.Size(165, 28);
-            this.txtHotkey.TabIndex = 1;
-            this.txtHotkey.Text = "None";
+            this.textboxHotkey.Hotkey = ((Shortcut.Hotkey)(resources.GetObject("textboxHotkey.Hotkey")));
+            this.textboxHotkey.Location = new System.Drawing.Point(9, 150);
+            this.textboxHotkey.Name = "textboxHotkey";
+            this.textboxHotkey.ReadOnly = true;
+            this.textboxHotkey.Size = new System.Drawing.Size(165, 28);
+            this.textboxHotkey.TabIndex = 1;
+            this.textboxHotkey.Text = "None";
             // 
             // listHotkeys
             // 
@@ -372,35 +371,23 @@ namespace Lensert
             this.buttonLogin.UseVisualStyleBackColor = true;
             this.buttonLogin.Click += new System.EventHandler(this.LoginHandler_UI);
             // 
-            // btnCancel
+            // buttonOk
             // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(460, 387);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 2;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(379, 387);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 3;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOk.Location = new System.Drawing.Point(462, 387);
+            this.buttonOk.Name = "buttonOk";
+            this.buttonOk.Size = new System.Drawing.Size(75, 23);
+            this.buttonOk.TabIndex = 3;
+            this.buttonOk.Text = "OK";
+            this.buttonOk.UseVisualStyleBackColor = true;
+            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
             // PreferencesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(549, 422);
-            this.Controls.Add(this.btnOK);
-            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.pictureBox1);
             this.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -448,13 +435,12 @@ namespace Lensert
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.CheckBox cbNotify;
         private System.Windows.Forms.CheckBox cbCopyLink;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.ComboBox cbLang;
+        private System.Windows.Forms.Button buttonOk;
+        private System.Windows.Forms.ComboBox comboboxLanguage;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button btnAssign;
+        private System.Windows.Forms.Button buttonAssign;
         private System.Windows.Forms.Label label5;
-        private Shortcut.Forms.HotkeyTextBox txtHotkey;
+        private Shortcut.Forms.HotkeyTextBox textboxHotkey;
         private Lensert.Classes.Controls.ExplorerListView listHotkeys;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
