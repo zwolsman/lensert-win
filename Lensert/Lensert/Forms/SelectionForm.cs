@@ -54,6 +54,9 @@ namespace Lensert
         {
             if (SelectedArea == Rectangle.Empty)
                 return;
+
+
+            Rectangle currentScreenBounds = Screen.FromPoint(MousePosition).Bounds;
             
             e.Graphics.FillRectangle(_transparantBrush, SelectedArea);                  //makes transparant region
             e.Graphics.DrawRectangle(_rectanglePen, SelectedArea);                      //Draw the border
@@ -63,6 +66,16 @@ namespace Lensert
 
             float y = SelectedArea.Y + SelectedArea.Height + DIMENSION_TEXT_OFFSET;     //spaces the dimension text right bottom corner
             float x = SelectedArea.X + SelectedArea.Width - size.Width;                 //calculates the x_pos of the dimension 
+
+            /*if (SelectedArea.X + SelectedArea.Width + x + size.Width > currentScreenBounds.Width)
+            {
+                
+            }*/
+
+            if (SelectedArea.Y + SelectedArea.Height +  size.Height + DIMENSION_TEXT_OFFSET > currentScreenBounds.Height)
+            {
+                y -= size.Height;
+            }
             e.Graphics.DrawString(dimension, Font, _textBrush, x, y);                   //draws string
         }
     }
