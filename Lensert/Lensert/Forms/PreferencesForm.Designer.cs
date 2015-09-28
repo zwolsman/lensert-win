@@ -42,9 +42,6 @@ namespace Lensert
             this.btnAssign = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.txtHotkey = new Shortcut.Forms.HotkeyTextBox();
-            this.listHotkeys = new Lensert.Classes.Controls.ExplorerListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -55,12 +52,15 @@ namespace Lensert
             this.pnlSignin = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.cueTextBox1 = new Lensert.Classes.Controls.CueTextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.cueTextBox2 = new Lensert.Classes.Controls.CueTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
+            this.listHotkeys = new Lensert.Classes.Controls.ExplorerListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.cueTextBox1 = new Lensert.Classes.Controls.CueTextBox();
+            this.cueTextBox2 = new Lensert.Classes.Controls.CueTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -188,35 +188,10 @@ namespace Lensert
             this.txtHotkey.Hotkey = ((Shortcut.Hotkey)(resources.GetObject("txtHotkey.Hotkey")));
             this.txtHotkey.Location = new System.Drawing.Point(9, 150);
             this.txtHotkey.Name = "txtHotkey";
+            this.txtHotkey.ReadOnly = true;
             this.txtHotkey.Size = new System.Drawing.Size(165, 21);
             this.txtHotkey.TabIndex = 1;
             this.txtHotkey.Text = "None";
-            // 
-            // listHotkeys
-            // 
-            this.listHotkeys.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
-            this.listHotkeys.FullRowSelect = true;
-            this.listHotkeys.Location = new System.Drawing.Point(6, 6);
-            this.listHotkeys.MultiSelect = false;
-            this.listHotkeys.Name = "listHotkeys";
-            this.listHotkeys.Size = new System.Drawing.Size(501, 123);
-            this.listHotkeys.TabIndex = 0;
-            this.listHotkeys.UseCompatibleStateImageBehavior = false;
-            this.listHotkeys.View = System.Windows.Forms.View.Details;
-            this.listHotkeys.SelectedIndexChanged += new System.EventHandler(this.listHotkeys_SelectedIndexChanged);
-            this.listHotkeys.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listHotkeys_KeyDown);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Command";
-            this.columnHeader1.Width = 224;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Key";
-            this.columnHeader2.Width = 225;
             // 
             // tabPage3
             // 
@@ -332,14 +307,6 @@ namespace Lensert
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "Request Password";
             // 
-            // cueTextBox1
-            // 
-            this.cueTextBox1.Cue = "Username";
-            this.cueTextBox1.Location = new System.Drawing.Point(7, 16);
-            this.cueTextBox1.Name = "cueTextBox1";
-            this.cueTextBox1.Size = new System.Drawing.Size(228, 21);
-            this.cueTextBox1.TabIndex = 0;
-            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -349,15 +316,6 @@ namespace Lensert
             this.checkBox1.TabIndex = 4;
             this.checkBox1.Text = "Remember me";
             this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // cueTextBox2
-            // 
-            this.cueTextBox2.Cue = "Password";
-            this.cueTextBox2.Location = new System.Drawing.Point(7, 43);
-            this.cueTextBox2.Name = "cueTextBox2";
-            this.cueTextBox2.Size = new System.Drawing.Size(228, 21);
-            this.cueTextBox2.TabIndex = 2;
-            this.cueTextBox2.UseSystemPasswordChar = true;
             // 
             // button1
             // 
@@ -389,6 +347,49 @@ namespace Lensert
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            // 
+            // listHotkeys
+            // 
+            this.listHotkeys.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+            this.listHotkeys.FullRowSelect = true;
+            this.listHotkeys.Location = new System.Drawing.Point(6, 6);
+            this.listHotkeys.MultiSelect = false;
+            this.listHotkeys.Name = "listHotkeys";
+            this.listHotkeys.Size = new System.Drawing.Size(501, 123);
+            this.listHotkeys.TabIndex = 0;
+            this.listHotkeys.UseCompatibleStateImageBehavior = false;
+            this.listHotkeys.View = System.Windows.Forms.View.Details;
+            this.listHotkeys.SelectedIndexChanged += new System.EventHandler(this.listHotkeys_SelectedIndexChanged);
+            this.listHotkeys.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listHotkeys_KeyDown);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Command";
+            this.columnHeader1.Width = 224;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Key";
+            this.columnHeader2.Width = 225;
+            // 
+            // cueTextBox1
+            // 
+            this.cueTextBox1.Cue = "Username";
+            this.cueTextBox1.Location = new System.Drawing.Point(7, 16);
+            this.cueTextBox1.Name = "cueTextBox1";
+            this.cueTextBox1.Size = new System.Drawing.Size(228, 21);
+            this.cueTextBox1.TabIndex = 0;
+            // 
+            // cueTextBox2
+            // 
+            this.cueTextBox2.Cue = "Password";
+            this.cueTextBox2.Location = new System.Drawing.Point(7, 43);
+            this.cueTextBox2.Name = "cueTextBox2";
+            this.cueTextBox2.Size = new System.Drawing.Size(228, 21);
+            this.cueTextBox2.TabIndex = 2;
+            this.cueTextBox2.UseSystemPasswordChar = true;
             // 
             // PreferencesForm
             // 

@@ -97,7 +97,7 @@ namespace Lensert {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("OrangeRed")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
         public global::System.Drawing.Color SelectionRectangleColor {
             get {
                 return ((global::System.Drawing.Color)(this["SelectionRectangleColor"]));

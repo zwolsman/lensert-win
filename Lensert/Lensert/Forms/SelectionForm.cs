@@ -29,7 +29,8 @@ namespace Lensert
             SetStyle(ControlStyles.Opaque, true);
 
             _textBrush = new SolidBrush(Preferences.Default.SelectionRectangleColor);
-            _transparantBrush = new SolidBrush(Color.Red);                          //This is actually a bug where the transparancykey with the Red does register the mous input 
+            _transparantBrush = new SolidBrush(Color.Cyan);                          //This is actually a bug where the transparancykey with the Red does register the mous input 
+            TransparencyKey = Color.Cyan;
             _rectanglePen = new Pen(Preferences.Default.SelectionRectangleColor);   //(fyi, with any other color the mouse would click through it)
         }
         

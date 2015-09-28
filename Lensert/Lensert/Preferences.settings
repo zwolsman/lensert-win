@@ -21,7 +21,7 @@
       <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="SelectionRectangleColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">OrangeRed</Value>
+      <Value Profile="(Default)">Red</Value>
     </Setting>
     <Setting Name="StartupOnLogon" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
