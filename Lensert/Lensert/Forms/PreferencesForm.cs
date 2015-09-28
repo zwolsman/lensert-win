@@ -79,19 +79,16 @@ namespace Lensert
 
         private void listHotkeys_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var hotkey = listHotkeys.SelectedItems[0].Tag.ToString();
+            var hotkey = listHotkeys.SelectedItems[0]?.Tag?.ToString();
+            if (string.IsNullOrEmpty(hotkey))
+                return;
+            
             textboxHotkey.Hotkey = (Hotkey)_hotkeyConverter.ConvertFromString(hotkey);
         }
 
         private void buttonAssign_Click(object sender, EventArgs e)
         {
-            //TODO fix the saving/assigning
-            ListViewItem selectedItem = null;
-            if (listHotkeys.SelectedItems.Count >= 1)
-            {
-                selectedItem = listHotkeys.SelectedItems[0];
-            }
-
+            var selectedItem = listHotkeys.SelectedItems[0];
             if (selectedItem == null)
                 return;
 

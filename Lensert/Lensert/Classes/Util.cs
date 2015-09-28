@@ -9,23 +9,19 @@ namespace Lensert
 {
     static class Util
     {
-        public static string GetDescription(this SettingsProperty setting)
+        private static Dictionary<string, string> _descriptions = new Dictionary<string, string>
         {
-            switch (setting.Name)
-            {
-                case nameof(Preferences.HotkeyClipboard):
-                    return "Upload clipboard";
-                case nameof(Preferences.HotkeySelectArea):
-                    return "Take screenshot of selected area";
-                case nameof(Preferences.HotkeySelectCurrentWindow):
-                    return "Take screenshot of current window";
-                case nameof(Preferences.HotkeySelectFullscreen):
-                    return "Take screenshot of all screens";
-                case nameof(Preferences.HotkeySelectWindow):
-                    return "Take screenshot of current window";
-            }
+            [nameof(Preferences.HotkeyClipboard)] = "Upload clipboard",
+            [nameof(Preferences.HotkeySelectArea)] = "Take screenshot of selected area",
+            [nameof(Preferences.HotkeySelectCurrentWindow)] = "Take screenshot of current window",
+            [nameof(Preferences.HotkeySelectFullscreen)] = "Take screenshot of all screens",
+            [nameof(Preferences.HotkeySelectWindow)] = "Take screenshot of current window"
+        };
 
-            return "";
-        }
+        public static string GetDescription(this SettingsProperty setting)              //maybe use ContainsKey and [] ? (performance wise)
+            => _descriptions.FirstOrDefault(des => des.Key == setting.Name).Value;
+        
+        public static string GetPropertySettingName(string description) 
+            => _descriptions.FirstOrDefault(des => des.Value == description).Key;
     }
 }
