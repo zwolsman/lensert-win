@@ -21,6 +21,8 @@ namespace Lensert
         private readonly HotkeyBinder _hotkeyBinder;
         private LensertClient _client;
 
+        private bool _hotkeyEnabled;
+
         private IEnumerable<SettingsProperty> Settings => Preferences.Default.Properties.Cast<SettingsProperty>();
 
         public PreferencesForm()
@@ -28,6 +30,8 @@ namespace Lensert
             _hotkeyConverter = new HotkeyConverter();
             _hotkeyBinder = new HotkeyBinder();
             _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
+
+            _hotkeyEnabled = true;
             
             InitializeComponent();
             InitializeHotkeys();
@@ -35,6 +39,9 @@ namespace Lensert
 
         private async void HotkeyHandler(ScreenshotType type)
         {
+            if (!_hotkeyEnabled)
+                return;
+
             var screenshot = ScreenshotProvider.GetScreenshot(type);
             if (screenshot == null)
                 return;
@@ -59,11 +66,20 @@ namespace Lensert
             listHotkeys.Items.Clear();
             listHotkeys.Items.AddRange(items.ToArray());
 
-            _hotkeyBinder.Bind(Preferences.Default.HotkeySelectFullscreen).To(() => HotkeyHandler(ScreenshotType.Fullscreen));
-            _hotkeyBinder.Bind(Preferences.Default.HotkeySelectArea).To(() => HotkeyHandler(ScreenshotType.Area));
-            _hotkeyBinder.Bind(Preferences.Default.HotkeySelectCurrentWindow).To(() => HotkeyHandler(ScreenshotType.CurrentWindow));
-            _hotkeyBinder.Bind(Preferences.Default.HotkeySelectWindow).To(() => HotkeyHandler(ScreenshotType.SelectWindow));
-            _hotkeyBinder.Bind(Preferences.Default.HotkeyClipboard).To(() => HotkeyHandler(ScreenshotType.Clipboard));
+            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectFullscreen))
+                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectFullscreen).To(() => HotkeyHandler(ScreenshotType.Fullscreen));
+
+            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectArea))
+                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectArea).To(() => HotkeyHandler(ScreenshotType.Area));
+
+            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectCurrentWindow))
+                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectCurrentWindow).To(() => HotkeyHandler(ScreenshotType.CurrentWindow));
+
+            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectWindow))
+                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectWindow).To(() => HotkeyHandler(ScreenshotType.SelectWindow));
+
+            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeyClipboard))
+                _hotkeyBinder.Bind(Preferences.Default.HotkeyClipboard).To(() => HotkeyHandler(ScreenshotType.Clipboard));
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -79,7 +95,10 @@ namespace Lensert
 
         private void listHotkeys_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var hotkey = listHotkeys.SelectedItems[0]?.Tag?.ToString();
+            if (listHotkeys.SelectedItems.Count == 0)
+                return;
+
+            var hotkey = listHotkeys.SelectedItems[0].SubItems[1].Text;
             if (string.IsNullOrEmpty(hotkey))
                 return;
             
@@ -88,12 +107,25 @@ namespace Lensert
 
         private void buttonAssign_Click(object sender, EventArgs e)
         {
+            if (listHotkeys.SelectedItems.Count == 0)
+                return;
+
             var selectedItem = listHotkeys.SelectedItems[0];
             if (selectedItem == null)
                 return;
 
-            Preferences.Default[selectedItem.Text] = textboxHotkey.Hotkey;
-            InitializeHotkeys();
+            var oldHotkey = (Hotkey)_hotkeyConverter.ConvertFromString(selectedItem.SubItems[1].Text);
+            var hotkey = textboxHotkey.Hotkey;
+
+            if (oldHotkey == hotkey)                                //don't bother to rebind same hotkey
+                return;
+
+            _hotkeyBinder.Unbind(oldHotkey);
+            
+            var settingName = Util.GetPropertySettingName(selectedItem.Text);
+            Preferences.Default[settingName] = hotkey;              //saves hotkey
+
+            InitializeHotkeys();                                    //rebinds if needed
         }
 
         private void listHotkeys_KeyDown(object sender, KeyEventArgs e)
