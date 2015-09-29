@@ -74,12 +74,7 @@ namespace Lensert
 
         void InitializeHotkeys()
         {
-            var hotkeySettings = Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
-            var items = hotkeySettings.Select(setting => new ListViewItem(new[] {
-                                                                                    setting.GetDescription(),
-                                                                                    setting.DefaultValue.ToString()
-                                                                                }));
-            
+           
             if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectFullscreen))
                 _hotkeyBinder.Bind(Preferences.Default.HotkeySelectFullscreen).To(() => HotkeyHandler(ScreenshotType.Fullscreen));
 

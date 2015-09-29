@@ -27,6 +27,18 @@ namespace Lensert
             _hotkeyConverter = new HotkeyConverter();
             
             InitializeComponent();
+            InitializeHotkeys();
+        }
+
+
+        private void InitializeHotkeys()
+        {
+            var hotkeySettings = Utils.Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
+            var items = hotkeySettings.Select(setting => new ListViewItem(new[] {
+                                                                                    setting.GetDescription(),
+                                                                                    setting.DefaultValue.ToString()
+                                                                                }));
+            listHotkeys.Items.AddRange(items.ToArray());
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
