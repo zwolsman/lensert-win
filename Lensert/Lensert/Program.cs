@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Lensert.Forms;
 
 namespace Lensert
 {
@@ -37,7 +38,7 @@ namespace Lensert
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new PreferencesForm());
+            Application.Run(new MainForm());
         }
 
         private static bool IsInstanceRunning()
@@ -53,7 +54,7 @@ namespace Lensert
             }
         }
 
-        private static string GenerateMutexName() => string.Format("Global\\{{{0}}}", ResolveAssemblyGuid());
+        private static string GenerateMutexName() => $"Global\\{{{ResolveAssemblyGuid()}}}";
 
         private static string ResolveAssemblyGuid()
         {

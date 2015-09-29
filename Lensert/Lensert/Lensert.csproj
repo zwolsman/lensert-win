@@ -67,7 +67,13 @@
     <Compile Include="Classes\DummyImageProvider.cs" />
     <Compile Include="Classes\NotificationProvider.cs" />
     <Compile Include="Classes\LensertClient.cs" />
-    <Compile Include="Classes\Util.cs" />
+    <Compile Include="Classes\Utils.cs" />
+    <Compile Include="Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\PreferencesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,6 +97,9 @@
     <Compile Include="Classes\ScreenshotProvider.cs" />
     <Compile Include="Classes\ScreenshotType.cs" />
     <Compile Include="Classes\NativeHelper.cs" />
+    <EmbeddedResource Include="Forms\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\PreferencesForm.resx">
       <DependentUpon>PreferencesForm.cs</DependentUpon>
     </EmbeddedResource>

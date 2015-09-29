@@ -12,16 +12,45 @@ using System.Web.Script.Serialization;
 
 namespace Lensert
 {
-    class LensertClient
+    public class LensertClient
     {
         private const string API_URL = "http://lensert.com/api/v2/";
 
         private readonly HttpClient _httpClient;
         private readonly JavaScriptSerializer _javaScriptSerializer;
 
-        public string Username { get; }
-        public string Password { get; }
-        
+
+        private string _username, _password;
+        public string Username
+        {
+            get
+            {
+                return _username;
+            }
+            set
+            {
+                IsAuthorized = false;
+                _username = value;
+            }
+        }
+
+        public string Password
+        {
+            get
+            {
+                return _password;
+            }
+            set
+            {
+                IsAuthorized = false;
+                _password = value;
+            }
+        }
+
+        public bool IsAuthorized { get; private set; } = false;
+
+
+        public EventHandler StateHandler;
         public LensertClient(string username, string password)
         {
             Username = username;
@@ -51,15 +80,16 @@ namespace Lensert
                 {
                     Console.WriteLine("Logged in..!");
                     _httpClient.DefaultRequestHeaders.Add("X-Lensert-Token", token);
-
-                    //LoggedIn?.Invoke(this, EventArgs.Empty);
+                    IsAuthorized = true;
+                    StateHandler?.Invoke(this, EventArgs.Empty);
                     return true;
                 }
             }
 
             multipartDataContent.Dispose();
-
+            IsAuthorized = false;
             Console.WriteLine("Not a valid login!");
+            StateHandler?.Invoke(this, EventArgs.Empty);
             return false;
         }
 
