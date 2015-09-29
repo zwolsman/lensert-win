@@ -49,6 +49,8 @@ namespace Lensert
                                                                                     setting.GetDescription(),
                                                                                     setting.DefaultValue.ToString()
                                                                                 }));
+
+            listHotkeys.Items.Clear();
             listHotkeys.Items.AddRange(items.ToArray());
         }
 
@@ -62,15 +64,6 @@ namespace Lensert
         {
             comboboxLanguage.SelectedIndex = 0;
             tabControl1.TabPages.Remove(tabPersonal);
-
-            var hotkeySettings = Utils.Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
-            var items = hotkeySettings.Select(setting => new ListViewItem(new[] {
-                                                                                    setting.GetDescription(),
-                                                                                    setting.DefaultValue.ToString()
-                                                                                }));
-
-            listHotkeys.Items.Clear();
-            listHotkeys.Items.AddRange(items.ToArray());
         }
 
         private void listHotkeys_SelectedIndexChanged(object sender, EventArgs e)
@@ -147,11 +140,6 @@ namespace Lensert
 
             foreach (var control in controls) //re-enable controls
                 control.Enabled = true;
-        }
-
-        private void LoginHandler_UI(object sender, KeyEventArgs e)
-        {
-
         }
     }
 }
