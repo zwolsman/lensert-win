@@ -23,17 +23,45 @@ namespace Lensert
         public PreferencesForm()
         {
             InitializeComponent();
+            InitializeHotkeys();
+            LoadPreferences();
+        }
+
+        private void LoadPreferences()
+        {
+            chRememberMe.Checked = Preferences.Default.RememberMe;
+            cbCopyLink.Checked = Preferences.Default.CopyToClipboard;
+            cbNotify.Checked = Preferences.Default.ShowNotification;
+        }
+
+        private void SavePreferences()
+        {
+            Preferences.Default.RememberMe = chRememberMe.Checked;
+            Preferences.Default.CopyToClipboard = cbCopyLink.Checked;
+            Preferences.Default.ShowNotification = cbNotify.Checked;
+            Preferences.Default.Save();
+        }
+
+        private void InitializeHotkeys()
+        {
+            var hotkeySettings = Utils.Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
+            var items = hotkeySettings.Select(setting => new ListViewItem(new[] {
+                                                                                    setting.GetDescription(),
+                                                                                    setting.DefaultValue.ToString()
+                                                                                }));
+            listHotkeys.Items.AddRange(items.ToArray());
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            Preferences.Default.Save();
+            SavePreferences();
             Close();
         }
 
         private void PreferencesForm_Load(object sender, EventArgs e)
         {
             comboboxLanguage.SelectedIndex = 0;
+            tabControl1.TabPages.Remove(tabPersonal);
 
             var hotkeySettings = Utils.Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
             var items = hotkeySettings.Select(setting => new ListViewItem(new[] {
@@ -86,24 +114,26 @@ namespace Lensert
         private async void LoginHandler_UI(object sender, EventArgs e)
         {
             var keyEventArgs = e as KeyEventArgs;
-            if (keyEventArgs != null)                                   //fired by textbox
-            {                                                           //(if not it's the button click)
-                if (keyEventArgs.KeyCode != Keys.Enter)                 //check if enter is pressed
+            if (keyEventArgs != null)                       //fired by textbox
+            {                                               //(if not it's the button click)
+                if (keyEventArgs.KeyCode != Keys.Enter)     //check if enter is pressed
                     return;
+                keyEventArgs.SuppressKeyPress = true;       //Stop the beeping from happening
+                keyEventArgs.Handled = true;                //Stop the beeping from happening
             }
 
-            var controls = new Control[] { textboxUsername, textboxPassword, buttonLogin };
+            var controls = new Control[] {textboxUsername, textboxPassword, buttonLogin};
             foreach (var control in controls)
-                control.Enabled = false;                                //disable controls, so can't be activated again
+                control.Enabled = false;                    //disable controls, so can't be activated again
 
             var username = textboxUsername.Text;
             var password = textboxPassword.Text;
 
             if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
-            {                                                           //deny empty boxes :(
+            {                                               //deny empty boxes :(
 
                 var client = new LensertClient(username, password);
-                if (await client.Login())                               //maybe give response if login failed?
+                if (await client.Login())                   //maybe give response if login failed?
                 {
                     Preferences.Default.Username = username;
                     Preferences.Default.Password = password;
@@ -115,8 +145,13 @@ namespace Lensert
                 AccountChanged?.Invoke(this, new AccountEventArgs(client));
             }
 
-            foreach (var control in controls)                           //re-enable controls
+            foreach (var control in controls) //re-enable controls
                 control.Enabled = true;
+        }
+
+        private void LoginHandler_UI(object sender, KeyEventArgs e)
+        {
+
         }
     }
 }

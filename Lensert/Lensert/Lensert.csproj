@@ -130,10 +130,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="README.md" />
     <None Include="Resources\lensert_icon_fresh.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Knipsel.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\testpf.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shortcut\Shortcut.csproj">

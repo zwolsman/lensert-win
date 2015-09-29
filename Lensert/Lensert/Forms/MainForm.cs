@@ -20,7 +20,7 @@ namespace Lensert
         private readonly HotkeyBinder _hotkeyBinder;
         private LensertClient _client;
 
-        
+
 
         public MainForm()
         {
@@ -33,6 +33,8 @@ namespace Lensert
             _hotkeyBinder = new HotkeyBinder();
             _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
 
+            if (Preferences.Default.RememberMe)
+                _client.Login();
             InitializeHotkeys();
         }
 
@@ -41,7 +43,7 @@ namespace Lensert
             base.SetVisibleCore(false);
         }
 
-        private void PreferencesForm_HotkeyChanged(object sender, HotkeyEventArgs e)
+    private void PreferencesForm_HotkeyChanged(object sender, HotkeyEventArgs e)
         {
             _hotkeyBinder.Unbind(e.OldHotkey);
 
@@ -73,10 +75,11 @@ namespace Lensert
             var link = await _client.UploadImageAsync(screenshot);
 
             Console.WriteLine($"Got link '{link}'");
+
+            if(Preferences.Default.ShowNotification)
             NotificationProvider.Show(link);
 
             return link;
-
             //if (Preferences.Default.CopyToClipboard)                                                                                         
             //    Clipboard.SetText(link);                                                                                                     
         }
@@ -85,7 +88,7 @@ namespace Lensert
         {
             var hotkeySettings = Utils.Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
             var hotkeys = hotkeySettings.Select(setting => (string)setting.DefaultValue).Select(Utils.ConvertToHotkey);
-
+            
             foreach (var hotkey in hotkeys)
                 _hotkeyBinder.Bind(hotkey, OnHotkeyPressed);
         }
