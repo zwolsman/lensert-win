@@ -55,19 +55,27 @@ namespace Lensert
             myImagesToolStripMenuItem.Visible = _client.LoggedIn;
         }
 
-        private async void HotkeyHandler(ScreenshotType type)
+        private async void OnHotkeyPressed(HotkeyPressedEventArgs hotkeyEventArgs)
+        {
+            var type = hotkeyEventArgs.Hotkey.GetScreenshotType();
+            await ScreenshotHandler(type);
+        }
+
+        private async Task<string> ScreenshotHandler(ScreenshotType type)
         {
             //if (!_hotkeyEnabled)
             //    return;
 
             var screenshot = ScreenshotProvider.GetScreenshot(type);
             if (screenshot == null)
-                return;
+                return null;
 
             var link = await _client.UploadImageAsync(screenshot);
 
             Console.WriteLine($"Got link '{link}'");
             NotificationProvider.Show(link);
+
+            return link;
 
             //if (Preferences.Default.CopyToClipboard)                                                                                         
             //    Clipboard.SetText(link);                                                                                                     
@@ -80,21 +88,10 @@ namespace Lensert
                                                                                     setting.GetDescription(),
                                                                                     setting.DefaultValue.ToString()
                                                                                 }));
-            
-            //if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectFullscreen))
-            //    _hotkeyBinder.Bind(Preferences.Default.HotkeySelectFullscreen).To(() => HotkeyHandler(ScreenshotType.Fullscreen));
 
-            //if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectArea))
-            //    _hotkeyBinder.Bind(Preferences.Default.HotkeySelectArea).To(() => HotkeyHandler(ScreenshotType.Area));
-
-            //if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectCurrentWindow))
-            //    _hotkeyBinder.Bind(Preferences.Default.HotkeySelectCurrentWindow).To(() => HotkeyHandler(ScreenshotType.CurrentWindow));
-
-            //if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectWindow))
-            //    _hotkeyBinder.Bind(Preferences.Default.HotkeySelectWindow).To(() => HotkeyHandler(ScreenshotType.SelectWindow));
-
-            //if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeyClipboard))
-            //    _hotkeyBinder.Bind(Preferences.Default.HotkeyClipboard).To(() => HotkeyHandler(ScreenshotType.Clipboard));
+            var hotkeys = hotkeySettings.Select(setting => (string)setting.DefaultValue).Select(Utils.ConvertToHotkey);
+            foreach (var hotkey in hotkeys)
+                _hotkeyBinder.Bind(hotkey, OnHotkeyPressed);
         }
 
         private void myImagesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -103,9 +100,9 @@ namespace Lensert
                 Process.Start($"http://lnsrt.me/user/{_client.Username}");
         }
 
-        private void captureImageToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void captureImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            HotkeyHandler(ScreenshotType.Area);
+            await ScreenshotHandler(ScreenshotType.Area);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -115,6 +112,7 @@ namespace Lensert
 
         private void OpenPreferences_UI(object sender, EventArgs e)
         {
+            if (!_preferencesForm.Visible)
             _preferencesForm.ShowDialog();
         }
     }
