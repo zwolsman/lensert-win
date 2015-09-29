@@ -38,6 +38,7 @@ namespace Lensert
         private void PreferencesForm_Load(object sender, EventArgs e)
         {
             comboboxLanguage.SelectedIndex = 0;
+            tabControl1.TabPages.Remove(tabPersonal);
         }
 
         private void listHotkeys_SelectedIndexChanged(object sender, EventArgs e)
@@ -116,6 +117,11 @@ namespace Lensert
 
             foreach (var control in controls) //re-enable controls
                 control.Enabled = true;
+        }
+
+        private void LoginHandler_UI(object sender, KeyEventArgs e)
+        {
+
         }
     }
 }
