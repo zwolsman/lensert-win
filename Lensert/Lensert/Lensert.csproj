@@ -40,10 +40,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Shortcut, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shortcut.2.0.0\lib\Shortcut.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
@@ -116,7 +112,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.manifest" />
-    <None Include="packages.config" />
     <None Include="Preferences.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Preferences.Designer.cs</LastGenOutput>
@@ -139,6 +134,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Knipsel.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shortcut\Shortcut.csproj">
+      <Project>{5deadf0b-dc7b-430f-982e-647f7b05455d}</Project>
+      <Name>Shortcut</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

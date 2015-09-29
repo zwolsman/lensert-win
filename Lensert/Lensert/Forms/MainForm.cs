@@ -33,6 +33,7 @@ namespace Lensert
             _hotkeyBinder = new HotkeyBinder();
             _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
 
+            InitializeHotkeys();
         }
 
         protected override void SetVisibleCore(bool value)
@@ -40,7 +41,7 @@ namespace Lensert
             base.SetVisibleCore(false);
         }
 
-    private void PreferencesForm_HotkeyChanged(object sender, HotkeyEventArgs e)
+        private void PreferencesForm_HotkeyChanged(object sender, HotkeyEventArgs e)
         {
             _hotkeyBinder.Unbind(e.OldHotkey);
 
@@ -80,20 +81,20 @@ namespace Lensert
                                                                                     setting.DefaultValue.ToString()
                                                                                 }));
             
-            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectFullscreen))
-                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectFullscreen).To(() => HotkeyHandler(ScreenshotType.Fullscreen));
+            //if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectFullscreen))
+            //    _hotkeyBinder.Bind(Preferences.Default.HotkeySelectFullscreen).To(() => HotkeyHandler(ScreenshotType.Fullscreen));
 
-            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectArea))
-                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectArea).To(() => HotkeyHandler(ScreenshotType.Area));
+            //if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectArea))
+            //    _hotkeyBinder.Bind(Preferences.Default.HotkeySelectArea).To(() => HotkeyHandler(ScreenshotType.Area));
 
-            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectCurrentWindow))
-                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectCurrentWindow).To(() => HotkeyHandler(ScreenshotType.CurrentWindow));
+            //if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectCurrentWindow))
+            //    _hotkeyBinder.Bind(Preferences.Default.HotkeySelectCurrentWindow).To(() => HotkeyHandler(ScreenshotType.CurrentWindow));
 
-            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectWindow))
-                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectWindow).To(() => HotkeyHandler(ScreenshotType.SelectWindow));
+            //if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectWindow))
+            //    _hotkeyBinder.Bind(Preferences.Default.HotkeySelectWindow).To(() => HotkeyHandler(ScreenshotType.SelectWindow));
 
-            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeyClipboard))
-                _hotkeyBinder.Bind(Preferences.Default.HotkeyClipboard).To(() => HotkeyHandler(ScreenshotType.Clipboard));
+            //if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeyClipboard))
+            //    _hotkeyBinder.Bind(Preferences.Default.HotkeyClipboard).To(() => HotkeyHandler(ScreenshotType.Clipboard));
         }
 
         private void myImagesToolStripMenuItem_Click(object sender, EventArgs e)
