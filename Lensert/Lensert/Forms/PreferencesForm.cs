@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Lensert.Forms;
 using Shortcut;
 using Shortcut.Forms;
 
@@ -20,30 +19,15 @@ namespace Lensert
     {
         private readonly HotkeyConverter _hotkeyConverter;
 
-
-
+        public event EventHandler<AccountEventArgs> AccountChanged;
+        public event EventHandler<HotkeyEventArgs> HotkeyChanged;
+        
         public PreferencesForm()
         {
             _hotkeyConverter = new HotkeyConverter();
             
             InitializeComponent();
-            InitializeHotkeys();
         }
-
-        private void InitializeHotkeys()
-        {
-            var hotkeySettings = Utils.Settings.Where(setting => setting.PropertyType == typeof (Hotkey));
-            var items = hotkeySettings.Select(setting => new ListViewItem(new[]
-            {
-                setting.GetDescription(),
-                setting.DefaultValue.ToString()
-            }));
-            listHotkeys.Items.Clear();
-            listHotkeys.Items.AddRange(items.ToArray());
-        }
-
-      
-        
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
@@ -78,17 +62,15 @@ namespace Lensert
                 return;
 
             var oldHotkey = (Hotkey)_hotkeyConverter.ConvertFromString(selectedItem.SubItems[1].Text);
-            var hotkey = textboxHotkey.Hotkey;
+            var newHotkey = textboxHotkey.Hotkey;
 
-            if (oldHotkey == hotkey)                                //don't bother to rebind same hotkey
+            if (oldHotkey == newHotkey)                                //don't bother to rebind same hotkey
                 return;
-
-            MainForm.HotkeyBinder.Unbind(oldHotkey);
             
             var settingName = Utils.GetPropertySettingName(selectedItem.Text);
-            Preferences.Default[settingName] = hotkey;              //saves hotkey
+            Preferences.Default[settingName] = newHotkey;              //saves hotkey
 
-            InitializeHotkeys();                                    //rebinds if needed
+            HotkeyChanged?.Invoke(this, new HotkeyEventArgs(oldHotkey, newHotkey));
         }
 
         private void listHotkeys_KeyDown(object sender, KeyEventArgs e)
@@ -115,15 +97,17 @@ namespace Lensert
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return;                                                 //deny empty boxes :(
 
-            MainForm.Client.Username = username;
-            MainForm.Client.Password = password;
-            if (await MainForm.Client.Login())                                  //maybe give response if login failed?
+            var client = new LensertClient(username, password);
+            if (await client.Login())                                  //maybe give response if login failed?
             {
                 Preferences.Default.Username = username;
                 Preferences.Default.Password = password;
 
                 Preferences.Default.Save();
+                
             }
+
+            AccountChanged?.Invoke(this, new AccountEventArgs(client));
 
             foreach (var control in controls)                           //re-enable controls
                 control.Enabled = true;

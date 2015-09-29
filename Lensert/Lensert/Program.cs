@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Lensert.Forms;
 
 namespace Lensert
 {
@@ -45,7 +44,7 @@ namespace Lensert
         {
             try
             {
-                var mutex = new Mutex(false, GenerateMutexName());
+                var mutex = new Mutex(false, MutexName());
                 return !mutex.WaitOne(TimeSpan.Zero, false);
             }
             catch
@@ -54,7 +53,7 @@ namespace Lensert
             }
         }
 
-        private static string GenerateMutexName() => $"Global\\{{{ResolveAssemblyGuid()}}}";
+        private static string MutexName() => $"Global\\{{{ResolveAssemblyGuid()}}}";
 
         private static string ResolveAssemblyGuid()
         {

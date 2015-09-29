@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Shortcut;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -8,32 +10,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Shortcut;
-using Lensert.Classes;
 
-namespace Lensert.Forms
+namespace Lensert
 {
     public partial class MainForm : Form
     {
-        public static HotkeyBinder HotkeyBinder;
-        public static LensertClient Client;
+        private readonly PreferencesForm _preferencesForm;
+        
+        private readonly HotkeyBinder _hotkeyBinder;
+        private LensertClient _client;
 
-        private readonly bool _hotkeyEnabled;
+        private IEnumerable<SettingsProperty> Settings => Preferences.Default.Properties.Cast<SettingsProperty>();
+
         public MainForm()
         {
-            HotkeyBinder = new HotkeyBinder();
-
-
-            Client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
-            Client.Login();
-            Client.StateHandler += (sender, args) => myImagesToolStripMenuItem.Visible = Client.IsAuthorized;
-            Application.ApplicationExit += (sender, e) => notifyIcon.Visible = false;
-
-
-            _hotkeyEnabled = true;
-
             InitializeComponent();
-            InitializeHotkeys();
+
+            _preferencesForm = new PreferencesForm();
+            _preferencesForm.AccountChanged += PreferencesForm_AccountChanged;
+            _preferencesForm.HotkeyChanged += PreferencesForm_HotkeyChanged;
+
+            _hotkeyBinder = new HotkeyBinder();
+            _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
+
         }
 
         protected override void SetVisibleCore(bool value)
@@ -41,60 +40,66 @@ namespace Lensert.Forms
             base.SetVisibleCore(false);
         }
 
-        void InitializeHotkeys()
-        { 
-            if (!HotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectFullscreen))
-                HotkeyBinder.Bind(Preferences.Default.HotkeySelectFullscreen).To(() => HotkeyHandler(ScreenshotType.Fullscreen));
+    private void PreferencesForm_HotkeyChanged(object sender, HotkeyEventArgs e)
+        {
+            _hotkeyBinder.Unbind(e.OldHotkey);
 
-            if (!HotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectArea))
-                HotkeyBinder.Bind(Preferences.Default.HotkeySelectArea).To(() => HotkeyHandler(ScreenshotType.Area));
+            InitializeHotkeys();
+        }
 
-            if (!HotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectCurrentWindow))
-                HotkeyBinder.Bind(Preferences.Default.HotkeySelectCurrentWindow).To(() => HotkeyHandler(ScreenshotType.CurrentWindow));
+        private void PreferencesForm_AccountChanged(object sender, AccountEventArgs e)
+        {
+            _client = e.LensertClient;
 
-            if (!HotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectWindow))
-                HotkeyBinder.Bind(Preferences.Default.HotkeySelectWindow).To(() => HotkeyHandler(ScreenshotType.SelectWindow));
-
-            if (!HotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeyClipboard))
-                HotkeyBinder.Bind(Preferences.Default.HotkeyClipboard).To(() => HotkeyHandler(ScreenshotType.Clipboard));
-
-
-            captureImageToolStripMenuItem.ShortcutKeyDisplayString = Preferences.Default.HotkeySelectArea.ToString().Replace(",", " +");
+            myImagesToolStripMenuItem.Visible = _client.LoggedIn;
         }
 
         private async void HotkeyHandler(ScreenshotType type)
         {
-            if (!_hotkeyEnabled)
-                return;
+            //if (!_hotkeyEnabled)
+            //    return;
 
             var screenshot = ScreenshotProvider.GetScreenshot(type);
             if (screenshot == null)
                 return;
 
-            var link = await Client.UploadImageAsync(screenshot);
+            var link = await _client.UploadImageAsync(screenshot);
 
             Console.WriteLine($"Got link '{link}'");
-            notifyIcon.ShowBalloonTip(500);
-            /*NotificationProvider.Show(link);*/
+            NotificationProvider.Show(link);
 
-            if (Preferences.Default.CopyToClipboard)                                                                                         
-                Clipboard.SetText(link);                                                                                                     
+            //if (Preferences.Default.CopyToClipboard)                                                                                         
+            //    Clipboard.SetText(link);                                                                                                     
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        void InitializeHotkeys()
         {
-            Application.Exit();
-        }
+            var hotkeySettings = Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
+            var items = hotkeySettings.Select(setting => new ListViewItem(new[] {
+                                                                                    setting.GetDescription(),
+                                                                                    setting.DefaultValue.ToString()
+                                                                                }));
+            
+            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectFullscreen))
+                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectFullscreen).To(() => HotkeyHandler(ScreenshotType.Fullscreen));
 
-        private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ShowPreferences();
+            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectArea))
+                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectArea).To(() => HotkeyHandler(ScreenshotType.Area));
+
+            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectCurrentWindow))
+                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectCurrentWindow).To(() => HotkeyHandler(ScreenshotType.CurrentWindow));
+
+            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectWindow))
+                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectWindow).To(() => HotkeyHandler(ScreenshotType.SelectWindow));
+
+            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeyClipboard))
+                _hotkeyBinder.Bind(Preferences.Default.HotkeyClipboard).To(() => HotkeyHandler(ScreenshotType.Clipboard));
         }
 
         private void myImagesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Client.IsAuthorized)
-                Process.Start($"http://lnsrt.me/user/{Client.Username}");
+            if (_client.LoggedIn)
+                Process.Start($"http://lnsrt.me/user/{_client.Username}");
         }
 
         private void captureImageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -102,20 +107,14 @@ namespace Lensert.Forms
             HotkeyHandler(ScreenshotType.Area);
         }
 
-        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowPreferences();
+            Application.Exit();
         }
 
-
-        private void ShowPreferences()
+        private void OpenPreferences_UI(object sender, EventArgs e)
         {
-             using (var frm = new PreferencesForm())
-            {
-                frm.ShowDialog();
-            }
-
-            InitializeHotkeys();
+            _preferencesForm.ShowDialog();
         }
     }
 }

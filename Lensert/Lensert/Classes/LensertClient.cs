@@ -19,38 +19,10 @@ namespace Lensert
         private readonly HttpClient _httpClient;
         private readonly JavaScriptSerializer _javaScriptSerializer;
 
-
-        private string _username, _password;
-        public string Username
-        {
-            get
-            {
-                return _username;
-            }
-            set
-            {
-                IsAuthorized = false;
-                _username = value;
-            }
-        }
-
-        public string Password
-        {
-            get
-            {
-                return _password;
-            }
-            set
-            {
-                IsAuthorized = false;
-                _password = value;
-            }
-        }
-
-        public bool IsAuthorized { get; private set; } = false;
-
-
-        public EventHandler StateHandler;
+        public string Username { get; }
+        public string Password { get; }
+        public bool LoggedIn { get; private set; }
+        
         public LensertClient(string username, string password)
         {
             Username = username;
@@ -80,16 +52,15 @@ namespace Lensert
                 {
                     Console.WriteLine("Logged in..!");
                     _httpClient.DefaultRequestHeaders.Add("X-Lensert-Token", token);
-                    IsAuthorized = true;
-                    StateHandler?.Invoke(this, EventArgs.Empty);
+
+                    LoggedIn = true;
                     return true;
                 }
             }
 
             multipartDataContent.Dispose();
-            IsAuthorized = false;
+
             Console.WriteLine("Not a valid login!");
-            StateHandler?.Invoke(this, EventArgs.Empty);
             return false;
         }
 

@@ -1,4 +1,7 @@
-﻿namespace Lensert.Forms
+﻿using System;
+using System.Windows.Forms;
+
+namespace Lensert
 {
     partial class MainForm
     {
@@ -46,10 +49,10 @@
             this.notifyIcon.BalloonTipText = "Click here to open the uploaded screenshot\r\non Lensert";
             this.notifyIcon.BalloonTipTitle = "Upload succesful!";
             this.notifyIcon.ContextMenuStrip = this.contextMenuStrip;
-            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Icon = (Properties.Resources.lensert_icon_fresh);
             this.notifyIcon.Text = "Lensert";
             this.notifyIcon.Visible = true;
-            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
+            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.OpenPreferences_UI);
             // 
             // contextMenuStrip
             // 
@@ -68,7 +71,7 @@
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
             this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.preferencesToolStripMenuItem.Text = "Preferences";
-            this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
+            this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.OpenPreferences_UI);
             // 
             // exitToolStripMenuItem
             // 
@@ -114,6 +117,8 @@
             this.ResumeLayout(false);
 
         }
+
+        
 
         #endregion
 
