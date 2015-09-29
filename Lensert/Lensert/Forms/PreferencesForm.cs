@@ -94,20 +94,21 @@ namespace Lensert
             var username = textboxUsername.Text;
             var password = textboxPassword.Text;
 
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-                return;                                                 //deny empty boxes :(
+            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+            {                                                           //deny empty boxes :(
 
-            var client = new LensertClient(username, password);
-            if (await client.Login())                                  //maybe give response if login failed?
-            {
-                Preferences.Default.Username = username;
-                Preferences.Default.Password = password;
+                var client = new LensertClient(username, password);
+                if (await client.Login())                               //maybe give response if login failed?
+                {
+                    Preferences.Default.Username = username;
+                    Preferences.Default.Password = password;
 
-                Preferences.Default.Save();
-                
+                    Preferences.Default.Save();
+
+                }
+
+                AccountChanged?.Invoke(this, new AccountEventArgs(client));
             }
-
-            AccountChanged?.Invoke(this, new AccountEventArgs(client));
 
             foreach (var control in controls)                           //re-enable controls
                 control.Enabled = true;

@@ -1,5 +1,4 @@
-﻿/*
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -8,7 +7,6 @@ using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Lensert.Forms;
 using Lensert.Properties;
 
 namespace Lensert
@@ -93,4 +91,3 @@ namespace Lensert
         }
     }
 }
-*/
