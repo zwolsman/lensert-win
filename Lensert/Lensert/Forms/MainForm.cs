@@ -66,7 +66,7 @@ namespace Lensert
             var link = await _client.UploadImageAsync(screenshot);
 
             Console.WriteLine($"Got link '{link}'");
-            NotificationProvider.Show(link);
+            //NotificationProvider.Show(link);
 
             //if (Preferences.Default.CopyToClipboard)                                                                                         
             //    Clipboard.SetText(link);                                                                                                     

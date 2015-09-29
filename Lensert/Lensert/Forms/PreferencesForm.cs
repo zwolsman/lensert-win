@@ -81,24 +81,28 @@ namespace Lensert
         private async void LoginHandler_UI(object sender, EventArgs e)
         {
             var keyEventArgs = e as KeyEventArgs;
-            if (keyEventArgs != null)                                   //fired by textbox
-            {                                                           //(if not it's the button click)
-                if (keyEventArgs.KeyCode != Keys.Enter)                 //check if enter is pressed
+            if (keyEventArgs != null) //fired by textbox
+            {
+                //(if not it's the button click)
+                if (keyEventArgs.KeyCode != Keys.Enter) //check if enter is pressed
                     return;
+                ((KeyEventArgs) e).SuppressKeyPress = true; //Stop the beeping from happening
+                ((KeyEventArgs) e).Handled = true; //Stop the beeping from happening
             }
 
-            var controls = new Control[] { textboxUsername, textboxPassword, buttonLogin };
+            var controls = new Control[] {textboxUsername, textboxPassword, buttonLogin};
             foreach (var control in controls)
-                control.Enabled = false;                                //disable controls, so can't be activated again
+                control.Enabled = false; //disable controls, so can't be activated again
 
             var username = textboxUsername.Text;
             var password = textboxPassword.Text;
 
             if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
-            {                                                           //deny empty boxes :(
+            {
+                //deny empty boxes :(
 
                 var client = new LensertClient(username, password);
-                if (await client.Login())                               //maybe give response if login failed?
+                if (await client.Login()) //maybe give response if login failed?
                 {
                     Preferences.Default.Username = username;
                     Preferences.Default.Password = password;
@@ -110,7 +114,7 @@ namespace Lensert
                 AccountChanged?.Invoke(this, new AccountEventArgs(client));
             }
 
-            foreach (var control in controls)                           //re-enable controls
+            foreach (var control in controls) //re-enable controls
                 control.Enabled = true;
         }
     }

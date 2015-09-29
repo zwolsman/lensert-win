@@ -11,6 +11,10 @@ namespace Lensert.Classes.Controls
 {
     class CueTextBox : TextBox
     {
+        public CueTextBox()
+        {
+            DoubleBuffered = true;
+        }
         [Localizable(true)]
         public string Cue
         {

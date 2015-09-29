@@ -101,10 +101,10 @@ namespace Lensert
             this.tabPage1.Controls.Add(this.comboboxLanguage);
             this.tabPage1.Controls.Add(this.cbNotify);
             this.tabPage1.Controls.Add(this.cbCopyLink);
-            this.tabPage1.Location = new System.Drawing.Point(4, 29);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(513, 179);
+            this.tabPage1.Size = new System.Drawing.Size(513, 186);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -114,7 +114,7 @@ namespace Lensert
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(6, 143);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(92, 20);
+            this.label4.Size = new System.Drawing.Size(62, 13);
             this.label4.TabIndex = 3;
             this.label4.Text = "Language";
             // 
@@ -126,7 +126,7 @@ namespace Lensert
             "English"});
             this.comboboxLanguage.Location = new System.Drawing.Point(9, 159);
             this.comboboxLanguage.Name = "comboboxLanguage";
-            this.comboboxLanguage.Size = new System.Drawing.Size(202, 28);
+            this.comboboxLanguage.Size = new System.Drawing.Size(202, 21);
             this.comboboxLanguage.TabIndex = 2;
             // 
             // cbNotify
@@ -134,7 +134,7 @@ namespace Lensert
             this.cbNotify.AutoSize = true;
             this.cbNotify.Location = new System.Drawing.Point(6, 29);
             this.cbNotify.Name = "cbNotify";
-            this.cbNotify.Size = new System.Drawing.Size(384, 24);
+            this.cbNotify.Size = new System.Drawing.Size(255, 17);
             this.cbNotify.TabIndex = 1;
             this.cbNotify.Text = "Show notification after succesfull upload";
             this.cbNotify.UseVisualStyleBackColor = true;
@@ -144,7 +144,7 @@ namespace Lensert
             this.cbCopyLink.AutoSize = true;
             this.cbCopyLink.Location = new System.Drawing.Point(6, 6);
             this.cbCopyLink.Name = "cbCopyLink";
-            this.cbCopyLink.Size = new System.Drawing.Size(436, 24);
+            this.cbCopyLink.Size = new System.Drawing.Size(290, 17);
             this.cbCopyLink.TabIndex = 0;
             this.cbCopyLink.Text = "Automatically copy link after succesfull upload";
             this.cbCopyLink.UseVisualStyleBackColor = true;
@@ -155,10 +155,10 @@ namespace Lensert
             this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Controls.Add(this.textboxHotkey);
             this.tabPage2.Controls.Add(this.listHotkeys);
-            this.tabPage2.Location = new System.Drawing.Point(4, 29);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(513, 179);
+            this.tabPage2.Size = new System.Drawing.Size(513, 186);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Hotkeys";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -178,7 +178,7 @@ namespace Lensert
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(6, 132);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(372, 20);
+            this.label5.Size = new System.Drawing.Size(249, 13);
             this.label5.TabIndex = 2;
             this.label5.Text = "Press (new) hotkey for selected command";
             // 
@@ -188,7 +188,7 @@ namespace Lensert
             this.textboxHotkey.Location = new System.Drawing.Point(9, 150);
             this.textboxHotkey.Name = "textboxHotkey";
             this.textboxHotkey.ReadOnly = true;
-            this.textboxHotkey.Size = new System.Drawing.Size(165, 28);
+            this.textboxHotkey.Size = new System.Drawing.Size(165, 21);
             this.textboxHotkey.TabIndex = 1;
             this.textboxHotkey.Text = "None";
             // 
@@ -225,10 +225,10 @@ namespace Lensert
             this.tabPage3.Controls.Add(this.linkLabel2);
             this.tabPage3.Controls.Add(this.pnlConnectFB);
             this.tabPage3.Controls.Add(this.pnlSignin);
-            this.tabPage3.Location = new System.Drawing.Point(4, 29);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(513, 179);
+            this.tabPage3.Size = new System.Drawing.Size(513, 186);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Account";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -252,7 +252,7 @@ namespace Lensert
             this.label3.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.label3.Location = new System.Drawing.Point(160, 155);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(147, 20);
+            this.label3.Size = new System.Drawing.Size(98, 13);
             this.label3.TabIndex = 9;
             this.label3.Text = "No account yet?";
             // 
@@ -264,7 +264,7 @@ namespace Lensert
             this.linkLabel2.LinkColor = System.Drawing.SystemColors.Highlight;
             this.linkLabel2.Location = new System.Drawing.Point(264, 155);
             this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(117, 20);
+            this.linkLabel2.Size = new System.Drawing.Size(77, 13);
             this.linkLabel2.TabIndex = 8;
             this.linkLabel2.TabStop = true;
             this.linkLabel2.Text = "Sign up now";
@@ -283,7 +283,7 @@ namespace Lensert
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(50, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(207, 40);
+            this.label2.Size = new System.Drawing.Size(138, 26);
             this.label2.TabIndex = 1;
             this.label2.Text = "Connect with Facebook\r\nfor easy access";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -317,7 +317,7 @@ namespace Lensert
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(52, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(210, 20);
+            this.label1.Size = new System.Drawing.Size(139, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Sign in to your account";
             // 
@@ -327,7 +327,7 @@ namespace Lensert
             this.linkLabel1.LinkColor = System.Drawing.SystemColors.Highlight;
             this.linkLabel1.Location = new System.Drawing.Point(124, 100);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(165, 20);
+            this.linkLabel1.Size = new System.Drawing.Size(111, 13);
             this.linkLabel1.TabIndex = 5;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "Request Password";
@@ -337,16 +337,16 @@ namespace Lensert
             this.textboxUsername.Cue = "Username";
             this.textboxUsername.Location = new System.Drawing.Point(7, 16);
             this.textboxUsername.Name = "textboxUsername";
-            this.textboxUsername.Size = new System.Drawing.Size(228, 28);
+            this.textboxUsername.Size = new System.Drawing.Size(228, 21);
             this.textboxUsername.TabIndex = 0;
-            this.textboxUsername.KeyUp += new System.Windows.Forms.KeyEventHandler(this.LoginHandler_UI);
+            this.textboxUsername.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LoginHandler_UI);
             // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(7, 99);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(162, 24);
+            this.checkBox1.Size = new System.Drawing.Size(111, 17);
             this.checkBox1.TabIndex = 4;
             this.checkBox1.Text = "Remember me";
             this.checkBox1.UseVisualStyleBackColor = true;
@@ -356,10 +356,10 @@ namespace Lensert
             this.textboxPassword.Cue = "Password";
             this.textboxPassword.Location = new System.Drawing.Point(7, 43);
             this.textboxPassword.Name = "textboxPassword";
-            this.textboxPassword.Size = new System.Drawing.Size(228, 28);
+            this.textboxPassword.Size = new System.Drawing.Size(228, 21);
             this.textboxPassword.TabIndex = 2;
             this.textboxPassword.UseSystemPasswordChar = true;
-            this.textboxPassword.KeyUp += new System.Windows.Forms.KeyEventHandler(this.LoginHandler_UI);
+            this.textboxPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LoginHandler_UI);
             // 
             // buttonLogin
             // 
@@ -384,7 +384,7 @@ namespace Lensert
             // 
             // PreferencesForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(549, 422);
             this.Controls.Add(this.buttonOk);
