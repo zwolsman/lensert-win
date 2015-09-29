@@ -42,6 +42,9 @@ namespace Lensert
             this.buttonAssign = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.textboxHotkey = new Shortcut.Forms.HotkeyTextBox();
+            this.listHotkeys = new Lensert.Classes.Controls.ExplorerListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabAccount = new System.Windows.Forms.TabPage();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -52,24 +55,21 @@ namespace Lensert
             this.pnlSignin = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.textboxUsername = new Lensert.Classes.Controls.CueTextBox();
             this.chRememberMe = new System.Windows.Forms.CheckBox();
+            this.textboxPassword = new Lensert.Classes.Controls.CueTextBox();
             this.buttonLogin = new System.Windows.Forms.Button();
             this.tabPersonal = new System.Windows.Forms.TabPage();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.buttonOk = new System.Windows.Forms.Button();
-            this.lblUsername = new System.Windows.Forms.Label();
-            this.lblDescription = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.listHotkeys = new Lensert.Classes.Controls.ExplorerListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.textboxUsername = new Lensert.Classes.Controls.CueTextBox();
-            this.textboxPassword = new Lensert.Classes.Controls.CueTextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.lblDescription = new System.Windows.Forms.Label();
+            this.lblUsername = new System.Windows.Forms.Label();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.buttonOk = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabGeneral.SuspendLayout();
@@ -205,6 +205,32 @@ namespace Lensert
             this.textboxHotkey.TabIndex = 1;
             this.textboxHotkey.Text = "None";
             // 
+            // listHotkeys
+            // 
+            this.listHotkeys.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+            this.listHotkeys.FullRowSelect = true;
+            this.listHotkeys.Location = new System.Drawing.Point(6, 6);
+            this.listHotkeys.MultiSelect = false;
+            this.listHotkeys.Name = "listHotkeys";
+            this.listHotkeys.Size = new System.Drawing.Size(501, 123);
+            this.listHotkeys.TabIndex = 0;
+            this.listHotkeys.UseCompatibleStateImageBehavior = false;
+            this.listHotkeys.View = System.Windows.Forms.View.Details;
+            this.listHotkeys.SelectedIndexChanged += new System.EventHandler(this.listHotkeys_SelectedIndexChanged);
+            this.listHotkeys.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listHotkeys_KeyDown);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Command";
+            this.columnHeader1.Width = 224;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Key";
+            this.columnHeader2.Width = 225;
+            // 
             // tabAccount
             // 
             this.tabAccount.Controls.Add(this.pictureBox2);
@@ -319,6 +345,15 @@ namespace Lensert
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "Request Password";
             // 
+            // textboxUsername
+            // 
+            this.textboxUsername.Cue = "Username";
+            this.textboxUsername.Location = new System.Drawing.Point(7, 16);
+            this.textboxUsername.Name = "textboxUsername";
+            this.textboxUsername.Size = new System.Drawing.Size(228, 21);
+            this.textboxUsername.TabIndex = 0;
+            this.textboxUsername.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LoginHandler_UI);
+            // 
             // chRememberMe
             // 
             this.chRememberMe.AutoSize = true;
@@ -328,6 +363,16 @@ namespace Lensert
             this.chRememberMe.TabIndex = 4;
             this.chRememberMe.Text = "Remember me";
             this.chRememberMe.UseVisualStyleBackColor = true;
+            // 
+            // textboxPassword
+            // 
+            this.textboxPassword.Cue = "Password";
+            this.textboxPassword.Location = new System.Drawing.Point(7, 43);
+            this.textboxPassword.Name = "textboxPassword";
+            this.textboxPassword.Size = new System.Drawing.Size(228, 21);
+            this.textboxPassword.TabIndex = 2;
+            this.textboxPassword.UseSystemPasswordChar = true;
+            this.textboxPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LoginHandler_UI);
             // 
             // buttonLogin
             // 
@@ -358,6 +403,82 @@ namespace Lensert
             this.tabPersonal.Text = "Personal";
             this.tabPersonal.UseVisualStyleBackColor = true;
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(346, 37);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(39, 13);
+            this.label12.TabIndex = 6;
+            this.label12.Text = "views";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(327, 37);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(23, 13);
+            this.label13.TabIndex = 5;
+            this.label13.Text = "1k";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(252, 37);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(66, 13);
+            this.label10.TabIndex = 6;
+            this.label10.Text = "comments";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(224, 37);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(31, 13);
+            this.label11.TabIndex = 5;
+            this.label11.Text = "215";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(167, 37);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(51, 13);
+            this.label9.TabIndex = 4;
+            this.label9.Text = "uploads";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(139, 37);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(31, 13);
+            this.label8.TabIndex = 3;
+            this.label8.Text = "116";
+            // 
+            // lblDescription
+            // 
+            this.lblDescription.AutoSize = true;
+            this.lblDescription.Location = new System.Drawing.Point(139, 24);
+            this.lblDescription.Name = "lblDescription";
+            this.lblDescription.Size = new System.Drawing.Size(180, 13);
+            this.lblDescription.TabIndex = 2;
+            this.lblDescription.Text = "Creater and owner of Lensert.";
+            // 
+            // lblUsername
+            // 
+            this.lblUsername.AutoSize = true;
+            this.lblUsername.Font = new System.Drawing.Font("Verdana", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblUsername.Location = new System.Drawing.Point(139, 6);
+            this.lblUsername.Name = "lblUsername";
+            this.lblUsername.Size = new System.Drawing.Size(52, 18);
+            this.lblUsername.TabIndex = 1;
+            this.lblUsername.Text = "murfz";
+            // 
             // pictureBox3
             // 
             this.pictureBox3.Image = global::Lensert.Properties.Resources.testpf;
@@ -379,127 +500,6 @@ namespace Lensert
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
-            // lblUsername
-            // 
-            this.lblUsername.AutoSize = true;
-            this.lblUsername.Font = new System.Drawing.Font("Verdana", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblUsername.Location = new System.Drawing.Point(139, 6);
-            this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(52, 18);
-            this.lblUsername.TabIndex = 1;
-            this.lblUsername.Text = "murfz";
-            // 
-            // lblDescription
-            // 
-            this.lblDescription.AutoSize = true;
-            this.lblDescription.Location = new System.Drawing.Point(139, 24);
-            this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(180, 13);
-            this.lblDescription.TabIndex = 2;
-            this.lblDescription.Text = "Creater and owner of Lensert.";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(139, 37);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(31, 13);
-            this.label8.TabIndex = 3;
-            this.label8.Text = "116";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(167, 37);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(51, 13);
-            this.label9.TabIndex = 4;
-            this.label9.Text = "uploads";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(252, 37);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(66, 13);
-            this.label10.TabIndex = 6;
-            this.label10.Text = "comments";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(224, 37);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(31, 13);
-            this.label11.TabIndex = 5;
-            this.label11.Text = "215";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(346, 37);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(39, 13);
-            this.label12.TabIndex = 6;
-            this.label12.Text = "views";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(327, 37);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(23, 13);
-            this.label13.TabIndex = 5;
-            this.label13.Text = "1k";
-            // 
-            // listHotkeys
-            // 
-            this.listHotkeys.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
-            this.listHotkeys.FullRowSelect = true;
-            this.listHotkeys.Location = new System.Drawing.Point(6, 6);
-            this.listHotkeys.MultiSelect = false;
-            this.listHotkeys.Name = "listHotkeys";
-            this.listHotkeys.Size = new System.Drawing.Size(501, 123);
-            this.listHotkeys.TabIndex = 0;
-            this.listHotkeys.UseCompatibleStateImageBehavior = false;
-            this.listHotkeys.View = System.Windows.Forms.View.Details;
-            this.listHotkeys.SelectedIndexChanged += new System.EventHandler(this.listHotkeys_SelectedIndexChanged);
-            this.listHotkeys.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listHotkeys_KeyDown);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Command";
-            this.columnHeader1.Width = 224;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Key";
-            this.columnHeader2.Width = 225;
-            // 
-            // textboxUsername
-            // 
-            this.textboxUsername.Cue = "Username";
-            this.textboxUsername.Location = new System.Drawing.Point(7, 16);
-            this.textboxUsername.Name = "textboxUsername";
-            this.textboxUsername.Size = new System.Drawing.Size(228, 21);
-            this.textboxUsername.TabIndex = 0;
-            this.textboxUsername.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LoginHandler_UI);
-            // 
-            // textboxPassword
-            // 
-            this.textboxPassword.Cue = "Password";
-            this.textboxPassword.Location = new System.Drawing.Point(7, 43);
-            this.textboxPassword.Name = "textboxPassword";
-            this.textboxPassword.Size = new System.Drawing.Size(228, 21);
-            this.textboxPassword.TabIndex = 2;
-            this.textboxPassword.UseSystemPasswordChar = true;
-            this.textboxPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LoginHandler_UI);
-            // 
             // PreferencesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
@@ -512,6 +512,7 @@ namespace Lensert
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "PreferencesForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Lensert - Preferences";
             this.Load += new System.EventHandler(this.PreferencesForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

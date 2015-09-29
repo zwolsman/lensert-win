@@ -20,7 +20,6 @@ namespace Lensert
         private readonly HotkeyBinder _hotkeyBinder;
         private LensertClient _client;
 
-        private IEnumerable<SettingsProperty> Settings => Preferences.Default.Properties.Cast<SettingsProperty>();
 
         public MainForm()
         {
@@ -33,6 +32,8 @@ namespace Lensert
             _hotkeyBinder = new HotkeyBinder();
             _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
 
+            if (Preferences.Default.RememberMe)
+                _client.Login();
         }
 
         protected override void SetVisibleCore(bool value)
@@ -66,10 +67,12 @@ namespace Lensert
             var link = await _client.UploadImageAsync(screenshot);
 
             Console.WriteLine($"Got link '{link}'");
-            //NotificationProvider.Show(link);
 
-            //if (Preferences.Default.CopyToClipboard)                                                                                         
-            //    Clipboard.SetText(link);                                                                                                     
+            if(Preferences.Default.ShowNotification)
+                NotificationProvider.Show(link);
+
+            if (Preferences.Default.CopyToClipboard)                                                                                         
+                Clipboard.SetText(link);                                                                                                     
         }
 
         void InitializeHotkeys()

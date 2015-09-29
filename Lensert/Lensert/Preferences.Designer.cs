@@ -154,5 +154,29 @@ namespace Lensert {
                 this["HotkeyClipboard"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool RememberMe {
+            get {
+                return ((bool)(this["RememberMe"]));
+            }
+            set {
+                this["RememberMe"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowNotification {
+            get {
+                return ((bool)(this["ShowNotification"]));
+            }
+            set {
+                this["ShowNotification"] = value;
+            }
+        }
     }
 }

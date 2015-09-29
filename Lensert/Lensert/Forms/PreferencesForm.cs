@@ -28,8 +28,23 @@ namespace Lensert
             
             InitializeComponent();
             InitializeHotkeys();
+            LoadPreferences();
         }
 
+        private void LoadPreferences()
+        {
+            chRememberMe.Checked = Preferences.Default.RememberMe;
+            cbCopyLink.Checked = Preferences.Default.CopyToClipboard;
+            cbNotify.Checked = Preferences.Default.ShowNotification;
+        }
+
+        private void SavePreferences()
+        {
+            Preferences.Default.RememberMe = chRememberMe.Checked;
+            Preferences.Default.CopyToClipboard = cbCopyLink.Checked;
+            Preferences.Default.ShowNotification = cbNotify.Checked;
+            Preferences.Default.Save();
+        }
 
         private void InitializeHotkeys()
         {
@@ -43,7 +58,7 @@ namespace Lensert
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            Preferences.Default.Save();
+            SavePreferences();
             Close();
         }
 
@@ -129,6 +144,11 @@ namespace Lensert
 
             foreach (var control in controls) //re-enable controls
                 control.Enabled = true;
+        }
+
+        private void LoginHandler_UI(object sender, KeyEventArgs e)
+        {
+
         }
     }
 }
