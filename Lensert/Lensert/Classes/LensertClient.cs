@@ -12,7 +12,7 @@ using System.Web.Script.Serialization;
 
 namespace Lensert
 {
-    class LensertClient
+    public class LensertClient
     {
         private const string API_URL = "http://lensert.com/api/v2/";
 
@@ -21,6 +21,7 @@ namespace Lensert
 
         public string Username { get; }
         public string Password { get; }
+        public bool LoggedIn { get; private set; }
         
         public LensertClient(string username, string password)
         {
@@ -52,7 +53,7 @@ namespace Lensert
                     Console.WriteLine("Logged in..!");
                     _httpClient.DefaultRequestHeaders.Add("X-Lensert-Token", token);
 
-                    //LoggedIn?.Invoke(this, EventArgs.Empty);
+                    LoggedIn = true;
                     return true;
                 }
             }

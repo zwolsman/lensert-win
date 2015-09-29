@@ -18,68 +18,15 @@ namespace Lensert
     public partial class PreferencesForm : Form
     {
         private readonly HotkeyConverter _hotkeyConverter;
-        private readonly HotkeyBinder _hotkeyBinder;
-        private LensertClient _client;
 
-        private bool _hotkeyEnabled;
-
-        private IEnumerable<SettingsProperty> Settings => Preferences.Default.Properties.Cast<SettingsProperty>();
-
+        public event EventHandler<AccountEventArgs> AccountChanged;
+        public event EventHandler<HotkeyEventArgs> HotkeyChanged;
+        
         public PreferencesForm()
         {
             _hotkeyConverter = new HotkeyConverter();
-            _hotkeyBinder = new HotkeyBinder();
-            _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
-
-            _hotkeyEnabled = true;
             
             InitializeComponent();
-            InitializeHotkeys();
-        }
-
-        private async void HotkeyHandler(ScreenshotType type)
-        {
-            if (!_hotkeyEnabled)
-                return;
-
-            var screenshot = ScreenshotProvider.GetScreenshot(type);
-            if (screenshot == null)
-                return;
-
-            var link = await _client.UploadImageAsync(screenshot);
-
-            Console.WriteLine($"Got link '{link}'");
-            NotificationProvider.Show(link);
-
-            //if (Preferences.Default.CopyToClipboard)                                                                                         
-            //    Clipboard.SetText(link);                                                                                                     
-        }
-        
-        void InitializeHotkeys()
-        {
-            var hotkeySettings = Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
-            var items = hotkeySettings.Select(setting => new ListViewItem(new[] {
-                                                                                    setting.GetDescription(),
-                                                                                    setting.DefaultValue.ToString()
-                                                                                }));
-
-            listHotkeys.Items.Clear();
-            listHotkeys.Items.AddRange(items.ToArray());
-
-            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectFullscreen))
-                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectFullscreen).To(() => HotkeyHandler(ScreenshotType.Fullscreen));
-
-            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectArea))
-                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectArea).To(() => HotkeyHandler(ScreenshotType.Area));
-
-            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectCurrentWindow))
-                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectCurrentWindow).To(() => HotkeyHandler(ScreenshotType.CurrentWindow));
-
-            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeySelectWindow))
-                _hotkeyBinder.Bind(Preferences.Default.HotkeySelectWindow).To(() => HotkeyHandler(ScreenshotType.SelectWindow));
-
-            if (!_hotkeyBinder.IsHotkeyAlreadyBound(Preferences.Default.HotkeyClipboard))
-                _hotkeyBinder.Bind(Preferences.Default.HotkeyClipboard).To(() => HotkeyHandler(ScreenshotType.Clipboard));
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -115,17 +62,15 @@ namespace Lensert
                 return;
 
             var oldHotkey = (Hotkey)_hotkeyConverter.ConvertFromString(selectedItem.SubItems[1].Text);
-            var hotkey = textboxHotkey.Hotkey;
+            var newHotkey = textboxHotkey.Hotkey;
 
-            if (oldHotkey == hotkey)                                //don't bother to rebind same hotkey
+            if (oldHotkey == newHotkey)                                //don't bother to rebind same hotkey
                 return;
-
-            _hotkeyBinder.Unbind(oldHotkey);
             
-            var settingName = Util.GetPropertySettingName(selectedItem.Text);
-            Preferences.Default[settingName] = hotkey;              //saves hotkey
+            var settingName = Utils.GetPropertySettingName(selectedItem.Text);
+            Preferences.Default[settingName] = newHotkey;              //saves hotkey
 
-            InitializeHotkeys();                                    //rebinds if needed
+            HotkeyChanged?.Invoke(this, new HotkeyEventArgs(oldHotkey, newHotkey));
         }
 
         private void listHotkeys_KeyDown(object sender, KeyEventArgs e)
@@ -152,14 +97,17 @@ namespace Lensert
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return;                                                 //deny empty boxes :(
 
-            _client = new LensertClient(username, password);
-            if (await _client.Login())                                  //maybe give response if login failed?
+            var client = new LensertClient(username, password);
+            if (await client.Login())                                  //maybe give response if login failed?
             {
                 Preferences.Default.Username = username;
                 Preferences.Default.Password = password;
 
                 Preferences.Default.Save();
+                
             }
+
+            AccountChanged?.Invoke(this, new AccountEventArgs(client));
 
             foreach (var control in controls)                           //re-enable controls
                 control.Enabled = true;

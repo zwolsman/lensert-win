@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lensert
 {
-    static class Util
+    static class Utils
     {
         private static Dictionary<string, string> _descriptions = new Dictionary<string, string>
         {
@@ -15,7 +15,7 @@ namespace Lensert
             [nameof(Preferences.HotkeySelectArea)] = "Take screenshot of selected area",
             [nameof(Preferences.HotkeySelectCurrentWindow)] = "Take screenshot of current window",
             [nameof(Preferences.HotkeySelectFullscreen)] = "Take screenshot of all screens",
-            [nameof(Preferences.HotkeySelectWindow)] = "Take screenshot of current window"
+            [nameof(Preferences.HotkeySelectWindow)] = "Take screenshot of a specific window"
         };
 
         public static string GetDescription(this SettingsProperty setting)              //maybe use ContainsKey and [] ? (performance wise)

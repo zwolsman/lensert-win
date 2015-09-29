@@ -37,14 +37,14 @@ namespace Lensert
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new PreferencesForm());
+            Application.Run(new MainForm());
         }
 
         private static bool IsInstanceRunning()
         {
             try
             {
-                var mutex = new Mutex(false, GenerateMutexName());
+                var mutex = new Mutex(false, MutexName());
                 return !mutex.WaitOne(TimeSpan.Zero, false);
             }
             catch
@@ -53,7 +53,7 @@ namespace Lensert
             }
         }
 
-        private static string GenerateMutexName() => string.Format("Global\\{{{0}}}", ResolveAssemblyGuid());
+        private static string MutexName() => $"Global\\{{{ResolveAssemblyGuid()}}}";
 
         private static string ResolveAssemblyGuid()
         {
