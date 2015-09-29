@@ -41,7 +41,7 @@ namespace Lensert
             base.SetVisibleCore(false);
         }
 
-    private void PreferencesForm_HotkeyChanged(object sender, HotkeyEventArgs e)
+        private void PreferencesForm_HotkeyChanged(object sender, HotkeyEventArgs e)
         {
             _hotkeyBinder.Unbind(e.OldHotkey);
 
