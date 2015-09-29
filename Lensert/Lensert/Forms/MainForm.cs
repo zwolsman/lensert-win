@@ -25,6 +25,7 @@ namespace Lensert.Forms
 
 
             Client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
+            Client.Login();
             Client.StateHandler += (sender, args) => myImagesToolStripMenuItem.Visible = Client.IsAuthorized;
             Application.ApplicationExit += (sender, e) => notifyIcon.Visible = false;
 
