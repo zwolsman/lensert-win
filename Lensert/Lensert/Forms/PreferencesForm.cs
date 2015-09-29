@@ -17,15 +17,11 @@ namespace Lensert
     //https://code.google.com/p/gettext-cs-utils/
     public partial class PreferencesForm : Form
     {
-        private readonly HotkeyConverter _hotkeyConverter;
-
         public event EventHandler<AccountEventArgs> AccountChanged;
         public event EventHandler<HotkeyEventArgs> HotkeyChanged;
         
         public PreferencesForm()
         {
-            _hotkeyConverter = new HotkeyConverter();
-            
             InitializeComponent();
         }
 
@@ -38,6 +34,15 @@ namespace Lensert
         private void PreferencesForm_Load(object sender, EventArgs e)
         {
             comboboxLanguage.SelectedIndex = 0;
+
+            var hotkeySettings = Utils.Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
+            var items = hotkeySettings.Select(setting => new ListViewItem(new[] {
+                                                                                    setting.GetDescription(),
+                                                                                    setting.DefaultValue.ToString()
+                                                                                }));
+
+            listHotkeys.Items.Clear();
+            listHotkeys.Items.AddRange(items.ToArray());
         }
 
         private void listHotkeys_SelectedIndexChanged(object sender, EventArgs e)
@@ -49,7 +54,7 @@ namespace Lensert
             if (string.IsNullOrEmpty(hotkey))
                 return;
             
-            textboxHotkey.Hotkey = (Hotkey)_hotkeyConverter.ConvertFromString(hotkey);
+            textboxHotkey.Hotkey = Utils.ConvertToHotkey(hotkey);
         }
 
         private void buttonAssign_Click(object sender, EventArgs e)
@@ -61,7 +66,7 @@ namespace Lensert
             if (selectedItem == null)
                 return;
 
-            var oldHotkey = (Hotkey)_hotkeyConverter.ConvertFromString(selectedItem.SubItems[1].Text);
+            var oldHotkey = Utils.ConvertToHotkey(selectedItem.SubItems[1].Text);
             var newHotkey = textboxHotkey.Hotkey;
 
             if (oldHotkey == newHotkey)                                //don't bother to rebind same hotkey

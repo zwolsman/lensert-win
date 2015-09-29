@@ -31,6 +31,9 @@ namespace Lensert
             [Preferences.Default.HotkeySelectWindow] = ScreenshotType.SelectWindow
         };
 
+        public static IEnumerable<SettingsProperty> Settings 
+            => Preferences.Default.Properties.Cast<SettingsProperty>();  //not sure if best place..
+
         public static ScreenshotType GetScreenshotType(this Hotkey hotkey) =>
             _screenshotTypes[hotkey];
 

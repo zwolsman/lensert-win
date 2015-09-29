@@ -20,7 +20,7 @@ namespace Lensert
         private readonly HotkeyBinder _hotkeyBinder;
         private LensertClient _client;
 
-        private IEnumerable<SettingsProperty> Settings => Preferences.Default.Properties.Cast<SettingsProperty>();
+        
 
         public MainForm()
         {
@@ -83,13 +83,9 @@ namespace Lensert
 
         void InitializeHotkeys()
         {
-            var hotkeySettings = Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
-            var items = hotkeySettings.Select(setting => new ListViewItem(new[] {
-                                                                                    setting.GetDescription(),
-                                                                                    setting.DefaultValue.ToString()
-                                                                                }));
-
+            var hotkeySettings = Utils.Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
             var hotkeys = hotkeySettings.Select(setting => (string)setting.DefaultValue).Select(Utils.ConvertToHotkey);
+
             foreach (var hotkey in hotkeys)
                 _hotkeyBinder.Bind(hotkey, OnHotkeyPressed);
         }
