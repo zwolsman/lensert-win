@@ -59,11 +59,13 @@ namespace Shortcut.Forms
             Text = Hotkey.Key.ToString();
         }
 
-        // TODO: I feel as though there should be a clever way to do this using a binary operator.
-        private static bool IsModifier(Keys keys) 
-            => keys == Keys.ControlKey ||
-               keys == Keys.Menu ||
-               keys == Keys.ShiftKey;
+        private static bool IsModifier(Keys keys)
+        {
+            // TODO: I feel as though there should be a clever way to do this using a binary operator.
+            return keys == Keys.ControlKey || 
+                   keys == Keys.Menu || 
+                   keys == Keys.ShiftKey;
+        }
 
         private void Reset()
         {
