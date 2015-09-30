@@ -15,9 +15,8 @@ namespace Lensert
     {
         private const int DIMENSION_TEXT_OFFSET = 2; //TODO: Refactor into settings
 
-        private readonly SolidBrush _transparantBrush, _textBrush;
+        private readonly SolidBrush _rectangleBrush, _textBrush;
         private readonly Pen _rectanglePen;
-        internal IEnumerable<Rectangle> testRectangles;
 
         public Rectangle SelectedArea { get; set; }
 
@@ -25,12 +24,9 @@ namespace Lensert
         {
             InitializeComponent();
             Bounds = SystemInformation.VirtualScreen;
-
-            SetStyle(ControlStyles.Opaque, true);
-
+            
             _textBrush = new SolidBrush(Preferences.Default.SelectionRectangleColor);
-            _transparantBrush = new SolidBrush(Color.Cyan);                          //This is actually a bug where the transparancykey with the Red does register the mous input 
-            TransparencyKey = Color.Cyan;
+            _rectangleBrush = new SolidBrush(Color.FromArgb(50, Color.Gray));       //This is actually a bug where the transparancykey with the Red does register the mous input 
             _rectanglePen = new Pen(Preferences.Default.SelectionRectangleColor);   //(fyi, with any other color the mouse would click through it)
         }
         
@@ -42,6 +38,40 @@ namespace Lensert
         private void SelectionForm_MouseUp(object sender, MouseEventArgs e)
         {
             Close();
+        }
+
+        private Rectangle[] SplitRectangle(Rectangle source, Rectangle toRemove)
+        {
+            // The left rectangle is from the topleft to the left of the removed rectangle
+            // thus the overlap of bottom/top part with right/left part rectangles are calculated in
+            // the left and right rectangle.
+            // This is done because it won't calculate any overlap :)
+
+            var rectangleLeft = new Rectangle(
+                source.X,
+                source.Y,
+                toRemove.X,
+                source.Height);
+
+            var rectangleRight = new Rectangle(
+                toRemove.Right,
+                source.Y,
+                source.Right - toRemove.Right,
+                source.Height);
+
+            var rectangleTop = new Rectangle(
+                toRemove.X,
+                source.Y,
+                toRemove.Width,
+                toRemove.Y);
+
+            var rectangleBottom = new Rectangle(
+                toRemove.X,
+                toRemove.Bottom,
+                toRemove.Width,
+                source.Bottom - toRemove.Bottom);
+
+            return new[] { rectangleLeft, rectangleTop, rectangleRight, rectangleBottom };
         }
 
         private void SelectionForm_KeyDown(object sender, KeyEventArgs e)
@@ -60,8 +90,11 @@ namespace Lensert
 
 
             Rectangle currentScreenBounds = Screen.FromPoint(MousePosition).Bounds;
+
+            var rectangles = SplitRectangle(Bounds, SelectedArea);
+            foreach (var rectangle in rectangles)
+                e.Graphics.FillRectangle(_rectangleBrush, rectangle);                  
             
-            e.Graphics.FillRectangle(_transparantBrush, SelectedArea);                  //makes transparant region
             e.Graphics.DrawRectangle(_rectanglePen, SelectedArea);                      //Draw the border
 
             var dimension = $"{SelectedArea.Width}x{SelectedArea.Height}";

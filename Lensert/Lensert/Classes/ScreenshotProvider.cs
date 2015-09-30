@@ -80,6 +80,7 @@ namespace Lensert
             if (_selectionForm.Visible)
                 return Rectangle.Empty;
 
+            _selectionForm.BackgroundImage = NativeHelper.TakeScreenshot(GetArea(ScreenshotType.Fullscreen));
             _selectionForm.ShowDialog();
             return _selectionForm.SelectedArea;
         }
@@ -90,7 +91,7 @@ namespace Lensert
                 return Rectangle.Empty;
 
             _rectangles = NativeHelper.GetWindowDimensions();
-            _windowForm.testRectangles = _rectangles;
+            _windowForm.BackgroundImage = NativeHelper.TakeScreenshot(GetArea(ScreenshotType.Fullscreen));
             _windowForm.ShowDialog();
             
             return _windowForm.SelectedArea;
