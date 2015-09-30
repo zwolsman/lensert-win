@@ -95,6 +95,9 @@
     <Compile Include="Classes\ScreenshotProvider.cs" />
     <Compile Include="Classes\ScreenshotType.cs" />
     <Compile Include="Classes\NativeHelper.cs" />
+    <EmbeddedResource Include="Forms\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\PreferencesForm.resx">
       <DependentUpon>PreferencesForm.cs</DependentUpon>
     </EmbeddedResource>

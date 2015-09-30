@@ -32,10 +32,6 @@ namespace Lensert
 
             _hotkeyBinder = new HotkeyBinder();
             _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
-
-            if (Preferences.Default.RememberMe)
-                _client.Login();
-            InitializeHotkeys();
         }
 
         protected override void SetVisibleCore(bool value)
@@ -43,7 +39,7 @@ namespace Lensert
             base.SetVisibleCore(false);
         }
 
-    private void PreferencesForm_HotkeyChanged(object sender, HotkeyEventArgs e)
+        private void PreferencesForm_HotkeyChanged(object sender, HotkeyEventArgs e)
         {
             _hotkeyBinder.Unbind(e.OldHotkey);
 
@@ -89,8 +85,9 @@ namespace Lensert
             var hotkeySettings = Utils.Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
             var hotkeys = hotkeySettings.Select(setting => (string)setting.DefaultValue).Select(Utils.ConvertToHotkey);
             
-            foreach (var hotkey in hotkeys)
+            foreach (var hotkey in hotkeys.Where(hotkey => !_hotkeyBinder.IsHotkeyAlreadyBound(hotkey)))
                 _hotkeyBinder.Bind(hotkey, OnHotkeyPressed);
+
         }
 
         private void myImagesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -113,6 +110,14 @@ namespace Lensert
         {
             if (!_preferencesForm.Visible)
             _preferencesForm.ShowDialog();
+        }
+
+        private async void MainForm_Load(object sender, EventArgs e)
+        {
+            InitializeHotkeys();
+
+            if (Preferences.Default.RememberMe)
+                await _client.Login();
         }
     }
 }
