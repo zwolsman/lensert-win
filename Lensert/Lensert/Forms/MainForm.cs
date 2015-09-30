@@ -32,6 +32,11 @@ namespace Lensert
 
             _hotkeyBinder = new HotkeyBinder();
             _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
+
+            InitializeHotkeys();
+
+            if (Preferences.Default.RememberMe)
+                _client.Login();
         }
 
         protected override void SetVisibleCore(bool value)
@@ -114,10 +119,7 @@ namespace Lensert
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
-            InitializeHotkeys();
-
-            if (Preferences.Default.RememberMe)
-                await _client.Login();
+            
         }
     }
 }
