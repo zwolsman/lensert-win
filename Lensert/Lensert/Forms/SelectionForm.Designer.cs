@@ -43,7 +43,6 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "SelectionForm";
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.SelectionForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.SelectionForm_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SelectionForm_KeyDown);
