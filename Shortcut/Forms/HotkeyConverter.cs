@@ -51,10 +51,8 @@ namespace Shortcut.Forms
             return base.ConvertFrom(context, culture, value);
         }
 
-        private static Keys ExtractNonMods(Keys keys)
-        {
-            // Brian: Extract non-modifiers from the low word of keys
-            return (Keys)((int)keys & 0x0000FFFF);
-        }
+        // Brian: Extract non-modifiers from the low word of keys
+        private static Keys ExtractNonMods(Keys keys) 
+            => (Keys)((int)keys & 0x0000FFFF);
     }
 }

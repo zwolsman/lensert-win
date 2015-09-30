@@ -13,13 +13,13 @@ namespace Lensert
 {
     static class NotificationProvider
     {
-        private static readonly NotifyIcon _notifyIcon;
-
         private static string _link;
+
+        public static NotifyIcon NotifyIcon { get; }
 
         static NotificationProvider()
         {
-            _notifyIcon = new NotifyIcon
+            NotifyIcon = new NotifyIcon
             {
                 BalloonTipText = "Click here to open uploaded screenshot.",
                 BalloonTipTitle = "Upload succesful!",
@@ -30,8 +30,8 @@ namespace Lensert
             };
 
 
-            _notifyIcon.BalloonTipClicked += OnBalloonClicked;
-            _notifyIcon.DoubleClick += showPreferencesForm;
+            NotifyIcon.BalloonTipClicked += OnBalloonClicked;
+            NotifyIcon.DoubleClick += showPreferencesForm;
 
 
             var trayIconContextMenu = new ContextMenuStrip();
@@ -63,12 +63,12 @@ namespace Lensert
             preferencesMenuItem.Click += new EventHandler(showPreferencesForm);
 
             trayIconContextMenu.ResumeLayout(false);
-            _notifyIcon.ContextMenuStrip = trayIconContextMenu;
+            NotifyIcon.ContextMenuStrip = trayIconContextMenu;
         }
 
         private static void CloseMenuItem_Click(object sender, EventArgs e)
         {
-            _notifyIcon.Visible = false;
+            NotifyIcon.Visible = false;
             Application.Exit();
         }
 
@@ -87,7 +87,7 @@ namespace Lensert
         public static void Show(string link)
         {
             _link = link;
-            _notifyIcon.ShowBalloonTip(500);
+            NotifyIcon.ShowBalloonTip(500);
         }
     }
 }

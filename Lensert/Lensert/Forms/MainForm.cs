@@ -26,6 +26,9 @@ namespace Lensert
         {
             InitializeComponent();
 
+            
+            components.Add(NotificationProvider.NotifyIcon);
+            
             _preferencesForm = new PreferencesForm();
             _preferencesForm.AccountChanged += PreferencesForm_AccountChanged;
             _preferencesForm.HotkeyChanged += PreferencesForm_HotkeyChanged;

@@ -17,12 +17,12 @@ namespace Shortcut
         /// <summary>
         /// The modifer keys that constitute this <see cref="Hotkey"/>.
         /// </summary>
-        public Modifiers Modifier { get; private set; }
+        public Modifiers Modifier { get; }
 
         /// <summary>
         /// The keys that constitute this <see cref="Hotkey"/>.
         /// </summary>
-        public Keys Key { get; private set; }
+        public Keys Key { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Hotkey"/> class.
