@@ -118,7 +118,6 @@ namespace Lensert
                                                    Math.Abs(_drawStart.Y - _drawEnd.Y));
 
             _selectionForm.SelectedArea = selectionRectangle;
-            //_selectionForm.Invalidate();
         }
 
         private static void WindowForm_MouseMove(object sender, MouseEventArgs e)
@@ -128,7 +127,6 @@ namespace Lensert
                 return;
 
             _windowForm.SelectedArea = selectedRectangle;
-            _windowForm.Invalidate();
         }
     }
 }
