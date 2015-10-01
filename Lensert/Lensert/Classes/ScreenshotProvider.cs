@@ -91,7 +91,7 @@ namespace Lensert
                 return Rectangle.Empty;
 
             _rectangles = NativeHelper.GetWindowDimensions();
-            _windowForm.BackgroundImage = NativeHelper.TakeScreenshot(GetArea(ScreenshotType.Fullscreen));
+            _windowForm.Screenshot = NativeHelper.TakeScreenshot(GetArea(ScreenshotType.Fullscreen));
             _windowForm.ShowDialog();
             
             return _windowForm.SelectedArea;

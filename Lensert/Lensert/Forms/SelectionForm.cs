@@ -66,7 +66,7 @@ namespace Lensert
             DoubleBuffered = true;
             
             _textBrush = new SolidBrush(Preferences.Default.SelectionRectangleColor);
-            _rectangleBrush = new SolidBrush(Color.FromArgb(50, Color.Gray));       //This is actually a bug where the transparancykey with the Red does register the mous input 
+            _rectangleBrush = new SolidBrush(Color.FromArgb(120, Color.White));       //This is actually a bug where the transparancykey with the Red does register the mous input 
             _rectanglePen = new Pen(Preferences.Default.SelectionRectangleColor);   //(fyi, with any other color the mouse would click through it)
         }
 
@@ -81,42 +81,42 @@ namespace Lensert
             Close();
         }
 
-        private Rectangle[] SplitRectangle(Rectangle source, Rectangle toRemove)
-        {
-            // The left rectangle is from the topleft to the left of the removed rectangle
-            // thus the overlap of bottom/top part with right/left part rectangles are calculated in
-            // the left and right rectangle.
-            // This is done because it won't calculate any overlap :)
+        //private Rectangle[] SplitRectangle(Rectangle source, Rectangle toRemove)
+        //{
+        //    // The left rectangle is from the topleft to the left of the removed rectangle
+        //    // thus the overlap of bottom/top part with right/left part rectangles are calculated in
+        //    // the left and right rectangle.
+        //    // This is done because it won't calculate any overlap :)
 
-            if (!source.IntersectsWith(toRemove))
-                return new Rectangle[0];
+        //    if (!source.IntersectsWith(toRemove))
+        //        return new Rectangle[0];
 
-            var rectangleLeft = new Rectangle(
-                source.X,
-                source.Y,
-                toRemove.X - source.X,
-                source.Height);
+        //    var rectangleLeft = new Rectangle(
+        //        source.X,
+        //        source.Y,
+        //        toRemove.X - source.X,
+        //        source.Height);
 
-            var rectangleRight = new Rectangle(
-                toRemove.Right,
-                source.Y,
-                Math.Abs(source.Right - toRemove.Right),
-                source.Height);
+        //    var rectangleRight = new Rectangle(
+        //        toRemove.Right,
+        //        source.Y,
+        //        Math.Abs(source.Right - toRemove.Right),
+        //        source.Height);
 
-            var rectangleTop = new Rectangle(
-                toRemove.X,
-                source.Y,
-                toRemove.Width,
-                toRemove.Y - source.Y);
+        //    var rectangleTop = new Rectangle(
+        //        toRemove.X,
+        //        source.Y,
+        //        toRemove.Width,
+        //        toRemove.Y - source.Y);
 
-            var rectangleBottom = new Rectangle(
-                toRemove.X,
-                toRemove.Bottom,
-                toRemove.Width,
-                Math.Abs(source.Bottom - toRemove.Bottom));
+        //    var rectangleBottom = new Rectangle(
+        //        toRemove.X,
+        //        toRemove.Bottom,
+        //        toRemove.Width,
+        //        Math.Abs(source.Bottom - toRemove.Bottom));
 
-            return new[] { rectangleLeft, rectangleTop, rectangleRight, rectangleBottom };
-        }
+        //    return new[] { rectangleLeft, rectangleTop, rectangleRight, rectangleBottom };
+        //}
 
         private void SelectionForm_KeyDown(object sender, KeyEventArgs e)
         {
@@ -129,26 +129,30 @@ namespace Lensert
 
         private void SelectionForm_Paint(object sender, PaintEventArgs e)
         {
-            var sw = Stopwatch.StartNew();
-            
             e.Graphics.DrawImage(_shadedScreenshot, Bounds);
             e.Graphics.DrawImage(_cleanScreenshot, _selectedArea, _selectedArea, GraphicsUnit.Pixel);
-            
-            e.Graphics.DrawRectangle(_rectanglePen, _selectedArea);                      //Draw the border
+
+            var borderRectangle = _selectedArea;
+
+            var deltaRight = borderRectangle.Right - Bounds.Right;
+            borderRectangle.Width -= deltaRight == 0 ? 1 : deltaRight;
+
+            var deltaBottom = borderRectangle.Bottom - Bounds.Bottom;
+            borderRectangle.Height -= deltaBottom == 0 ? 1 : deltaBottom;               //compensates for out of bounds (only visually, 
+                                                                                        //screenshot does reach till the end and beyond)
+            e.Graphics.DrawRectangle(_rectanglePen, borderRectangle);                   //Draw the border
 
             var dimension = $"{_selectedArea.Width}x{_selectedArea.Height}";
             var size = e.Graphics.MeasureString(dimension, Font);                       //generates dimension string
 
-            float y = _selectedArea.Y + _selectedArea.Height + DIMENSION_TEXT_OFFSET;     //spaces the dimension text right bottom corner
-            float x = _selectedArea.X + _selectedArea.Width - size.Width;                 //calculates the x_pos of the dimension 
+            float y = _selectedArea.Y + _selectedArea.Height + DIMENSION_TEXT_OFFSET;   //spaces the dimension text right bottom corner
+            float x = _selectedArea.X + _selectedArea.Width - size.Width;               //calculates the x_pos of the dimension 
 
             var currentScreenBounds = Screen.FromPoint(MousePosition).Bounds;
             if (y + size.Height > currentScreenBounds.Height)
                 y -= size.Height + DIMENSION_TEXT_OFFSET * 2;
 
-            e.Graphics.DrawString(dimension, Font, _textBrush, x, y);                   //draws string
-
-            Console.WriteLine(sw.ElapsedMilliseconds);
+            e.Graphics.DrawString(dimension, Font, _textBrush, x, y);                    //draws string
         }
     }
 }

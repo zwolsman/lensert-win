@@ -68,9 +68,6 @@ namespace Lensert
 
         private async Task<string> ScreenshotHandler(ScreenshotType type)
         {
-            //if (!_hotkeyEnabled)
-            //    return;
-
             var screenshot = ScreenshotProvider.GetScreenshot(type);
             if (screenshot == null)
                 return null;

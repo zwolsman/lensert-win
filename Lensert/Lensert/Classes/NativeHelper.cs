@@ -78,10 +78,16 @@ namespace Lensert
         [DllImport("dwmapi.dll")]
         private static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out RECT pvAttribute, int cbAttribute);
 
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+        
+
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, string lp);
+
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+
         [DllImport("uxtheme", CharSet = CharSet.Unicode)]
         public extern static int SetWindowTheme(IntPtr hWnd, string textSubAppName, string textSubIdList);
 
@@ -99,15 +105,14 @@ namespace Lensert
             return GetWindowRectangle(handle);
         }
 
-        public static void CopyToBitmap(Bitmap destination, Bitmap source, Rectangle rectangle)
+        public static string GetClassName(IntPtr hWnd)
         {
-            var handleSource = source.GetHbitmap();
-            var handleDestination = destination.GetHbitmap();
+            var sb = new StringBuilder(256);
+            GetClassName(hWnd, sb, sb.Capacity);
 
-            BitBlt(handleDestination, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, handleSource, rectangle.X, rectangle.Y, CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt);
-
+            return sb.ToString();
         }
-
+        
         public static Bitmap TakeScreenshot(Rectangle area)
         {
             var handleDesktopWindow = GetDesktopWindow();
@@ -133,9 +138,9 @@ namespace Lensert
 
             EnumWindows((handle, lparam) =>
             {
-                if (!IsWindow(handle) || !IsWindowVisible(handle) || GetWindowTextLength(handle) < 1)
+                if (GetClassName(handle) != "Shell_TrayWnd" && (!IsWindow(handle) || !IsWindowVisible(handle)))
                     return true;
-
+                
                 var rectangle = GetWindowRectangle(handle);
                 list.Add(rectangle);
 
