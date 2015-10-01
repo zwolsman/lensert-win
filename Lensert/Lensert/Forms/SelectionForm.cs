@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace Lensert
 {
-    public partial class SelectionForm : Form
+    public sealed partial class SelectionForm : Form
     {
         private const int DIMENSION_TEXT_OFFSET = 2; //TODO: Refactor into settings
 
@@ -22,7 +22,23 @@ namespace Lensert
 
         private Rectangle _oldSelectedArea, _selectedArea;
 
-        private Timer timer = new Timer();
+        private Bitmap _shadedScreenshot, _cleanScreenshot;
+
+        public Bitmap Screenshot
+        {
+            get
+            {
+                return _cleanScreenshot;
+            }
+            set
+            {
+                _cleanScreenshot = value;
+
+                _shadedScreenshot = new Bitmap(_cleanScreenshot);
+                using (var graphics = Graphics.FromImage(_shadedScreenshot))
+                    graphics.FillRectangle(_rectangleBrush, 0, 0, _shadedScreenshot.Width, _shadedScreenshot.Height);
+            }
+        }
 
         public Rectangle SelectedArea
         {
@@ -39,7 +55,7 @@ namespace Lensert
                 //Update();
             }
         }
-
+        
         public SelectionForm()
         {
             InitializeComponent();
@@ -49,7 +65,7 @@ namespace Lensert
             _rectangleBrush = new SolidBrush(Color.FromArgb(50, Color.Gray));       //This is actually a bug where the transparancykey with the Red does register the mous input 
             _rectanglePen = new Pen(Preferences.Default.SelectionRectangleColor);   //(fyi, with any other color the mouse would click through it)
         }
-        
+
         private void SelectionForm_Load(object sender, EventArgs e)
         {
             _selectedArea = Rectangle.Empty;
@@ -80,7 +96,7 @@ namespace Lensert
             var rectangleRight = new Rectangle(
                 toRemove.Right,
                 source.Y,
-                source.Right - toRemove.Right,
+                Math.Abs(source.Right - toRemove.Right),
                 source.Height);
 
             var rectangleTop = new Rectangle(
@@ -93,7 +109,7 @@ namespace Lensert
                 toRemove.X,
                 toRemove.Bottom,
                 toRemove.Width,
-                source.Bottom - toRemove.Bottom);
+                Math.Abs(source.Bottom - toRemove.Bottom));
 
             return new[] { rectangleLeft, rectangleTop, rectangleRight, rectangleBottom };
         }
@@ -122,18 +138,24 @@ namespace Lensert
                     return;
                 }
 
-                var largerRectangles = SplitRectangle(_selectedArea, _oldSelectedArea);
-                if (largerRectangles.Length == 0)
-                    return;
+                if (_selectedArea.Right > _oldSelectedArea.Right)
+                {
+                    var largerRectangles = SplitRectangle(_selectedArea, _oldSelectedArea);
+                    if (largerRectangles.Length == 0)
+                        return;
 
-                foreach (var rectangle in largerRectangles)
-                    graphics.DrawImage(BackgroundImage, rectangle, rectangle, GraphicsUnit.Pixel);
+                    foreach (var rectangle in largerRectangles)
+                        graphics.DrawImage(_cleanScreenshot, rectangle, rectangle, GraphicsUnit.Pixel);
+                }
+                else if (_selectedArea.Right < _oldSelectedArea.Right)
+                {
+                    var smallerRectangles = SplitRectangle(_selectedArea, _oldSelectedArea);
+                    if (smallerRectangles.Length == 0)
+                        return;
 
-                var smallerRectangles = SplitRectangle(_selectedArea, _oldSelectedArea);
-                if (smallerRectangles.Length == 0)
-                    return;
-
-                graphics.FillRectangles(_rectangleBrush, smallerRectangles);
+                    foreach (var rectangle in smallerRectangles)
+                        graphics.DrawImage(_shadedScreenshot, rectangle, rectangle, GraphicsUnit.Pixel);
+                }
                 
                 var sw = Stopwatch.StartNew();
                 e.Graphics.DrawImage(bitmap, 0, 0);
