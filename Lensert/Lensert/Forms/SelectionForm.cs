@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 
 namespace Lensert
 {
@@ -20,6 +22,8 @@ namespace Lensert
 
         private Rectangle _oldSelectedArea, _selectedArea;
 
+        private Timer timer = new Timer();
+
         public Rectangle SelectedArea
         {
             get
@@ -30,6 +34,9 @@ namespace Lensert
             {
                 _oldSelectedArea = _selectedArea;
                 _selectedArea = value;
+
+                Invalidate();
+                //Update();
             }
         }
 
@@ -62,7 +69,7 @@ namespace Lensert
             // This is done because it won't calculate any overlap :)
 
             if (!source.IntersectsWith(toRemove))
-                throw new NotImplementedException();
+                return new Rectangle[0];
 
             var rectangleLeft = new Rectangle(
                 source.X,
@@ -100,46 +107,54 @@ namespace Lensert
             }
         }
 
+        Bitmap bitmap;
         private void SelectionForm_Paint(object sender, PaintEventArgs e)
         {
-            //if (_selectedArea == Rectangle.Empty)
-            //    return;
+            if (bitmap == null)
+                bitmap = new Bitmap(Bounds.Width, Bounds.Height);
 
-            var outer = new Rectangle(500, 500, 500, 500);
-            var inner = new Rectangle(600, 600, 400, 400);
+            using (var graphics = Graphics.FromImage(bitmap))
+            {
+                if (_selectedArea == Rectangle.Empty)
+                {
+                    graphics.FillRectangle(_rectangleBrush, Bounds);
+                    e.Graphics.DrawImage(bitmap, 0, 0);
+                    return;
+                }
 
-            e.Graphics.FillRectangle(Brushes.Gray, inner);
+                var largerRectangles = SplitRectangle(_selectedArea, _oldSelectedArea);
+                if (largerRectangles.Length == 0)
+                    return;
 
-            var rectangles = SplitRectangle(outer, inner);
-            e.Graphics.DrawRectangle(Pens.Yellow, rectangles[0]);        //left
-            
-            e.Graphics.DrawRectangle(Pens.Orange, rectangles[2]);       //right
-            e.Graphics.DrawRectangle(Pens.Blue, rectangles[3]);          //bottom
+                foreach (var rectangle in largerRectangles)
+                    graphics.DrawImage(BackgroundImage, rectangle, rectangle, GraphicsUnit.Pixel);
 
-            e.Graphics.DrawRectangle(Pens.Green, rectangles[1]);         //top
+                var smallerRectangles = SplitRectangle(_selectedArea, _oldSelectedArea);
+                if (smallerRectangles.Length == 0)
+                    return;
+
+                graphics.FillRectangles(_rectangleBrush, smallerRectangles);
+                
+                var sw = Stopwatch.StartNew();
+                e.Graphics.DrawImage(bitmap, 0, 0);
+                Console.WriteLine(sw.ElapsedMilliseconds);
+            }
 
             //if (_oldSelectedArea == Rectangle.Empty)
-            //{
-            //    var rectangles = SplitRectangle(Bounds, _selectedArea);
-            //    foreach (var rectangle in rectangles)
-            //        e.Graphics.FillRectangle(_rectangleBrush, rectangle);
-            //}
+            {
+                
+            }
             //else
             //{
             //    var overlap = Rectangle.Intersect(_oldSelectedArea, _selectedArea);
 
             //    var rectangles = SplitRectangle(_selectedArea, overlap);
-            //    e.Graphics.DrawRectangle(Pens.Pink, rectangles[0]);
-            //    e.Graphics.DrawRectangle(Pens.Blue, rectangles[1]);
-            //    e.Graphics.DrawRectangle(Pens.Purple, rectangles[2]);
-            //    e.Graphics.DrawRectangle(Pens.Red, rectangles[3]);
-
-            //    //foreach (var rectangle in rectangles)
-            //    //{
-            //    //    e.Graphics.FillRectangle(_rectangleBrush, rectangle);
-            //    //    e.Graphics.DrawRectangle(Pens.Red, rectangle);                      //Draw the border
-            //    //}
-            //}          
+            //    foreach (var rectangle in rectangles)
+            //    {
+            //        graphics.FillRectangle(_rectangleBrush, rectangle);
+            //        //e.Graphics.DrawRectangle(Pens.Red, rectangle);                      //Draw the border
+            //    }
+            //}
 
             ////e.Graphics.DrawRectangle(Pens.Green, _selectedArea);                      //Draw the border
 

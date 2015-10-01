@@ -46,22 +46,22 @@ namespace Lensert
         private static extern IntPtr GetWindowDC(IntPtr windowHandle);
 
         [DllImport("gdi32.dll")]
-        private static extern IntPtr CreateCompatibleDC(IntPtr dcHandle);
+        public static extern IntPtr CreateCompatibleDC(IntPtr dcHandle);
 
         [DllImport("gdi32.dll")]
         private static extern bool DeleteDC(IntPtr dcHandle);
 
         [DllImport("gdi32.dll")]
-        private static extern bool DeleteObject(IntPtr objectHandle);
+        public static extern bool DeleteObject(IntPtr objectHandle);
 
         [DllImport("gdi32.dll")]
-        private static extern IntPtr SelectObject(IntPtr dcHandle, IntPtr objectHandle);
+        public static extern IntPtr SelectObject(IntPtr dcHandle, IntPtr objectHandle);
 
         [DllImport("gdi32.dll")]
         private static extern IntPtr CreateCompatibleBitmap(IntPtr dcHandle, int width, int height);
 
         [DllImport("gdi32.dll")]
-        private static extern bool BitBlt(IntPtr destinationDcHandle, int destinationX, int destinationY, int width, int height, IntPtr sourceDcHandle, int sourceX, int sourceY, CopyPixelOperation rasterOperation);
+        public static extern bool BitBlt(IntPtr destinationDcHandle, int destinationX, int destinationY, int width, int height, IntPtr sourceDcHandle, int sourceX, int sourceY, CopyPixelOperation rasterOperation);
         
         [DllImport("user32.dll")]
         private static extern bool EnumWindows(EnumWindowsProc enumProc, IntPtr lParam);
@@ -97,6 +97,15 @@ namespace Lensert
                 return Rectangle.Empty;
 
             return GetWindowRectangle(handle);
+        }
+
+        public static void CopyToBitmap(Bitmap destination, Bitmap source, Rectangle rectangle)
+        {
+            var handleSource = source.GetHbitmap();
+            var handleDestination = destination.GetHbitmap();
+
+            BitBlt(handleDestination, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, handleSource, rectangle.X, rectangle.Y, CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt);
+
         }
 
         public static Bitmap TakeScreenshot(Rectangle area)
