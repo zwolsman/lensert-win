@@ -62,6 +62,8 @@ namespace Lensert
         {
             InitializeComponent();
             Bounds = SystemInformation.VirtualScreen;
+            //gast je had niet gepulled toen ik zei test es xd
+            Location = Bounds.Location;
 
 #if (DEBUG)
             {
