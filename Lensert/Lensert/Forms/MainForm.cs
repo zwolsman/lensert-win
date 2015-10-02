@@ -81,7 +81,8 @@ namespace Lensert
 
             if(Preferences.Default.ShowNotification)
                 NotificationProvider.Show(link);
-
+            if (Preferences.Default.CopyToClipboard)                                                                                         
+                Clipboard.SetText(link); 
             return link;
             //if (Preferences.Default.CopyToClipboard)                                                                                         
             //    Clipboard.SetText(link);                                                                                                     

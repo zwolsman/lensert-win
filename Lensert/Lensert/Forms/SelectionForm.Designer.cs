@@ -32,7 +32,7 @@
             // 
             // SelectionForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(331, 261);
             this.DoubleBuffered = true;
@@ -42,7 +42,8 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "SelectionForm";
+            this.Text = "Select an area - Lensert";
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.SelectionForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.SelectionForm_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SelectionForm_KeyDown);
