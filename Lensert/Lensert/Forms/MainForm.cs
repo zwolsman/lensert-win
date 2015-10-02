@@ -79,13 +79,14 @@ namespace Lensert
 
             Console.WriteLine($"Got link '{link}'");
 
-            if(Preferences.Default.ShowNotification)
+            if (Preferences.Default.ShowNotification)
                 NotificationProvider.Show(link);
+
             if (Preferences.Default.CopyToClipboard)                                                                                         
-                Clipboard.SetText(link); 
+                Clipboard.SetText(link);
+
+            screenshot?.Dispose();
             return link;
-            //if (Preferences.Default.CopyToClipboard)                                                                                         
-            //    Clipboard.SetText(link);                                                                                                     
         }
 
         void InitializeHotkeys()
