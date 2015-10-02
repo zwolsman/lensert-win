@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -44,14 +45,27 @@ namespace Lensert
 
         private void InitializeHotkeys()
         {
-            var hotkeySettings = Utils.Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
+            /*var hotkeySettings = Utils.Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
             var items = hotkeySettings.Select(setting => new ListViewItem(new[] {
                                                                                     setting.GetDescription(),
                                                                                     setting.DefaultValue.ToString()
                                                                                 }));
 
             listHotkeys.Items.Clear();
-            listHotkeys.Items.AddRange(items.ToArray());
+            listHotkeys.Items.AddRange(items.ToArray());*/
+
+            listHotkeys.Items.Clear();
+
+            foreach (var hotkey in Utils.GetHotkeys())
+            {
+                var item = new ListViewItem(new []
+                {
+                    Utils.GetDescriptionFromHotkey(hotkey),
+                    hotkey.ToString()
+                });
+
+                listHotkeys.Items.Add(item);
+            }
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -92,12 +106,16 @@ namespace Lensert
 
             if (oldHotkey == newHotkey)                                //don't bother to rebind same hotkey
                 return;
-            
-            var settingName = Utils.GetPropertySettingName(selectedItem.Text);
+
+            var settingName = Utils.Hotkey2SettingsName(oldHotkey);
             Preferences.Default[settingName] = newHotkey;              //saves hotkey
+            Preferences.Default.Save();
 
             HotkeyChanged?.Invoke(this, new HotkeyEventArgs(oldHotkey, newHotkey));
-        }
+         
+            InitializeHotkeys();
+           }
+
 
         private void listHotkeys_KeyDown(object sender, KeyEventArgs e)
         {

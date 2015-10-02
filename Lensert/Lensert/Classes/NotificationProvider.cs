@@ -15,6 +15,7 @@ namespace Lensert
     {
         public static NotifyIcon NotifyIcon { get; }
 
+        public static PreferencesForm PreferencesForm { get; set; }
         private static string _link;
 
         static NotificationProvider()
@@ -74,9 +75,7 @@ namespace Lensert
 
         private static void showPreferencesForm(object sender, EventArgs e)
         {
-            var preferencesForm = new PreferencesForm();
-            preferencesForm.ShowDialog();
-            preferencesForm.Dispose();
+            PreferencesForm?.ShowDialog();
         }
 
         private static void OnBalloonClicked(object sender, EventArgs eventArgs)

@@ -32,6 +32,8 @@ namespace Lensert
             _preferencesForm.AccountChanged += PreferencesForm_AccountChanged;
             _preferencesForm.HotkeyChanged += PreferencesForm_HotkeyChanged;
 
+            NotificationProvider.PreferencesForm = _preferencesForm;
+
             _hotkeyBinder = new HotkeyBinder();
             _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
 
@@ -48,6 +50,7 @@ namespace Lensert
 
         private void PreferencesForm_HotkeyChanged(object sender, HotkeyEventArgs e)
         {
+            Console.WriteLine($"Removing {e.OldHotkey}");
             _hotkeyBinder.Unbind(e.OldHotkey);
 
             InitializeHotkeys();
@@ -68,9 +71,6 @@ namespace Lensert
 
         private async Task<string> ScreenshotHandler(ScreenshotType type)
         {
-            //if (!_hotkeyEnabled)
-            //    return;
-
             var screenshot = ScreenshotProvider.GetScreenshot(type);
             if (screenshot == null)
                 return null;
@@ -80,7 +80,7 @@ namespace Lensert
             Console.WriteLine($"Got link '{link}'");
 
             if(Preferences.Default.ShowNotification)
-            NotificationProvider.Show(link);
+                NotificationProvider.Show(link);
 
             return link;
             //if (Preferences.Default.CopyToClipboard)                                                                                         
@@ -89,12 +89,10 @@ namespace Lensert
 
         void InitializeHotkeys()
         {
-            var hotkeySettings = Utils.Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
-            var hotkeys = hotkeySettings.Select(setting => (string)setting.DefaultValue).Select(Utils.ConvertToHotkey);
-            
-            foreach (var hotkey in hotkeys.Where(hotkey => !_hotkeyBinder.IsHotkeyAlreadyBound(hotkey)))
+            foreach (var hotkey in Utils.GetHotkeys().Where(hotkey => !_hotkeyBinder.IsHotkeyAlreadyBound(hotkey)))
+            {
                 _hotkeyBinder.Bind(hotkey, OnHotkeyPressed);
-
+            }
         }
 
         private void myImagesToolStripMenuItem_Click(object sender, EventArgs e)

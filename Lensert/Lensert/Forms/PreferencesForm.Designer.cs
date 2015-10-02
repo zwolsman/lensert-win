@@ -197,7 +197,7 @@ namespace Lensert
             // 
             // textboxHotkey
             // 
-            this.textboxHotkey.Hotkey = ((Shortcut.Hotkey)(resources.GetObject("textboxHotkey.Hotkey")));
+            this.textboxHotkey.Hotkey = null;//((Shortcut.Hotkey)(resources.GetObject("textboxHotkey.Hotkey")));
             this.textboxHotkey.Location = new System.Drawing.Point(9, 150);
             this.textboxHotkey.Name = "textboxHotkey";
             this.textboxHotkey.ReadOnly = true;
