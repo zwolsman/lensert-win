@@ -38,7 +38,7 @@ namespace Lensert
 
                 _shadedScreenshot = new Bitmap(_cleanScreenshot);
                 using (var graphics = Graphics.FromImage(_shadedScreenshot))
-                    graphics.FillRectangle(_rectangleBrush, 0, 0, _shadedScreenshot.Width, _shadedScreenshot.Height);
+                    graphics.FillRectangle(_rectangleBrush, Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height);
             }
         }
 
