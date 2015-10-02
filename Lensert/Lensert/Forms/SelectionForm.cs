@@ -133,11 +133,6 @@ namespace Lensert
             e.Graphics.DrawImage(_cleanScreenshot, _selectedArea, _selectedArea, GraphicsUnit.Pixel);
 
             var borderRectangle = _selectedArea;
-
-
-          
-            Console.WriteLine(borderRectangle);
-
             if(Bounds.Width <= borderRectangle.Right)
             { 
                 var deltaRight = borderRectangle.Right - Bounds.Right;
