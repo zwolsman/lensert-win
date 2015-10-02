@@ -14,14 +14,20 @@ namespace Shortcut.Forms
         {
             if (destinationType == typeof (Keys))
             {
-                Hotkey hotkey = value as Hotkey;
+                var hotkey = value as Hotkey;
 
                 if (hotkey != null)
                 {
-                    Keys keys = Keys.None;
-                    if (hotkey.Modifier.HasFlag(Modifiers.Alt)) keys |= Keys.Alt;
-                    if (hotkey.Modifier.HasFlag(Modifiers.Control)) keys |= Keys.Control;
-                    if (hotkey.Modifier.HasFlag(Modifiers.Shift)) keys |= Keys.Shift;
+                    var keys = Keys.None;
+                    if (hotkey.Modifier.HasFlag(Modifiers.Alt))
+                        keys |= Keys.Alt;
+
+                    if (hotkey.Modifier.HasFlag(Modifiers.Control))
+                        keys |= Keys.Control;
+
+                    if (hotkey.Modifier.HasFlag(Modifiers.Shift))
+                        keys |= Keys.Shift;
+                    
                     keys |= hotkey.Key;
                     return keys;
                 }
@@ -36,25 +42,29 @@ namespace Shortcut.Forms
             {
                 value = base.ConvertFrom(context, culture, value);
             }
-
-            if (value.GetType() == typeof (Keys))
+            else if (value.GetType() == typeof(Keys))
             {
-                Keys keys = (Keys) value;
-                Modifiers modifiers = Modifiers.None;
-                if (keys.HasFlag(Keys.Alt)) modifiers |= Modifiers.Alt;
-                if (keys.HasFlag(Keys.Control)) modifiers |= Modifiers.Control;
-                if (keys.HasFlag(Keys.Shift)) modifiers |= Modifiers.Shift;
-                keys = ExtractNonMods(keys);
+                var keys = (Keys)value;
+                var modifiers = Modifiers.None;
+
+                if (keys.HasFlag(Keys.Alt))
+                    modifiers |= Modifiers.Alt;
+
+                if (keys.HasFlag(Keys.Control))
+                    modifiers |= Modifiers.Control;
+
+                if (keys.HasFlag(Keys.Shift))
+                    modifiers |= Modifiers.Shift;
+
+                keys = ExtractNonModifiers(keys);
                 return new Hotkey(modifiers, keys);
             }
 
             return base.ConvertFrom(context, culture, value);
         }
 
-        private static Keys ExtractNonMods(Keys keys)
-        {
-            // Brian: Extract non-modifiers from the low word of keys
-            return (Keys)((int)keys & 0x0000FFFF);
-        }
+        // Brian: Extract non-modifiers from the low word of keys
+        private static Keys ExtractNonModifiers(Keys keys) 
+            => (Keys)((int)keys & 0x0000FFFF);
     }
 }

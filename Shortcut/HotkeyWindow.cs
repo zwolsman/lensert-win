@@ -29,6 +29,7 @@ namespace Shortcut
         {
             var modifier = (Modifiers) ((int) m.LParam & 0xFFFF);
             var key = (Keys) ((int) m.LParam >> 16);
+
             return new Hotkey(modifier, key);
         }
 
