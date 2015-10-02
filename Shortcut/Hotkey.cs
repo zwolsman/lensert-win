@@ -86,10 +86,8 @@ namespace Shortcut
         }
 
         /// <inheritdoc />
-        public override string ToString()
-        {
-            return Modifier + ", " + Key;
-        }
+        public override string ToString() 
+            => $"{Modifier}, {Key}";
 
         #endregion
 
@@ -103,10 +101,8 @@ namespace Shortcut
         /// <returns>
         /// <c>true</c> if values are equal to each other, otherwise <c>false</c>.
         /// </returns>
-        public static bool operator ==(Hotkey left, Hotkey right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(Hotkey left, Hotkey right) 
+            => Equals(left, right);
 
         /// <summary>
         /// Implements the operator != (inequality)
@@ -116,10 +112,8 @@ namespace Shortcut
         /// <returns>
         /// <c>true</c> if values are not equal to each other, otherwise <c>false</c>.
         /// </returns>
-        public static bool operator !=(Hotkey left, Hotkey right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator !=(Hotkey left, Hotkey right) 
+            => !Equals(left, right);
 
         #endregion
     }
