@@ -135,6 +135,9 @@ namespace Lensert
             var borderRectangle = _selectedArea;
 
 
+          
+            Console.WriteLine(borderRectangle);
+
             if(Bounds.Width <= borderRectangle.Right)
             { 
                 var deltaRight = borderRectangle.Right - Bounds.Right;
@@ -144,8 +147,8 @@ namespace Lensert
             if(Bounds.Height <= borderRectangle.Bottom)
             { 
                 var deltaBottom = borderRectangle.Bottom - Bounds.Bottom;
-                borderRectangle.Height -= deltaBottom == 0 ? 1 : deltaBottom;               //compensates for out of bounds (only visually, 
-            }                                                        //screenshot does reach till the end and beyond)
+                borderRectangle.Height -= deltaBottom == 0 ? 1 : deltaBottom;           //compensates for out of bounds (only visually, 
+            }                                                                           //screenshot does reach till the end and beyond)
             e.Graphics.DrawRectangle(_rectanglePen, borderRectangle);                   //Draw the border
 
             var dimension = $"{_selectedArea.Width}x{_selectedArea.Height}";
