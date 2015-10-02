@@ -78,17 +78,52 @@ namespace Lensert
         [DllImport("dwmapi.dll")]
         private static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out RECT pvAttribute, int cbAttribute);
 
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+        
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, string lp);
+
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+
         [DllImport("uxtheme", CharSet = CharSet.Unicode)]
         public extern static int SetWindowTheme(IntPtr hWnd, string textSubAppName, string textSubIdList);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr DefWindowProc(IntPtr hWnd, int uMsg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        static extern int SetWindowLong(IntPtr hWnd, int nIndex, WinProc dwNewLong);
+
+        private delegate IntPtr WinProc(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        const int GWL_WNDPROC = -4;
 
         private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
         public const int LVM_FIRST = 0x1000;
         public const int LVM_SETEXTENDEDLISTVIEWSTYLE = LVM_FIRST + 54;
         public const int LVS_EX_DOUBLEBUFFER = 0x00010000;
+
+        private static IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam)
+        {
+            var result = DefWindowProc(hwnd, msg, wParam, lParam).ToInt32();
+
+            return new IntPtr(result);
+        }
+
+        public static void HookWindow(IntPtr hwnd)
+        {
+            SetWindowLong(hwnd, -4, WndProc);
+        }
+
+        private static IntPtr WndProc(IntPtr hWnd, int Msg, int wParam, int lParam)
+        {
+            throw new NotImplementedException();
+        }
 
         public static Rectangle GetForegroundWindowAea()
         {
@@ -98,16 +133,7 @@ namespace Lensert
 
             return GetWindowRectangle(handle);
         }
-
-        public static void CopyToBitmap(Bitmap destination, Bitmap source, Rectangle rectangle)
-        {
-            var handleSource = source.GetHbitmap();
-            var handleDestination = destination.GetHbitmap();
-
-            BitBlt(handleDestination, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, handleSource, rectangle.X, rectangle.Y, CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt);
-
-        }
-
+        
         public static Bitmap TakeScreenshot(Rectangle area)
         {
             var handleDesktopWindow = GetDesktopWindow();
@@ -133,9 +159,9 @@ namespace Lensert
 
             EnumWindows((handle, lparam) =>
             {
-                if (!IsWindow(handle) || !IsWindowVisible(handle) || GetWindowTextLength(handle) < 1)
+                if (GetClassName(handle) != "Shell_TrayWnd" && (!IsWindow(handle) || !IsWindowVisible(handle)))
                     return true;
-
+                
                 var rectangle = GetWindowRectangle(handle);
                 list.Add(rectangle);
 
@@ -143,6 +169,14 @@ namespace Lensert
             }, IntPtr.Zero);
 
             return list;
+        }
+
+        private static string GetClassName(IntPtr hWnd)
+        {
+            var sb = new StringBuilder(256);
+            GetClassName(hWnd, sb, sb.Capacity);
+
+            return sb.ToString();
         }
 
         private static Rectangle GetWindowRectangle(IntPtr handle)
