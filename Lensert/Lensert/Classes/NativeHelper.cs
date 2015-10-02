@@ -108,6 +108,43 @@ namespace Lensert
         public const int LVM_SETEXTENDEDLISTVIEWSTYLE = LVM_FIRST + 54;
         public const int LVS_EX_DOUBLEBUFFER = 0x00010000;
 
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
+
+        private struct WINDOWPLACEMENT
+        {
+            public int length;
+            public int flags;
+            public int showCmd;
+            public System.Drawing.Point ptMinPosition;
+            public System.Drawing.Point ptMaxPosition;
+            public System.Drawing.Rectangle rcNormalPosition;
+        }
+
+        
+        const uint SW_HIDE = 0;
+        const uint SW_SHOWNORMAL = 1;
+        const uint SW_NORMAL = 1;
+        const uint SW_SHOWMINIMIZED = 2;
+        const uint SW_SHOWMAXIMIZED = 3;
+        const uint SW_MAXIMIZE = 3;
+        const uint SW_SHOWNOACTIVATE = 4;
+        const uint SW_SHOW = 5;
+        const uint SW_MINIMIZE = 6;
+        const uint SW_SHOWMINNOACTIVE = 7;
+        const uint SW_SHOWNA = 8;
+        const uint SW_RESTORE = 9;
+
+
+        private static int GetWindowState(IntPtr handle)
+        {
+            WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
+            placement.length = Marshal.SizeOf(placement);
+            GetWindowPlacement(handle, ref placement);
+            return placement.showCmd;
+        }
         private static IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam)
         {
             var result = DefWindowProc(hwnd, msg, wParam, lParam).ToInt32();
@@ -163,6 +200,20 @@ namespace Lensert
                     return true;
                 
                 var rectangle = GetWindowRectangle(handle);
+
+                if (GetWindowState(handle) == SW_MAXIMIZE)
+                {
+                    if (rectangle.X < 0)
+                    {
+                        rectangle.Width -= Math.Abs(rectangle.X)*2;
+                        rectangle.X = 0;
+                    }
+                    if (rectangle.Y < 0)
+                    {
+                        rectangle.Height -= Math.Abs(rectangle.Y) * 2;
+                        rectangle.Y = 0;
+                    }
+                }
                 list.Add(rectangle);
 
                 return true;
