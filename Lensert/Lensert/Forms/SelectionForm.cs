@@ -63,6 +63,11 @@ namespace Lensert
             InitializeComponent();
             Bounds = SystemInformation.VirtualScreen;
 
+#if (DEBUG)
+            {
+                TopMost = false;
+            }
+#endif
             DoubleBuffered = true;
             
             _textBrush = new SolidBrush(Preferences.Default.SelectionRectangleColor);
