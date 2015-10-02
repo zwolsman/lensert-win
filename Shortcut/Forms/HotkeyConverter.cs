@@ -42,7 +42,9 @@ namespace Shortcut.Forms
             {
                 value = base.ConvertFrom(context, culture, value);
             }
-            else if (value.GetType() == typeof(Keys))
+
+
+            if (value.GetType() == typeof(Keys))
             {
                 var keys = (Keys)value;
                 var modifiers = Modifiers.None;
