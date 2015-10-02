@@ -62,6 +62,7 @@ namespace Lensert
         {
             InitializeComponent();
             Bounds = SystemInformation.VirtualScreen;
+            Location = Bounds.Location;
 
             DoubleBuffered = true;
             
