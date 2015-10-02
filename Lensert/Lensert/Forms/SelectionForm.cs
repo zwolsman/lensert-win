@@ -38,7 +38,7 @@ namespace Lensert
 
                 _shadedScreenshot = new Bitmap(_cleanScreenshot);
                 using (var graphics = Graphics.FromImage(_shadedScreenshot))
-                    graphics.FillRectangle(_rectangleBrush, Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height);
+                    graphics.FillRectangle(_rectangleBrush, 0, 0, Bounds.Width, Bounds.Height);
             }
         }
 
@@ -134,7 +134,7 @@ namespace Lensert
 
         private void SelectionForm_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.DrawImage(_shadedScreenshot, Bounds);
+            e.Graphics.DrawImage(_shadedScreenshot, 0,0);
             e.Graphics.DrawImage(_cleanScreenshot, _selectedArea, _selectedArea, GraphicsUnit.Pixel);
 
             var borderRectangle = _selectedArea;
