@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Lensert
 {
@@ -136,8 +137,7 @@ namespace Lensert
         const uint SW_SHOWMINNOACTIVE = 7;
         const uint SW_SHOWNA = 8;
         const uint SW_RESTORE = 9;
-
-
+        
         private static int GetWindowState(IntPtr handle)
         {
             WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
@@ -193,7 +193,6 @@ namespace Lensert
         public static IEnumerable<Rectangle> GetWindowDimensions()
         {
             var list = new List<Rectangle>();
-
             EnumWindows((handle, lparam) =>
             {
                 if (GetClassName(handle) != "Shell_TrayWnd" && (!IsWindow(handle) || !IsWindowVisible(handle)))
@@ -203,15 +202,17 @@ namespace Lensert
 
                 if (GetWindowState(handle) == SW_MAXIMIZE)
                 {
-                    if (rectangle.X < 0)
-                    {
-                        rectangle.Width -= Math.Abs(rectangle.X)*2;
-                        rectangle.X = 0;
-                    }
-                    if (rectangle.Y < 0)
-                    {
-                        rectangle.Height -= Math.Abs(rectangle.Y) * 2;
-                        rectangle.Y = 0;
+                    var differenceX = SystemInformation.WorkingArea.X - rectangle.X;
+                    var differenceY = SystemInformation.WorkingArea.Y - rectangle.Y;
+                     if (differenceX > 0)
+                     {
+                         rectangle.Width -= differenceX * 2;
+                         rectangle.X += differenceX;
+                     }
+                     if (differenceY > 0)
+                     {
+                        rectangle.Height -= differenceY * 2;
+                        rectangle.Y += differenceY;
                     }
                 }
                 list.Add(rectangle);

@@ -159,5 +159,10 @@ namespace Lensert
             foreach (var control in controls) //re-enable controls
                 control.Enabled = true;
         }
+
+        private void LoginHandler_UI(object sender, KeyEventArgs e)
+        {
+
+        }
     }
 }
