@@ -38,7 +38,7 @@ namespace Lensert
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new PreferencesForm());
+            Application.Run(new MainForm());
         }
 
         private static bool IsInstanceRunning()
