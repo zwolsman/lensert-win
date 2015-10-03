@@ -85,16 +85,13 @@ namespace Lensert
         {
             listHotkeys.Items.Clear();
 
-            foreach (var hotkey in Utils.GetHotkeys())
-            {
-                var item = new ListViewItem(new []
-                {
-                    Utils.GetDescriptionFromHotkey(hotkey),
-                    hotkey.ToString()
-                });
+            var hotkeySettings = Utils.SettingsOfType(typeof(Hotkey));
+            var items = hotkeySettings.Select(setting => new ListViewItem(new[] {
+                                                                                    setting.GetSettingDescription(),
+                                                                                    setting.PropertyValue.ToString()
+                                                                                }));
 
-                listHotkeys.Items.Add(item);
-            }
+            listHotkeys.Items.AddRange(items.ToArray());
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -136,12 +133,13 @@ namespace Lensert
             if (oldHotkey == newHotkey)                                //don't bother to rebind same hotkey
                 return;
 
-            var settingName = Utils.Hotkey2SettingsName(oldHotkey);
-            Preferences.Default[settingName] = newHotkey;              //saves hotkey
-            Preferences.Default.Save();
+            var setting = Utils.FindSettingByValue(oldHotkey);
+            var settingName = setting.Name;
 
+            Preferences.Default[settingName] = newHotkey;
+            Preferences.Default.Save();
+            
             HotkeyChanged?.Invoke(this, new HotkeyEventArgs(oldHotkey, newHotkey));
-         
             InitializeHotkeys();
         }
 

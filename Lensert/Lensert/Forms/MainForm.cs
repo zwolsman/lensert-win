@@ -93,10 +93,12 @@ namespace Lensert
 
         void InitializeHotkeys()
         {
-            foreach (var hotkey in Utils.GetHotkeys().Where(hotkey => !_hotkeyBinder.IsHotkeyAlreadyBound(hotkey)))
-            {
+            var hotkeys = Utils.SettingsOfType(typeof(Hotkey))
+                .Select(setting => (Hotkey)setting.PropertyValue)
+                .Where(hotkey => !_hotkeyBinder.IsHotkeyAlreadyBound(hotkey));
+
+            foreach (var hotkey in hotkeys)
                 _hotkeyBinder.Bind(hotkey, OnHotkeyPressed);
-            }
         }
 
         private void myImagesToolStripMenuItem_Click(object sender, EventArgs e)
