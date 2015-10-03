@@ -84,5 +84,11 @@ namespace Lensert
 
         public static Hotkey ConvertToHotkey(string hotkeyString)
             => (Hotkey)_hotkeyConverter.ConvertFromString(hotkeyString);
+
+        public static void EnableControls(this Form form, bool enable, params Control[] controls)
+        {
+            foreach (var control in controls)
+                control.Enabled = enable;
+        }
     }
 }

@@ -47,14 +47,18 @@ namespace Lensert
             var responseMessage = await _httpClient.PostAsync("user/login", multipartDataContent);
             if (responseMessage.IsSuccessStatusCode)
             {
-                var token = responseMessage.Headers.GetValues("X-Lensert-Token").FirstOrDefault();
-                if (!string.IsNullOrEmpty(token))
+                IEnumerable<string> values;
+                if (responseMessage.Headers.TryGetValues("X-Lensert-Token", out values))
                 {
-                    Console.WriteLine("Logged in..!");
-                    _httpClient.DefaultRequestHeaders.Add("X-Lensert-Token", token);
+                    var token = values.FirstOrDefault();
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        Console.WriteLine("Logged in..!");
+                        _httpClient.DefaultRequestHeaders.Add("X-Lensert-Token", token);
 
-                    LoggedIn = true;
-                    return true;
+                        LoggedIn = true;
+                        return true;
+                    }
                 }
             }
 

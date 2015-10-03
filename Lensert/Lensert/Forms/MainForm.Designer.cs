@@ -44,6 +44,7 @@ namespace Lensert
             // 
             // contextMenuStrip
             // 
+            this.contextMenuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.captureImageToolStripMenuItem,
             this.toolStripMenuItem1,
@@ -52,32 +53,32 @@ namespace Lensert
             this.toolStripMenuItem2,
             this.exitToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(156, 104);
+            this.contextMenuStrip.Size = new System.Drawing.Size(222, 136);
             // 
             // captureImageToolStripMenuItem
             // 
             this.captureImageToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.captureImageToolStripMenuItem.Name = "captureImageToolStripMenuItem";
-            this.captureImageToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.captureImageToolStripMenuItem.Size = new System.Drawing.Size(221, 30);
             this.captureImageToolStripMenuItem.Text = "Capture image";
             this.captureImageToolStripMenuItem.Click += new System.EventHandler(this.captureImageToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(152, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(218, 6);
             // 
             // preferencesToolStripMenuItem
             // 
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(221, 30);
             this.preferencesToolStripMenuItem.Text = "Preferences";
             this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.OpenPreferences_UI);
             // 
             // myImagesToolStripMenuItem
             // 
             this.myImagesToolStripMenuItem.Name = "myImagesToolStripMenuItem";
-            this.myImagesToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.myImagesToolStripMenuItem.Size = new System.Drawing.Size(221, 30);
             this.myImagesToolStripMenuItem.Text = "My images";
             this.myImagesToolStripMenuItem.Visible = false;
             this.myImagesToolStripMenuItem.Click += new System.EventHandler(this.myImagesToolStripMenuItem_Click);
@@ -85,23 +86,23 @@ namespace Lensert
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(152, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(218, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(221, 30);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.ClientSize = new System.Drawing.Size(426, 402);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "MainForm";
             this.Text = "MainForm";
-            this.Load += new System.EventHandler(this.MainForm_Load);
             this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 

@@ -26,8 +26,46 @@ namespace Lensert
             InitializeComponent();
             InitializeHotkeys();
             LoadPreferences();
+
+            AccountChanged += PreferencesForm_AccountChanged;
         }
 
+        public void Login(string username, string password)
+        {
+            textboxUsername.Text = username;
+            textboxPassword.Text = password;
+
+            LoginHandler_UI(this, EventArgs.Empty);
+        }
+
+        private void PreferencesForm_AccountChanged(object sender, AccountEventArgs e)
+        {
+            if (e.LensertClient == null)
+            {                                                                   //resets controls due log out
+                labelLogin.Text = "Sign in to your account";
+                labelLogin.ForeColor = SystemColors.ControlText;
+
+                textboxUsername.Text = "";
+                textboxPassword.Text = "";
+
+                buttonLogin.Text = "Sign in";
+            }
+            else if (e.LensertClient.LoggedIn)
+            {                                                                   //shows logged in state
+                labelLogin.Text = "Logged in.";
+                labelLogin.ForeColor = Color.Green;
+
+                buttonLogin.Text = "Log out";
+
+                this.EnableControls(false, textboxUsername, textboxPassword);
+            }
+            else
+            {                                                                   //invalid login
+                labelLogin.Text = "Invalid credentials.";
+                labelLogin.ForeColor = Color.Red;
+            }
+        }
+        
         private void LoadPreferences()
         {
             chRememberMe.Checked = Preferences.Default.RememberMe;
@@ -45,15 +83,6 @@ namespace Lensert
 
         private void InitializeHotkeys()
         {
-            /*var hotkeySettings = Utils.Settings.Where(setting => setting.PropertyType == typeof(Hotkey));
-            var items = hotkeySettings.Select(setting => new ListViewItem(new[] {
-                                                                                    setting.GetDescription(),
-                                                                                    setting.DefaultValue.ToString()
-                                                                                }));
-
-            listHotkeys.Items.Clear();
-            listHotkeys.Items.AddRange(items.ToArray());*/
-
             listHotkeys.Items.Clear();
 
             foreach (var hotkey in Utils.GetHotkeys())
@@ -114,7 +143,7 @@ namespace Lensert
             HotkeyChanged?.Invoke(this, new HotkeyEventArgs(oldHotkey, newHotkey));
          
             InitializeHotkeys();
-           }
+        }
 
 
         private void listHotkeys_KeyDown(object sender, KeyEventArgs e)
@@ -133,36 +162,35 @@ namespace Lensert
                 keyEventArgs.Handled = true;                //Stop the beeping from happening
             }
 
-            var controls = new Control[] {textboxUsername, textboxPassword, buttonLogin};
-            foreach (var control in controls)
-                control.Enabled = false;                    //disable controls, so can't be activated again
+            this.EnableControls(false, textboxUsername, textboxPassword, buttonLogin);   //disable controls, so can't be activated again
 
             var username = textboxUsername.Text;
             var password = textboxPassword.Text;
 
-            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
-            {                                               //deny empty boxes :(
+            LensertClient client = null;
 
-                var client = new LensertClient(username, password);
+            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password) && buttonLogin.Text == "Sign in")
+            {                                               //deny empty boxes :(
+                client = new LensertClient(username, password);
                 if (await client.Login())                   //maybe give response if login failed?
                 {
                     Preferences.Default.Username = username;
                     Preferences.Default.Password = password;
 
                     Preferences.Default.Save();
-
                 }
-
-                AccountChanged?.Invoke(this, new AccountEventArgs(client));
             }
 
-            foreach (var control in controls) //re-enable controls
-                control.Enabled = true;
+            this.EnableControls(true, textboxUsername, textboxPassword, buttonLogin);   //Re-enable them :)
+            AccountChanged?.Invoke(this, new AccountEventArgs(client));
         }
 
-        private void LoginHandler_UI(object sender, KeyEventArgs e)
+        private void labelLogin_TextChanged(object sender, EventArgs e)
         {
-
+            var parent = labelLogin.Parent.ClientRectangle;
+            labelLogin.Left = (parent.Width - labelLogin.Width) / 2;
         }
+
+        
     }
 }

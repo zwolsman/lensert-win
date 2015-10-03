@@ -20,8 +20,6 @@ namespace Lensert
         private readonly HotkeyBinder _hotkeyBinder;
         private LensertClient _client;
 
-
-
         public MainForm()
         {
             InitializeComponent();
@@ -35,12 +33,15 @@ namespace Lensert
             NotificationProvider.PreferencesForm = _preferencesForm;
 
             _hotkeyBinder = new HotkeyBinder();
-            _client = new LensertClient(Preferences.Default.Username, Preferences.Default.Password);
+            if (Preferences.Default.RememberMe)
+                Login();
 
             InitializeHotkeys();
+        }
 
-            if (Preferences.Default.RememberMe)
-                _client.Login();
+        private void Login()
+        {
+            _preferencesForm.Login(Preferences.Default.Username, Preferences.Default.Password);
         }
 
         protected override void SetVisibleCore(bool value)
@@ -60,7 +61,8 @@ namespace Lensert
         {
             _client = e.LensertClient;
 
-            myImagesToolStripMenuItem.Visible = _client.LoggedIn;
+            if (_client != null)
+                myImagesToolStripMenuItem.Visible = _client.LoggedIn;
         }
 
         private async void OnHotkeyPressed(HotkeyPressedEventArgs hotkeyEventArgs)
@@ -119,9 +121,5 @@ namespace Lensert
             _preferencesForm.ShowDialog();
         }
 
-        private async void MainForm_Load(object sender, EventArgs e)
-        {
-            
-        }
     }
 }
