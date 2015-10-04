@@ -14,10 +14,8 @@ namespace Lensert
     {
         private static readonly HotkeyConverter _hotkeyConverter = new HotkeyConverter();
 
-        private static IEnumerable<SettingsPropertyValue> GetSettings()
-        {
-            return Preferences.Default.PropertyValues.Cast<SettingsPropertyValue>();
-        }
+        private static IEnumerable<SettingsPropertyValue> GetSettings() 
+            => Preferences.Default.PropertyValues.Cast<SettingsPropertyValue>();
 
         private static readonly Dictionary<string, string> _descriptions = new Dictionary<string, string>
         {
