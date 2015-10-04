@@ -20,7 +20,7 @@ namespace Lensert
         private readonly SolidBrush _rectangleBrush, _textBrush;
         private readonly Pen _rectanglePen;
 
-        private Rectangle _oldSelectedArea, _selectedArea;
+        private Rectangle _selectedArea;
         private Bitmap _shadedScreenshot, _cleanScreenshot;
 
         public Bitmap Screenshot
@@ -52,7 +52,6 @@ namespace Lensert
             }
             set
             {
-                _oldSelectedArea = _selectedArea;
                 _selectedArea = value;
 
                 Invalidate();
@@ -80,49 +79,11 @@ namespace Lensert
         private void SelectionForm_Load(object sender, EventArgs e)
         {
             _selectedArea = Rectangle.Empty;
-            _oldSelectedArea = Rectangle.Empty;
         }
         
         private void SelectionForm_MouseUp(object sender, MouseEventArgs e)
         {
             Close();
-        }
-
-        private Rectangle[] SplitRectangle(Rectangle source, Rectangle toRemove)
-        {
-            // The left rectangle is from the topleft to the left of the removed rectangle
-            // thus the overlap of bottom/top part with right/left part rectangles are calculated in
-            // the left and right rectangle.
-            // This is done because it won't calculate any overlap :)
-
-            if (!source.IntersectsWith(toRemove))
-                return new Rectangle[0];
-
-            var rectangleLeft = new Rectangle(
-                source.X,
-                source.Y,
-                toRemove.X - source.X,
-                source.Height);
-
-            var rectangleRight = new Rectangle(
-                toRemove.Right,
-                source.Y,
-                source.Right - toRemove.Right,
-                source.Height);
-
-            var rectangleTop = new Rectangle(
-                toRemove.X,
-                source.Y,
-                toRemove.Width,
-                toRemove.Y - source.Y);
-
-            var rectangleBottom = new Rectangle(
-                toRemove.X,
-                toRemove.Bottom,
-                toRemove.Width,
-                source.Bottom - toRemove.Bottom);
-
-            return new[] { rectangleLeft, rectangleTop, rectangleRight, rectangleBottom };
         }
 
         private void SelectionForm_KeyDown(object sender, KeyEventArgs e)
