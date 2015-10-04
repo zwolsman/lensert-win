@@ -39,6 +39,8 @@ namespace Lensert
                 _shadedScreenshot = new Bitmap(_cleanScreenshot);
                 using (var graphics = Graphics.FromImage(_shadedScreenshot))
                     graphics.FillRectangle(_rectangleBrush, 0, 0, Bounds.Width, Bounds.Height);
+
+                BackgroundImage = _shadedScreenshot;
             }
         }
 
@@ -86,42 +88,42 @@ namespace Lensert
             Close();
         }
 
-        //private Rectangle[] SplitRectangle(Rectangle source, Rectangle toRemove)
-        //{
-        //    // The left rectangle is from the topleft to the left of the removed rectangle
-        //    // thus the overlap of bottom/top part with right/left part rectangles are calculated in
-        //    // the left and right rectangle.
-        //    // This is done because it won't calculate any overlap :)
+        private Rectangle[] SplitRectangle(Rectangle source, Rectangle toRemove)
+        {
+            // The left rectangle is from the topleft to the left of the removed rectangle
+            // thus the overlap of bottom/top part with right/left part rectangles are calculated in
+            // the left and right rectangle.
+            // This is done because it won't calculate any overlap :)
 
-        //    if (!source.IntersectsWith(toRemove))
-        //        return new Rectangle[0];
+            if (!source.IntersectsWith(toRemove))
+                return new Rectangle[0];
 
-        //    var rectangleLeft = new Rectangle(
-        //        source.X,
-        //        source.Y,
-        //        toRemove.X - source.X,
-        //        source.Height);
+            var rectangleLeft = new Rectangle(
+                source.X,
+                source.Y,
+                toRemove.X - source.X,
+                source.Height);
 
-        //    var rectangleRight = new Rectangle(
-        //        toRemove.Right,
-        //        source.Y,
-        //        Math.Abs(source.Right - toRemove.Right),
-        //        source.Height);
+            var rectangleRight = new Rectangle(
+                toRemove.Right,
+                source.Y,
+                source.Right - toRemove.Right,
+                source.Height);
 
-        //    var rectangleTop = new Rectangle(
-        //        toRemove.X,
-        //        source.Y,
-        //        toRemove.Width,
-        //        toRemove.Y - source.Y);
+            var rectangleTop = new Rectangle(
+                toRemove.X,
+                source.Y,
+                toRemove.Width,
+                toRemove.Y - source.Y);
 
-        //    var rectangleBottom = new Rectangle(
-        //        toRemove.X,
-        //        toRemove.Bottom,
-        //        toRemove.Width,
-        //        Math.Abs(source.Bottom - toRemove.Bottom));
+            var rectangleBottom = new Rectangle(
+                toRemove.X,
+                toRemove.Bottom,
+                toRemove.Width,
+                source.Bottom - toRemove.Bottom);
 
-        //    return new[] { rectangleLeft, rectangleTop, rectangleRight, rectangleBottom };
-        //}
+            return new[] { rectangleLeft, rectangleTop, rectangleRight, rectangleBottom };
+        }
 
         private void SelectionForm_KeyDown(object sender, KeyEventArgs e)
         {
@@ -132,22 +134,39 @@ namespace Lensert
             }
         }
 
+        private Rectangle RectangleAbs(Rectangle rectangle)
+        {
+            var rectFixed = rectangle;
+            if (rectangle.Width < 0)
+            {
+                rectFixed.X += rectangle.Width;
+                rectFixed.Width = Math.Abs(rectangle.Width);
+            }
+
+            if (rectFixed.Height < 0)
+            {
+                rectFixed.Y += rectangle.Height;
+                rectFixed.Height = Math.Abs(rectangle.Height);
+            }
+
+            return rectFixed;
+        }
+
         private void SelectionForm_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.DrawImage(_shadedScreenshot, 0,0);
             e.Graphics.DrawImage(_cleanScreenshot, _selectedArea, _selectedArea, GraphicsUnit.Pixel);
 
             var borderRectangle = _selectedArea;
             borderRectangle.Width -= 1;
             borderRectangle.Height -= 1;
-            if(Bounds.Width <= borderRectangle.Right)
-            { 
+            if (Bounds.Width <= borderRectangle.Right)
+            {
                 var deltaRight = borderRectangle.Right - Bounds.Right;
                 borderRectangle.Width -= deltaRight == 0 ? 1 : deltaRight;
             }
 
-            if(Bounds.Height <= borderRectangle.Bottom)
-            { 
+            if (Bounds.Height <= borderRectangle.Bottom)
+            {
                 var deltaBottom = borderRectangle.Bottom - Bounds.Bottom;
                 borderRectangle.Height -= deltaBottom == 0 ? 1 : deltaBottom;           //compensates for out of bounds (only visually, 
             }                                                                           //screenshot does reach till the end and beyond)
