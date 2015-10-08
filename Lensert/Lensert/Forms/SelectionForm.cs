@@ -21,9 +21,9 @@ namespace Lensert
         private readonly Pen _rectanglePen;
 
         private Rectangle _selectedArea;
-        private Bitmap _shadedScreenshot, _cleanScreenshot;
+        private Image _shadedScreenshot, _cleanScreenshot;
 
-        public Bitmap Screenshot
+        public Image Screenshot
         {
             get
             {

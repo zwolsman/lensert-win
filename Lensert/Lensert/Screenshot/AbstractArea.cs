@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Lensert.Screenshot
 {
-    abstract class AbstractArea : IScreenshot
+    abstract class AbstractArea : ScreenshotFactory
     {
         protected readonly SelectionForm _selectionForm;
 
@@ -23,12 +23,12 @@ namespace Lensert.Screenshot
             _selectionForm.Close();
         }
         
-        public virtual Rectangle GetArea()
+        protected override Rectangle GetArea()
         {
             if (_selectionForm.Visible)
                 return Rectangle.Empty;
 
-            var screenshot = ScreenshotFactory.Create<FullScreen>();
+            var screenshot = ScreenshotProvider.Create<FullScreen>();
             _selectionForm.Screenshot = screenshot;
             _selectionForm.ShowDialog();
             return _selectionForm.SelectedArea; 

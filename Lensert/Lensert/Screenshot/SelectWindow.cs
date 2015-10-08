@@ -26,7 +26,7 @@ namespace Lensert.Screenshot
             _selectionForm.SelectedArea = selectedRectangle;
         }
 
-        public override Rectangle GetArea()
+        protected override Rectangle GetArea()
         {
             _rectangles = NativeHelper.GetWindowDimensions();
             return base.GetArea();
