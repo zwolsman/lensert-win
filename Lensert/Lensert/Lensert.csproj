@@ -63,7 +63,6 @@
     <Compile Include="Forms\Controls\ExplorerListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Classes\DummyImageProvider.cs" />
     <Compile Include="Classes\EventArgs\HotkeyEventArgs.cs" />
     <Compile Include="Classes\NotificationProvider.cs" />
     <Compile Include="Classes\LensertClient.cs" />
@@ -95,8 +94,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Classes\ScreenshotProvider.cs" />
-    <Compile Include="Classes\ScreenshotType.cs" />
     <Compile Include="Classes\NativeHelper.cs" />
     <Compile Include="Screenshot\AbstractArea.cs" />
     <Compile Include="Screenshot\FullScreen.cs" />

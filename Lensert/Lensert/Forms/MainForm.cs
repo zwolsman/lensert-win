@@ -1,4 +1,5 @@
-﻿using Shortcut;
+﻿using Lensert.Screenshot;
+using Shortcut;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -71,9 +72,9 @@ namespace Lensert
             await ScreenshotHandler(type);
         }
 
-        private async Task<string> ScreenshotHandler(ScreenshotType type)
+        private async Task<string> ScreenshotHandler(Type type)
         {
-            var screenshot = ScreenshotProvider.GetScreenshot(type);
+            var screenshot = ScreenshotFactory.Create(type);
             if (screenshot == null)
                 return null;
 
@@ -109,7 +110,7 @@ namespace Lensert
 
         private async void captureImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            await ScreenshotHandler(ScreenshotType.Area);
+            await ScreenshotHandler(typeof(SelectArea));
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
