@@ -8,6 +8,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -72,24 +73,41 @@ namespace Lensert
             await ScreenshotHandler(type);
         }
 
-        private async Task<string> ScreenshotHandler(Type type)
+        private async Task ScreenshotHandler(Type type)
         {
             var screenshot = ScreenshotFactory.Create(type);
             if (screenshot == null)
-                return null;
+                return;
 
-            var link = await _client.UploadImageAsync(screenshot);
+            try
+            {
+                var link = await _client.UploadImageAsync(screenshot);
 
-            Console.WriteLine($"Got link '{link}'");
+                Console.WriteLine($"Got link '{link}'");
 
-            if (Preferences.Default.ShowNotification)
-                NotificationProvider.Show(link);
+                if (Preferences.Default.ShowNotification)
+                {
+                    NotificationProvider.Show(
+                        "Succesful Upload!",
+                        "Your image was uploaded. Click here to open it.",
+                        () => Process.Start(link));
+                }
 
-            if (Preferences.Default.CopyToClipboard)                                                                                         
-                Clipboard.SetText(link);
+                if (Preferences.Default.CopyToClipboard)
+                    Clipboard.SetText(link);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("Probably offline..");
 
-            screenshot?.Dispose();
-            return link;
+                NotificationProvider.Show(
+                    "Upload failed :(",
+                    "Your machine seems to be offline. Don't worry your screenshot was saved localy and will be uploaded when you re-connect.");
+            }
+            finally
+            {
+                screenshot?.Dispose();
+            }
         }
 
         void InitializeHotkeys()

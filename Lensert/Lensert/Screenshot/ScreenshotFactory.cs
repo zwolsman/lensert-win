@@ -19,7 +19,7 @@ namespace Lensert.Screenshot
 
             return _screenshotDictionary[type];
         }
-
+        
         public static Bitmap Create(Type type)
         {
             if (!typeof(IScreenshot).IsAssignableFrom(type))
