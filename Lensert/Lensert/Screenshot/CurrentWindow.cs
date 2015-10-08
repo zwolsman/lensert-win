@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Lensert.Screenshot
 {
-    interface IScreenshot
+    class CurrentWindow : ScreenshotFactory
     {
-        Rectangle GetArea();
+        protected override Rectangle GetArea()
+            => NativeHelper.GetForegroundWindowAea();
     }
 }

@@ -5,16 +5,19 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using Timer = System.Threading.Timer;
 
 namespace Lensert
 {
     internal static class Utils
     {
         private static readonly HotkeyConverter _hotkeyConverter = new HotkeyConverter();
-
+        
         private static IEnumerable<SettingsPropertyValue> GetSettings() 
             => Preferences.Default.PropertyValues.Cast<SettingsPropertyValue>();
 
@@ -29,13 +32,13 @@ namespace Lensert
         
         private static readonly Dictionary<Hotkey, Type> _screenshotTypes = new Dictionary<Hotkey, Type>
         {
-            //[Preferences.Default.HotkeyClipboard] = ScreenshotType.Clipboard,
+            [Preferences.Default.HotkeyClipboard] = typeof(Screenshot.Clipboard),
             [Preferences.Default.HotkeySelectArea] = typeof(SelectArea),
-            //[Preferences.Default.HotkeySelectCurrentWindow] = ScreenshotType.CurrentWindow,
+            [Preferences.Default.HotkeySelectCurrentWindow] = typeof(CurrentWindow),
             [Preferences.Default.HotkeySelectFullscreen] = typeof(FullScreen),
             [Preferences.Default.HotkeySelectWindow] = typeof(SelectWindow)
         };
-
+        
         public static SettingsPropertyValue FindSettingByValue(object defaultValue)
             => GetSettings().FirstOrDefault(setting => setting.PropertyValue.Equals(defaultValue));
         

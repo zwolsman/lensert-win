@@ -13,28 +13,31 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Clipboard = System.Windows.Forms.Clipboard;
+
 namespace Lensert
 {
     public partial class MainForm : Form
     {
         private readonly PreferencesForm _preferencesForm;
-        
         private readonly HotkeyBinder _hotkeyBinder;
+
         private LensertClient _client;
 
         public MainForm()
         {
             InitializeComponent();
-
-            components.Add(NotificationProvider.NotifyIcon);
-
+            
             _preferencesForm = new PreferencesForm();
+            _hotkeyBinder = new HotkeyBinder();
+
             _preferencesForm.AccountChanged += PreferencesForm_AccountChanged;
             _preferencesForm.HotkeyChanged += PreferencesForm_HotkeyChanged;
 
             NotificationProvider.PreferencesForm = _preferencesForm;
 
-            _hotkeyBinder = new HotkeyBinder();
+            components.Add(NotificationProvider.NotifyIcon);
+
             if (Preferences.Default.RememberMe)
                 Login();
 
@@ -75,7 +78,7 @@ namespace Lensert
 
         private async Task ScreenshotHandler(Type type)
         {
-            var screenshot = ScreenshotFactory.Create(type);
+            var screenshot = ScreenshotProvider.Create(type);
             if (screenshot == null)
                 return;
 

@@ -8,9 +8,9 @@ using System.Windows.Forms;
 
 namespace Lensert.Screenshot
 {
-    class FullScreen : IScreenshot
+    class FullScreen : ScreenshotFactory
     {
-        public Rectangle GetArea()
+        protected override Rectangle GetArea()
             => SystemInformation.VirtualScreen;
     }
 }

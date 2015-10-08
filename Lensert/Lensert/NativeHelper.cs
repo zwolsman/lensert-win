@@ -53,7 +53,7 @@ namespace Lensert
         private static extern bool DeleteDC(IntPtr dcHandle);
 
         [DllImport("gdi32.dll")]
-        public static extern bool DeleteObject(IntPtr objectHandle);
+        private static extern bool DeleteObject(IntPtr objectHandle);
 
         [DllImport("gdi32.dll")]
         public static extern IntPtr SelectObject(IntPtr dcHandle, IntPtr objectHandle);
@@ -62,7 +62,7 @@ namespace Lensert
         private static extern IntPtr CreateCompatibleBitmap(IntPtr dcHandle, int width, int height);
 
         [DllImport("gdi32.dll")]
-        public static extern bool BitBlt(IntPtr destinationDcHandle, int destinationX, int destinationY, int width, int height, IntPtr sourceDcHandle, int sourceX, int sourceY, CopyPixelOperation rasterOperation);
+        private static extern bool BitBlt(IntPtr destinationDcHandle, int destinationX, int destinationY, int width, int height, IntPtr sourceDcHandle, int sourceX, int sourceY, CopyPixelOperation rasterOperation);
         
         [DllImport("user32.dll")]
         private static extern bool EnumWindows(EnumWindowsProc enumProc, IntPtr lParam);

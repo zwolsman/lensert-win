@@ -66,6 +66,8 @@
     <Compile Include="EventArgs\HotkeyEventArgs.cs" />
     <Compile Include="NotificationProvider.cs" />
     <Compile Include="LensertClient.cs" />
+    <Compile Include="Screenshot\Clipboard.cs" />
+    <Compile Include="Screenshot\CurrentWindow.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="EventArgs\AccountEventArgs.cs" />
     <Compile Include="Forms\MainForm.cs">
@@ -97,8 +99,8 @@
     <Compile Include="NativeHelper.cs" />
     <Compile Include="Screenshot\AbstractArea.cs" />
     <Compile Include="Screenshot\FullScreen.cs" />
-    <Compile Include="Screenshot\IScreenshot.cs" />
     <Compile Include="Screenshot\ScreenshotFactory.cs" />
+    <Compile Include="Screenshot\ScreenshotProvider.cs" />
     <Compile Include="Screenshot\SelectArea.cs" />
     <Compile Include="Screenshot\SelectWindow.cs" />
     <EmbeddedResource Include="Forms\MainForm.resx">
