@@ -63,11 +63,11 @@
     <Compile Include="Forms\Controls\ExplorerListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Classes\EventArgs\HotkeyEventArgs.cs" />
-    <Compile Include="Classes\NotificationProvider.cs" />
-    <Compile Include="Classes\LensertClient.cs" />
-    <Compile Include="Classes\Utils.cs" />
-    <Compile Include="Classes\EventArgs\AccountEventArgs.cs" />
+    <Compile Include="EventArgs\HotkeyEventArgs.cs" />
+    <Compile Include="NotificationProvider.cs" />
+    <Compile Include="LensertClient.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="EventArgs\AccountEventArgs.cs" />
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,7 +94,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Classes\NativeHelper.cs" />
+    <Compile Include="NativeHelper.cs" />
     <Compile Include="Screenshot\AbstractArea.cs" />
     <Compile Include="Screenshot\FullScreen.cs" />
     <Compile Include="Screenshot\IScreenshot.cs" />
