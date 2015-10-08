@@ -98,6 +98,12 @@
     <Compile Include="Classes\ScreenshotProvider.cs" />
     <Compile Include="Classes\ScreenshotType.cs" />
     <Compile Include="Classes\NativeHelper.cs" />
+    <Compile Include="Screenshot\AbstractArea.cs" />
+    <Compile Include="Screenshot\FullScreen.cs" />
+    <Compile Include="Screenshot\IScreenshot.cs" />
+    <Compile Include="Screenshot\ScreenshotFactory.cs" />
+    <Compile Include="Screenshot\SelectArea.cs" />
+    <Compile Include="Screenshot\SelectWindow.cs" />
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
