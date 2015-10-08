@@ -16,14 +16,13 @@ namespace Lensert
         public static NotifyIcon NotifyIcon { get; }
 
         public static PreferencesForm PreferencesForm { get; set; }
-        private static string _link;
+
+        private static Action _clicked;
 
         static NotificationProvider()
         {
             NotifyIcon = new NotifyIcon
             {
-                BalloonTipText = "Click here to open uploaded screenshot.",
-                BalloonTipTitle = "Upload succesful!",
                 //BalloonTipIcon = ToolTipIcon.Info,
                 Visible = true,
                 Icon = Resources.lensert_icon_fresh,
@@ -80,12 +79,15 @@ namespace Lensert
 
         private static void OnBalloonClicked(object sender, EventArgs eventArgs)
         {
-            Process.Start(_link);
+            _clicked();
         }
-
-        public static void Show(string link)
+       
+        public static void Show(string title, string text, Action clicked = null)
         {
-            _link = link;
+            _clicked = clicked;
+
+            NotifyIcon.BalloonTipTitle = title;
+            NotifyIcon.BalloonTipText = text;
             NotifyIcon.ShowBalloonTip(500);
         }
     }

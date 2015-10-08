@@ -12,21 +12,26 @@ namespace Lensert.Screenshot
     {
         private static Dictionary<Type, IScreenshot> _screenshotDictionary = new Dictionary<Type, IScreenshot>();
 
-        private static IScreenshot GetScreenshot<T>() where T : IScreenshot
-        {
-            var type = typeof(T);
+        private static IScreenshot GetScreenshot(Type type)
+        { 
             if (!_screenshotDictionary.ContainsKey(type))
-                _screenshotDictionary[type] = Activator.CreateInstance<T>();
+                _screenshotDictionary[type] = (IScreenshot) Activator.CreateInstance(type, true);
 
             return _screenshotDictionary[type];
         }
-
-        public static Bitmap Create<T>() where T : IScreenshot
+        
+        public static Bitmap Create(Type type)
         {
-            var screenshot = GetScreenshot<T>();
+            if (!typeof(IScreenshot).IsAssignableFrom(type))
+                throw new ArgumentException("Type doesn't inherit from IScreenshot", nameof(type));
+
+            var screenshot = GetScreenshot(type);
             var area = screenshot.GetArea();
 
             return NativeHelper.TakeScreenshot(area);
         }
+
+        public static Bitmap Create<T>() where T : IScreenshot
+            => Create(typeof(T));
     }
 }

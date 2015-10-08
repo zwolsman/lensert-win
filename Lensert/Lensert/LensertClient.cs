@@ -44,25 +44,36 @@ namespace Lensert
                 {new StringContent(Password), "password"}
             };
 
-            var responseMessage = await _httpClient.PostAsync("user/login", multipartDataContent);
-            if (responseMessage.IsSuccessStatusCode)
+            try
             {
-                IEnumerable<string> values;
-                if (responseMessage.Headers.TryGetValues("X-Lensert-Token", out values))
-                {
-                    var token = values.FirstOrDefault();
-                    if (!string.IsNullOrEmpty(token))
-                    {
-                        Console.WriteLine("Logged in..!");
-                        _httpClient.DefaultRequestHeaders.Add("X-Lensert-Token", token);
+                var responseMessage = await _httpClient.PostAsync("user/login", multipartDataContent);
 
-                        LoggedIn = true;
-                        return true;
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    IEnumerable<string> values;
+                    if (responseMessage.Headers.TryGetValues("X-Lensert-Token", out values))
+                    {
+                        var token = values.FirstOrDefault();
+                        if (!string.IsNullOrEmpty(token))
+                        {
+                            Console.WriteLine("Logged in..!");
+                            _httpClient.DefaultRequestHeaders.Add("X-Lensert-Token", token);
+
+                            LoggedIn = true;
+                            return true;
+                        }
                     }
                 }
             }
-
-            multipartDataContent.Dispose();
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("Probably offline.");
+                return false;
+            }
+            finally
+            {
+                multipartDataContent.Dispose();
+            }
 
             Console.WriteLine("Not a valid login!");
             return false;

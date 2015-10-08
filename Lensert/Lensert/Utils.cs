@@ -1,4 +1,5 @@
-﻿using Shortcut;
+﻿using Lensert.Screenshot;
+using Shortcut;
 using Shortcut.Forms;
 using System;
 using System.Collections.Generic;
@@ -25,14 +26,14 @@ namespace Lensert
             [nameof(Preferences.HotkeySelectFullscreen)] = "Take screenshot of all screens",
             [nameof(Preferences.HotkeySelectWindow)] = "Take screenshot of a specific window"
         };
-
-        private static readonly Dictionary<Hotkey, ScreenshotType> _screenshotTypes = new Dictionary<Hotkey, ScreenshotType>
+        
+        private static readonly Dictionary<Hotkey, Type> _screenshotTypes = new Dictionary<Hotkey, Type>
         {
-            [Preferences.Default.HotkeyClipboard] = ScreenshotType.Clipboard,
-            [Preferences.Default.HotkeySelectArea] = ScreenshotType.Area,
-            [Preferences.Default.HotkeySelectCurrentWindow] = ScreenshotType.CurrentWindow,
-            [Preferences.Default.HotkeySelectFullscreen] = ScreenshotType.Fullscreen,
-            [Preferences.Default.HotkeySelectWindow] = ScreenshotType.SelectWindow
+            //[Preferences.Default.HotkeyClipboard] = ScreenshotType.Clipboard,
+            [Preferences.Default.HotkeySelectArea] = typeof(SelectArea),
+            //[Preferences.Default.HotkeySelectCurrentWindow] = ScreenshotType.CurrentWindow,
+            [Preferences.Default.HotkeySelectFullscreen] = typeof(FullScreen),
+            [Preferences.Default.HotkeySelectWindow] = typeof(SelectWindow)
         };
 
         public static SettingsPropertyValue FindSettingByValue(object defaultValue)
@@ -40,12 +41,12 @@ namespace Lensert
         
         public static IEnumerable<SettingsPropertyValue> SettingsOfType(Type type)
             => GetSettings().Where(setting => setting.Property.PropertyType == type); 
+        
+        public static Type GetScreenshotType(this Hotkey hotkey)
+            => _screenshotTypes[hotkey];
 
-        public static ScreenshotType GetScreenshotType(this Hotkey hotkey) =>
-            _screenshotTypes[hotkey];
-
-        public static Hotkey GetHotkey(this ScreenshotType screenshotType) =>
-            _screenshotTypes.First(type => type.Value == screenshotType).Key;
+        public static Hotkey GetHotkey(Type type) =>
+            _screenshotTypes.First(t => t.Value == type).Key;
         
         public static string GetSettingDescription(this SettingsPropertyValue setting)              //maybe use ContainsKey and [] ? (performance wise)
             => _descriptions.FirstOrDefault(des => des.Key == setting.Name).Value;
