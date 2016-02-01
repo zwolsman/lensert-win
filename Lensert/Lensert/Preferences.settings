@@ -24,7 +24,7 @@
       <Value Profile="(Default)">Red</Value>
     </Setting>
     <Setting Name="StartupOnLogon" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="HotkeySelectWindow" Type="Shortcut.Hotkey" Scope="User">
       <Value Profile="(Default)">Alt, Shift, S</Value>

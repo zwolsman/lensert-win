@@ -42,6 +42,10 @@
   <PropertyGroup>
     <StartupObject>Lensert.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -66,7 +70,6 @@
     <Compile Include="EventArgs\HotkeyEventArgs.cs" />
     <Compile Include="NotificationProvider.cs" />
     <Compile Include="LensertClient.cs" />
-    <Compile Include="Screenshot\Clipboard.cs" />
     <Compile Include="Screenshot\CurrentWindow.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="EventArgs\AccountEventArgs.cs" />
