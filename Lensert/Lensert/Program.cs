@@ -126,6 +126,7 @@ namespace Lensert
             public SecretForm()
             {
                 BindHotkeys();
+                NotificationProvider.Show();
             }
 
             protected override void SetVisibleCore(bool value)

@@ -7,13 +7,13 @@ namespace Lensert
 {
     internal static class NotificationProvider
     {
-        public static NotifyIcon NotifyIcon { get; }
+        private static readonly NotifyIcon _notifyIcon;
 
         private static Action _clicked;
 
         static NotificationProvider()
         {
-            NotifyIcon = new NotifyIcon
+            _notifyIcon = new NotifyIcon
             {
                 //BalloonTipIcon = ToolTipIcon.Info,
                 Visible = true,
@@ -21,7 +21,7 @@ namespace Lensert
                 Text = "Lensert"
             };
             
-            NotifyIcon.BalloonTipClicked += OnBalloonClicked;
+            _notifyIcon.BalloonTipClicked += OnBalloonClicked;
 
             var trayIconContextMenu = new ContextMenuStrip();
             var closeMenuItem = new ToolStripMenuItem();
@@ -37,12 +37,12 @@ namespace Lensert
             closeMenuItem.Click += CloseMenuItem_Click;
 
             trayIconContextMenu.ResumeLayout(false);
-            NotifyIcon.ContextMenuStrip = trayIconContextMenu;
+            _notifyIcon.ContextMenuStrip = trayIconContextMenu;
         }
 
         private static void CloseMenuItem_Click(object sender, EventArgs e)
         {
-            NotifyIcon.Visible = false;
+            _notifyIcon.Visible = false;
             Application.Exit();
         }
         
@@ -53,16 +53,16 @@ namespace Lensert
 
         public static void Show()
         {
-            NotifyIcon.Visible = true;
+            _notifyIcon.Visible = true;
         }
 
         public static void Show(string title, string text, Action clicked = null)
         {
             _clicked = clicked;
 
-            NotifyIcon.BalloonTipTitle = title;
-            NotifyIcon.BalloonTipText = text;
-            NotifyIcon.ShowBalloonTip(500);
+            _notifyIcon.BalloonTipTitle = title;
+            _notifyIcon.BalloonTipText = text;
+            _notifyIcon.ShowBalloonTip(500);
         }
     }
 }
