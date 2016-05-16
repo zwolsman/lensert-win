@@ -46,9 +46,7 @@ namespace Lensert
                     return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W);
                 case SettingType.FullscreenHotkey:
                     return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F);
-                case SettingType.BackgroundColor:
-                    return Color.White;
-                case SettingType.ForegroundColor:
+                case SettingType.SelectionColor:
                     return Color.Red;
                 default:
                     throw new ArgumentException("Invalid setting type", nameof(type));
@@ -61,7 +59,6 @@ namespace Lensert
         SelectAreaHotkey,
         SelectWindowHotkey,
         FullscreenHotkey,
-        BackgroundColor,
-        ForegroundColor
+        SelectionColor
     }
 }

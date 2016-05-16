@@ -14,18 +14,14 @@ namespace Lensert
 {
     public static class LensertClient
     {
-        private const string API_URL = "http://lensert.com/api/v2/";
+        private const string API_URL = "http://lensert.com/upload";
 
         private static readonly HttpClient _httpClient;
         private static readonly JavaScriptSerializer _javaScriptSerializer;
         
         static LensertClient()
         {
-            _httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(API_URL)
-            };
-
+            _httpClient = new HttpClient();
             _javaScriptSerializer = new JavaScriptSerializer();
         }
 
@@ -43,7 +39,7 @@ namespace Lensert
                 {streamContent, "shot", "screenshot.png"}
             };
 
-            var responseMessage = await _httpClient.PostAsync("shot/upload", multipartDataContent);
+            var responseMessage = await _httpClient.PostAsync(API_URL, multipartDataContent);
             if (!responseMessage.IsSuccessStatusCode)
                 return null;
 

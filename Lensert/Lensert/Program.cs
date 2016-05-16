@@ -48,7 +48,7 @@ namespace Lensert
         private static async void HandleHotkey(Type template)
         {
             var screenshot = ScreenshotFactory.Create(template);
-            if (screenshot == null)
+            if (screenshot == null || screenshot.Size.Width <= 1 || screenshot.Size.Height <= 1)
                 return;
 
             try
