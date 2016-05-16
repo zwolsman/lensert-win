@@ -61,34 +61,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\Controls\CueTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\Controls\ExplorerListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="EventArgs\HotkeyEventArgs.cs" />
     <Compile Include="NotificationProvider.cs" />
     <Compile Include="LensertClient.cs" />
     <Compile Include="Screenshot\CurrentWindow.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="EventArgs\AccountEventArgs.cs" />
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\PreferencesForm.cs">
+    <Compile Include="Screenshot\SelectionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\PreferencesForm.Designer.cs">
-      <DependentUpon>PreferencesForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\SelectionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\SelectionForm.Designer.cs">
+    <Compile Include="Screenshot\SelectionForm.Designer.cs">
       <DependentUpon>SelectionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Preferences.cs" />
@@ -109,10 +96,7 @@
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\PreferencesForm.resx">
-      <DependentUpon>PreferencesForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SelectionForm.resx">
+    <EmbeddedResource Include="Screenshot\SelectionForm.resx">
       <DependentUpon>SelectionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -146,12 +130,6 @@
   <ItemGroup>
     <None Include="README.md" />
     <None Include="Resources\lensert_icon_fresh.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Knipsel.PNG" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\testpf.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shortcut\Shortcut.csproj">

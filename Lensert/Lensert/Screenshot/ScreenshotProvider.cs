@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lensert.Screenshot
 {
     static class ScreenshotProvider
     {
-        private static Dictionary<Type, ScreenshotFactory> _factories = new Dictionary<Type, ScreenshotFactory>();
+        private static readonly Dictionary<Type, ScreenshotFactory> _factories = new Dictionary<Type, ScreenshotFactory>();
                 
         public static Image Create(Type type)
         {

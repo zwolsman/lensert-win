@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace Lensert.Screenshot
@@ -12,7 +7,7 @@ namespace Lensert.Screenshot
     {
         protected readonly SelectionForm _selectionForm;
 
-        public AbstractArea()
+        protected AbstractArea()
         {
             _selectionForm = new SelectionForm();
             _selectionForm.MouseUp += SelectionForm_MouseUp;

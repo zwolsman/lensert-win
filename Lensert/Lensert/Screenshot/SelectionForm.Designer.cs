@@ -1,4 +1,4 @@
-﻿namespace Lensert
+﻿namespace Lensert.Screenshot
 {
     partial class SelectionForm
     {

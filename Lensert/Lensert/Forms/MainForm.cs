@@ -19,7 +19,6 @@ namespace Lensert
 {
     public partial class MainForm : Form
     {
-        private readonly PreferencesForm _preferencesForm;
         private readonly HotkeyBinder _hotkeyBinder;
 
         private LensertClient _client;
@@ -28,25 +27,11 @@ namespace Lensert
         {
             InitializeComponent();
             
-            _preferencesForm = new PreferencesForm();
             _hotkeyBinder = new HotkeyBinder();
-
-            _preferencesForm.AccountChanged += PreferencesForm_AccountChanged;
-            _preferencesForm.HotkeyChanged += PreferencesForm_HotkeyChanged;
-
-            NotificationProvider.PreferencesForm = _preferencesForm;
 
             components.Add(NotificationProvider.NotifyIcon);
 
-            if (Preferences.Default.RememberMe)
-                Login();
-
             InitializeHotkeys();
-        }
-
-        private void Login()
-        {
-            _preferencesForm.Login(Preferences.Default.Username, Preferences.Default.Password);
         }
 
         protected override void SetVisibleCore(bool value)
@@ -60,14 +45,6 @@ namespace Lensert
             _hotkeyBinder.Unbind(e.OldHotkey);
 
             InitializeHotkeys();
-        }
-
-        private void PreferencesForm_AccountChanged(object sender, AccountEventArgs e)
-        {
-            _client = e.LensertClient;
-
-            if (_client != null)
-                myImagesToolStripMenuItem.Visible = _client.LoggedIn;
         }
 
         private async void OnHotkeyPressed(HotkeyPressedEventArgs hotkeyEventArgs)
@@ -88,7 +65,7 @@ namespace Lensert
 
                 Console.WriteLine($"Got link '{link}'");
 
-                if (Preferences.Default.ShowNotification)
+                if (Preferences.Default.ShowNotification)   // TODO: new settings
                 {
                     NotificationProvider.Show(
                         "Succesful Upload!",
@@ -122,13 +99,7 @@ namespace Lensert
             foreach (var hotkey in hotkeys)
                 _hotkeyBinder.Bind(hotkey, OnHotkeyPressed);
         }
-
-        private void myImagesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_client.LoggedIn)
-                Process.Start($"http://lnsrt.me/user/{_client.Username}");
-        }
-
+        
         private async void captureImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             await ScreenshotHandler(typeof(SelectArea));
@@ -138,12 +109,5 @@ namespace Lensert
         {
             Application.Exit();
         }
-
-        private void OpenPreferences_UI(object sender, EventArgs e)
-        {
-            if (!_preferencesForm.Visible)
-            _preferencesForm.ShowDialog();
-        }
-
     }
 }

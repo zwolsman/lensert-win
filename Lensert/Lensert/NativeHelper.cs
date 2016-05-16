@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Lensert
@@ -73,37 +70,12 @@ namespace Lensert
         [DllImport("user32.dll")]
         private static extern bool IsWindow(IntPtr handle);
 
-        [DllImport("user32.dll")]
-        private static extern int GetWindowTextLength(IntPtr handle);
-
         [DllImport("dwmapi.dll")]
         private static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out RECT pvAttribute, int cbAttribute);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
         
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, string lp);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
-
-        [DllImport("uxtheme", CharSet = CharSet.Unicode)]
-        public extern static int SetWindowTheme(IntPtr hWnd, string textSubAppName, string textSubIdList);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll")]
-        static extern IntPtr DefWindowProc(IntPtr hWnd, int uMsg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        static extern int SetWindowLong(IntPtr hWnd, int nIndex, WinProc dwNewLong);
-
-        private delegate IntPtr WinProc(IntPtr hWnd, int Msg, int wParam, int lParam);
-
-        const int GWL_WNDPROC = -4;
-
         private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
         public const int LVM_FIRST = 0x1000;
         public const int LVM_SETEXTENDEDLISTVIEWSTYLE = LVM_FIRST + 54;
@@ -119,24 +91,12 @@ namespace Lensert
             public int length;
             public int flags;
             public int showCmd;
-            public System.Drawing.Point ptMinPosition;
-            public System.Drawing.Point ptMaxPosition;
-            public System.Drawing.Rectangle rcNormalPosition;
+            public Point ptMinPosition;
+            public Point ptMaxPosition;
+            public Rectangle rcNormalPosition;
         }
-
         
-        const uint SW_HIDE = 0;
-        const uint SW_SHOWNORMAL = 1;
-        const uint SW_NORMAL = 1;
-        const uint SW_SHOWMINIMIZED = 2;
-        const uint SW_SHOWMAXIMIZED = 3;
         const uint SW_MAXIMIZE = 3;
-        const uint SW_SHOWNOACTIVATE = 4;
-        const uint SW_SHOW = 5;
-        const uint SW_MINIMIZE = 6;
-        const uint SW_SHOWMINNOACTIVE = 7;
-        const uint SW_SHOWNA = 8;
-        const uint SW_RESTORE = 9;
         
         private static int GetWindowState(IntPtr handle)
         {
@@ -145,23 +105,7 @@ namespace Lensert
             GetWindowPlacement(handle, ref placement);
             return placement.showCmd;
         }
-        private static IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam)
-        {
-            var result = DefWindowProc(hwnd, msg, wParam, lParam).ToInt32();
-
-            return new IntPtr(result);
-        }
-
-        public static void HookWindow(IntPtr hwnd)
-        {
-            SetWindowLong(hwnd, -4, WndProc);
-        }
-
-        private static IntPtr WndProc(IntPtr hWnd, int Msg, int wParam, int lParam)
-        {
-            throw new NotImplementedException();
-        }
-
+       
         public static Rectangle GetForegroundWindowAea()
         {
             var handle = GetForegroundWindow();
