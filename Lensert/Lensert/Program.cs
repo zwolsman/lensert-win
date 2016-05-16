@@ -18,19 +18,8 @@ namespace Lensert
 {
     internal static class Program
     {
-        private static readonly Hotkey _defaultAreaHotkey;
-        private static readonly Hotkey _defaultWindowHotkey;
-        private static readonly Hotkey _defaultFullHotkey;
         private static HotkeyBinder _binder;
-
-        static Program()
-        {
-            _defaultAreaHotkey = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.A);
-            _defaultWindowHotkey = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W);
-            _defaultFullHotkey = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F);
-            
-        }
-
+        
         [STAThread]
         public static void Main()
         {
@@ -46,10 +35,10 @@ namespace Lensert
 
         private static void BindHotkeys()
         {
-            var area = Settings.Instance.GetValue<Hotkey>("Area", "Hotkey") ?? _defaultAreaHotkey;
-            var window = Settings.Instance.GetValue<Hotkey>("Window", "Hotkey") ?? _defaultWindowHotkey;
-            var full = Settings.Instance.GetValue<Hotkey>("Fullscreen", "Hotkey") ?? _defaultFullHotkey;
-            
+            var area = Settings.Instance.GetSetting<Hotkey>(SettingType.SelectAreaHotkey);
+            var window = Settings.Instance.GetSetting<Hotkey>(SettingType.SelectWindowHotkey);
+            var full = Settings.Instance.GetSetting<Hotkey>(SettingType.FullscreenHotkey);
+
             _binder = new HotkeyBinder();
             _binder.Bind(area, args => HandleHotkey(typeof (UserSelectionTemplate)));
             _binder.Bind(window, args => HandleHotkey(typeof (CurrentWindowTemplate)));

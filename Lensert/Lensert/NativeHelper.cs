@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -199,17 +200,34 @@ namespace Lensert
             return rect.ToRectangle();
         }
 
-        public static void WriteToIni(string path, string key, string value, string section = null)
+        public static void WriteToIni(string path, string key, string value, string section)
         {
             WritePrivateProfileString(section, key, value, path);
         }
 
-        public static string ReadFromIni(string path, string key, string section = null)
+        public static string ReadFromIni(string path, string key, string section)
         {
             var builder = new StringBuilder(255);
             GetPrivateProfileString(section, key, "", builder, builder.Capacity, path);
 
             return builder.ToString();
+        }
+
+        public static T ParseValueFromIni<T>(string path, string key, string section)
+        {
+            try
+            {
+                var converter = TypeDescriptor.GetConverter(typeof(T));
+                var value = ReadFromIni(path, key, section);
+
+                return string.IsNullOrEmpty(value)
+                    ? default(T)
+                    : (T)converter.ConvertFromString(value);
+            }
+            catch
+            {
+                return default(T);
+            }
         }
     }
 }

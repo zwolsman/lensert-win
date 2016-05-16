@@ -1,14 +1,16 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Drawing;
 using System.IO;
-using System.Linq.Expressions;
+using System.Windows.Forms;
+using Shortcut;
 
 namespace Lensert
 {
     internal sealed class Settings
     {
-        public static Settings Instance { get; }
         private readonly string _iniPath;
+
+        public static Settings Instance { get; }
 
         static Settings()
         {
@@ -26,29 +28,40 @@ namespace Lensert
                 File.Create(_iniPath).Dispose();
         }
 
-        public T GetValue<T>(string key, string section = null)
+        public T GetSetting<T>(SettingType type)
         {
-            try
-            {
-                var converter = TypeDescriptor.GetConverter(typeof (T));
-                var value = NativeHelper.ReadFromIni(_iniPath, key, section);
-            
-                return string.IsNullOrEmpty(value)
-                    ? default(T)
-                    : (T) converter.ConvertFromString(value);
-            }
-            catch
-            {
-                return default(T);
-            }
+            var value = NativeHelper.ParseValueFromIni<T>(_iniPath, type.ToString(), "Settings");
+            return value == null || value.Equals(default(T))
+                ? (T) DefaultSetting(type)
+                : value;
         }
 
-        //public void SetValue<T>(string key, T value, string section = null)
-        //{
-        //    var converter = TypeDescriptor.GetConverter(typeof (T));
-        //    var strValue = converter.ConvertToString(value);
+        private object DefaultSetting(SettingType type)
+        {
+            switch (type)
+            {
+                case SettingType.SelectAreaHotkey:
+                    return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.A);
+                case SettingType.SelectWindowHotkey:
+                    return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W);
+                case SettingType.FullscreenHotkey:
+                    return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F);
+                case SettingType.BackgroundColor:
+                    return Color.White;
+                case SettingType.ForegroundColor:
+                    return Color.Red;
+                default:
+                    throw new ArgumentException("Invalid setting type", nameof(type));
+            }
+        }
+    }
 
-        //    NativeHelper.WriteToIni(_iniPath, key, strValue, section);
-        //}
+    internal enum SettingType
+    {
+        SelectAreaHotkey,
+        SelectWindowHotkey,
+        FullscreenHotkey,
+        BackgroundColor,
+        ForegroundColor
     }
 }
