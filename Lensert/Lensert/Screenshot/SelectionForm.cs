@@ -41,11 +41,11 @@ namespace Lensert.Screenshot
                 _cleanScreenshot?.Dispose();
                 _shadedScreenshot?.Dispose();
 
-                _cleanScreenshot = ResizeImage(value, Bounds.Width - 12, Bounds.Height - 12);
+                _cleanScreenshot = ResizeImage(value, Bounds.Width, Bounds.Height);
 
                 _shadedScreenshot = new Bitmap(_cleanScreenshot);
                 using (var graphics = Graphics.FromImage(_shadedScreenshot))
-                    graphics.FillRectangle(_rectangleBrush, 0, 0, Bounds.Width - 12, Bounds.Height - 12);
+                    graphics.FillRectangle(_rectangleBrush, 0, 0, Bounds.Width, Bounds.Height);
 
                 BackgroundImage = _shadedScreenshot;
             }

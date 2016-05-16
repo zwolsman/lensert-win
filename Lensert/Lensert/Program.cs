@@ -41,13 +41,13 @@ namespace Lensert
 
             _binder = new HotkeyBinder();
             _binder.Bind(area, args => HandleHotkey(typeof (UserSelectionTemplate)));
-            _binder.Bind(window, args => HandleHotkey(typeof (CurrentWindowTemplate)));
+            _binder.Bind(window, args => HandleHotkey(typeof (SelectWindowTemplate)));
             _binder.Bind(full, args => HandleHotkey(typeof (FullScreenTemplate)));
         }
 
         private static async void HandleHotkey(Type template)
         {
-            var screenshot = ScreenshotFactory.Create(template);
+            var screenshot = ScreenshotFactory.Create(template);    
             if (screenshot == null || screenshot.Size.Width <= 1 || screenshot.Size.Height <= 1)
                 return;
 
@@ -58,8 +58,8 @@ namespace Lensert
                 Console.WriteLine($"Got link '{link}'");
 
                 NotificationProvider.Show(
-                    "Succesful Upload!",
-                    "Your image was uploaded. Click here to open it.",
+                    "Upload complete",
+                    link,
                     () => Process.Start(link));
 
                 Clipboard.SetText(link);
