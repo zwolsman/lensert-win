@@ -83,6 +83,13 @@ namespace Lensert
         [DllImport("kernel32")]
         static extern int GetPrivateProfileString(string section, string key, string standardValue, StringBuilder value, int len, string path);
 
+        [DllImport("gdi32.dll")]
+        static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+        public enum DeviceCap
+        {
+            VERTRES = 10,
+            DESKTOPVERTRES = 117
+        }
 
         private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
         public const int LVM_FIRST = 0x1000;
@@ -228,6 +235,16 @@ namespace Lensert
             {
                 return default(T);
             }
+        }
+
+        public static float GetScalingFactor()
+        {
+            var g = Graphics.FromHwnd(IntPtr.Zero);
+            var desktop = g.GetHdc();
+            var screenVertres = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
+            var desktopVertres = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
+
+            return desktopVertres / (float)screenVertres;
         }
     }
 }
