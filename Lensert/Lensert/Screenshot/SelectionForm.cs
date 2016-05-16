@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace Lensert.Screenshot
@@ -17,7 +19,7 @@ namespace Lensert.Screenshot
         public SelectionForm()
         {
             InitializeComponent();
-            Bounds = SystemInformation.VirtualScreen;
+            Bounds = NativeHelper.UnscaledBounds;
 
 #if (DEBUG)
             {
@@ -39,11 +41,11 @@ namespace Lensert.Screenshot
                 _cleanScreenshot?.Dispose();
                 _shadedScreenshot?.Dispose();
 
-                _cleanScreenshot = value;
+                _cleanScreenshot = ResizeImage(value, Bounds.Width - 12, Bounds.Height - 12);
 
                 _shadedScreenshot = new Bitmap(_cleanScreenshot);
                 using (var graphics = Graphics.FromImage(_shadedScreenshot))
-                    graphics.FillRectangle(_rectangleBrush, 0, 0, Bounds.Width, Bounds.Height);
+                    graphics.FillRectangle(_rectangleBrush, 0, 0, Bounds.Width - 12, Bounds.Height - 12);
 
                 BackgroundImage = _shadedScreenshot;
             }
@@ -129,6 +131,31 @@ namespace Lensert.Screenshot
                 y -= size.Height + DIMENSION_TEXT_OFFSET*2;
 
             e.Graphics.DrawString(dimension, Font, _textBrush, x, y); //draws string
+        }
+
+        private static Bitmap ResizeImage(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Lensert
 {
-    static class NativeHelper
+    internal static class NativeHelper
     {
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
@@ -90,6 +90,19 @@ namespace Lensert
             VERTRES = 10,
             DESKTOPVERTRES = 117
         }
+
+        static NativeHelper()
+        {
+            var factor = GetScalingFactor();
+            var virtualScreen = SystemInformation.VirtualScreen;
+
+            var width = (int)Math.Ceiling(factor * virtualScreen.Width);
+            var height = (int)Math.Ceiling(factor * virtualScreen.Height);
+
+            UnscaledBounds = new Rectangle(Point.Empty, new Size(width, height));
+        }
+
+        public static Rectangle UnscaledBounds { get; }
 
         private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
         public const int LVM_FIRST = 0x1000;
@@ -237,7 +250,7 @@ namespace Lensert
             }
         }
 
-        public static float GetScalingFactor()
+        private static float GetScalingFactor()
         {
             var g = Graphics.FromHwnd(IntPtr.Zero);
             var desktop = g.GetHdc();
