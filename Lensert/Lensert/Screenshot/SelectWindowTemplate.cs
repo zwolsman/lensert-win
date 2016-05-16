@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Lensert.Screenshot
 {
-    class SelectWindow : AbstractArea
+    internal sealed class SelectWindowTemplate : AbstractAreaTemplate
     {
         private IEnumerable<Rectangle> _rectangles;
 
-        public SelectWindow()
+        public SelectWindowTemplate()
         {
-            _selectionForm.MouseMove += SelectionForm_MouseMove; 
+            SelectionForm.MouseMove += SelectionForm_MouseMove;
         }
 
         private void SelectionForm_MouseMove(object sender, MouseEventArgs e)
@@ -23,7 +20,7 @@ namespace Lensert.Screenshot
             if (selectedRectangle == default(Rectangle))
                 return;
 
-            _selectionForm.SelectedArea = selectedRectangle;
+            SelectionForm.SelectedArea = selectedRectangle;
         }
 
         protected override Rectangle GetArea()

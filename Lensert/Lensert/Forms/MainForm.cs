@@ -55,7 +55,7 @@ namespace Lensert
 
         private async Task ScreenshotHandler(Type type)
         {
-            var screenshot = ScreenshotProvider.Create(type);
+            var screenshot = ScreenshotFactory.Create(type);
             if (screenshot == null)
                 return;
 
@@ -100,10 +100,6 @@ namespace Lensert
                 _hotkeyBinder.Bind(hotkey, OnHotkeyPressed);
         }
         
-        private async void captureImageToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            await ScreenshotHandler(typeof(SelectArea));
-        }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
 namespace Lensert.Screenshot
 {
-    abstract class ScreenshotFactory
+    internal abstract class AbstractScreenshotTemplate
     {
         protected abstract Rectangle GetArea();
 

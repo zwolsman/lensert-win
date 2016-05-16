@@ -14,12 +14,26 @@ namespace Lensert.Screenshot
         private Rectangle _selectedArea;
         private Image _shadedScreenshot, _cleanScreenshot;
 
+        public SelectionForm()
+        {
+            InitializeComponent();
+            Bounds = SystemInformation.VirtualScreen;
+
+#if (DEBUG)
+            {
+                TopMost = false;
+            }
+#endif
+            DoubleBuffered = true;
+
+            _textBrush = new SolidBrush(Preferences.Default.SelectionRectangleColor);
+            _rectangleBrush = new SolidBrush(Color.FromArgb(120, Color.White)); //This is actually a bug where the transparancykey with the Red does register the mous input 
+            _rectanglePen = new Pen(Preferences.Default.SelectionRectangleColor); //(fyi, with any other color the mouse would click through it)
+        }
+
         public Image Screenshot
         {
-            get
-            {
-                return _cleanScreenshot;
-            }
+            get { return _cleanScreenshot; }
             set
             {
                 _cleanScreenshot?.Dispose();
@@ -37,10 +51,7 @@ namespace Lensert.Screenshot
 
         public Rectangle SelectedArea
         {
-            get
-            {
-                return _selectedArea;
-            }
+            get { return _selectedArea; }
             set
             {
                 _selectedArea = value;
@@ -49,29 +60,12 @@ namespace Lensert.Screenshot
                 Update();
             }
         }
-        
-        public SelectionForm()
-        {
-            InitializeComponent();
-            Bounds = SystemInformation.VirtualScreen;
-
-#if (DEBUG)
-            {
-                TopMost = false;
-            }
-#endif
-            DoubleBuffered = true;
-            
-            _textBrush = new SolidBrush(Preferences.Default.SelectionRectangleColor);
-            _rectangleBrush = new SolidBrush(Color.FromArgb(120, Color.White));       //This is actually a bug where the transparancykey with the Red does register the mous input 
-            _rectanglePen = new Pen(Preferences.Default.SelectionRectangleColor);   //(fyi, with any other color the mouse would click through it)
-        }
 
         private void SelectionForm_Load(object sender, EventArgs e)
         {
             _selectedArea = Rectangle.Empty;
         }
-        
+
         private void SelectionForm_MouseUp(object sender, MouseEventArgs e)
         {
             Close();
@@ -120,21 +114,21 @@ namespace Lensert.Screenshot
             if (Bounds.Height <= borderRectangle.Bottom)
             {
                 var deltaBottom = borderRectangle.Bottom - Bounds.Bottom;
-                borderRectangle.Height -= deltaBottom == 0 ? 1 : deltaBottom;           //compensates for out of bounds (only visually, 
-            }                                                                           //screenshot does reach till the end and beyond)
-            e.Graphics.DrawRectangle(_rectanglePen, borderRectangle);                   //Draw the border
+                borderRectangle.Height -= deltaBottom == 0 ? 1 : deltaBottom; //compensates for out of bounds (only visually, 
+            } //screenshot does reach till the end and beyond)
+            e.Graphics.DrawRectangle(_rectanglePen, borderRectangle); //Draw the border
 
             var dimension = $"{_selectedArea.Width}x{_selectedArea.Height}";
-            var size = e.Graphics.MeasureString(dimension, Font);                       //generates dimension string
+            var size = e.Graphics.MeasureString(dimension, Font); //generates dimension string
 
-            float y = _selectedArea.Y + _selectedArea.Height + DIMENSION_TEXT_OFFSET;   //spaces the dimension text right bottom corner
-            float x = _selectedArea.X + _selectedArea.Width - size.Width;               //calculates the x_pos of the dimension 
+            float y = _selectedArea.Y + _selectedArea.Height + DIMENSION_TEXT_OFFSET; //spaces the dimension text right bottom corner
+            var x = _selectedArea.X + _selectedArea.Width - size.Width; //calculates the x_pos of the dimension 
 
             var currentScreenBounds = Screen.FromPoint(MousePosition).Bounds;
             if (y + size.Height > currentScreenBounds.Height)
-                y -= size.Height + DIMENSION_TEXT_OFFSET * 2;
+                y -= size.Height + DIMENSION_TEXT_OFFSET*2;
 
-            e.Graphics.DrawString(dimension, Font, _textBrush, x, y);                    //draws string
+            e.Graphics.DrawString(dimension, Font, _textBrush, x, y); //draws string
         }
     }
 }

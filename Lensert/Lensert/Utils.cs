@@ -33,10 +33,10 @@ namespace Lensert
         private static readonly Dictionary<Hotkey, Type> _screenshotTypes = new Dictionary<Hotkey, Type>
         {
            // [Preferences.Default.HotkeyClipboard] = typeof(Screenshot.Clipboard),
-            [Preferences.Default.HotkeySelectArea] = typeof(SelectArea),
-            [Preferences.Default.HotkeySelectCurrentWindow] = typeof(CurrentWindow),
-            [Preferences.Default.HotkeySelectFullscreen] = typeof(FullScreen),
-            [Preferences.Default.HotkeySelectWindow] = typeof(SelectWindow)
+            [Preferences.Default.HotkeySelectArea] = typeof(UserSelectionTemplate),
+            [Preferences.Default.HotkeySelectCurrentWindow] = typeof(CurrentWindowTemplate),
+            [Preferences.Default.HotkeySelectFullscreen] = typeof(FullScreenTemplate),
+            [Preferences.Default.HotkeySelectWindow] = typeof(SelectWindowTemplate)
         };
         
         public static SettingsPropertyValue FindSettingByValue(object defaultValue)
