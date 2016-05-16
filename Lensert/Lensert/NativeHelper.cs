@@ -75,7 +75,14 @@ namespace Lensert
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
-        
+
+        [DllImport("kernel32")]
+        static extern long WritePrivateProfileString(string section, string key, string value, string path);
+
+        [DllImport("kernel32")]
+        static extern int GetPrivateProfileString(string section, string key, string standardValue, StringBuilder value, int len, string path);
+
+
         private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
         public const int LVM_FIRST = 0x1000;
         public const int LVM_SETEXTENDEDLISTVIEWSTYLE = LVM_FIRST + 54;
@@ -190,6 +197,19 @@ namespace Lensert
 
             GetWindowRect(handle, out rect);
             return rect.ToRectangle();
+        }
+
+        public static void WriteToIni(string path, string key, string value, string section = null)
+        {
+            WritePrivateProfileString(section, key, value, path);
+        }
+
+        public static string ReadFromIni(string path, string key, string section = null)
+        {
+            var builder = new StringBuilder(255);
+            GetPrivateProfileString(section, key, "", builder, builder.Capacity, path);
+
+            return builder.ToString();
         }
     }
 }

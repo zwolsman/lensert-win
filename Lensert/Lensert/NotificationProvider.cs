@@ -5,7 +5,7 @@ using Lensert.Properties;
 
 namespace Lensert
 {
-    static class NotificationProvider
+    internal static class NotificationProvider
     {
         public static NotifyIcon NotifyIcon { get; }
 
@@ -20,8 +20,7 @@ namespace Lensert
                 Icon = Resources.lensert_icon_fresh,
                 Text = "Lensert"
             };
-
-
+            
             NotifyIcon.BalloonTipClicked += OnBalloonClicked;
 
             var trayIconContextMenu = new ContextMenuStrip();
@@ -51,7 +50,12 @@ namespace Lensert
         {
             _clicked?.Invoke();
         }
-       
+
+        public static void Show()
+        {
+            NotifyIcon.Visible = true;
+        }
+
         public static void Show(string title, string text, Action clicked = null)
         {
             _clicked = clicked;

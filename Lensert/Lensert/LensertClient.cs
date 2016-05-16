@@ -12,14 +12,14 @@ using System.Web.Script.Serialization;
 
 namespace Lensert
 {
-    public class LensertClient
+    public static class LensertClient
     {
         private const string API_URL = "http://lensert.com/api/v2/";
 
-        private readonly HttpClient _httpClient;
-        private readonly JavaScriptSerializer _javaScriptSerializer;
+        private static readonly HttpClient _httpClient;
+        private static readonly JavaScriptSerializer _javaScriptSerializer;
         
-        public LensertClient()
+        static LensertClient()
         {
             _httpClient = new HttpClient
             {
@@ -29,7 +29,7 @@ namespace Lensert
             _javaScriptSerializer = new JavaScriptSerializer();
         }
 
-        public async Task<string> UploadImageAsync(Image bitmap)
+        public static async Task<string> UploadImageAsync(Image bitmap)
         {
             var memoryStream = new MemoryStream();
             bitmap.Save(memoryStream, ImageFormat.Png);

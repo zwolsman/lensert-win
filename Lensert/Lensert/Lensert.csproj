@@ -48,6 +48,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web.Extensions" />
@@ -65,24 +66,12 @@
     <Compile Include="NotificationProvider.cs" />
     <Compile Include="LensertClient.cs" />
     <Compile Include="Screenshot\CurrentWindowTemplate.cs" />
-    <Compile Include="Utils.cs" />
-    <Compile Include="Forms\MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="Screenshot\SelectionForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Screenshot\SelectionForm.Designer.cs">
       <DependentUpon>SelectionForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Preferences.cs" />
-    <Compile Include="Preferences.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Preferences.settings</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -90,12 +79,9 @@
     <Compile Include="Screenshot\AbstractAreaTemplate.cs" />
     <Compile Include="Screenshot\FullScreenTemplate.cs" />
     <Compile Include="Screenshot\AbstractScreenshotTemplate.cs" />
-    <Compile Include="Screenshot\ScreenshotFactory.cs" />
+    <Compile Include="ScreenshotFactory.cs" />
     <Compile Include="Screenshot\UserSelectionTemplate.cs" />
     <Compile Include="Screenshot\SelectWindowTemplate.cs" />
-    <EmbeddedResource Include="Forms\MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Screenshot\SelectionForm.resx">
       <DependentUpon>SelectionForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -110,10 +96,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.manifest" />
-    <None Include="Preferences.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Preferences.Designer.cs</LastGenOutput>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -123,9 +105,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

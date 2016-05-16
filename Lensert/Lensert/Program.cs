@@ -6,42 +6,99 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Shortcut;
 
 namespace Lensert
 {
-    static class Program
+    internal static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+        private static readonly Hotkey _defaultAreaHotkey;
+        private static readonly Hotkey _defaultWindowHotkey;
+        private static readonly Hotkey _defaultFullHotkey;
+        private static HotkeyBinder _binder;
+
+        static Program()
+        {
+            _defaultAreaHotkey = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.A);
+            _defaultWindowHotkey = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W);
+            _defaultFullHotkey = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F);
+            
+        }
+
         [STAThread]
         public static void Main()
         {
             if (IsInstanceRunning())
                 return;
 
-            if (Preferences.Default.StartupOnLogon)
-            {   //REFACTOR to settings UI
-                var directory = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-                var location = Assembly.GetExecutingAssembly().Location;
-
-                using (var streamWriter = new StreamWriter(Path.Combine(directory, "Lensert.url")))
-                {
-                    streamWriter.WriteLine("[InternetShortcut]");
-                    streamWriter.WriteLine("URL=file:///" + location);
-                    streamWriter.WriteLine("IconIndex=0");
-                    streamWriter.WriteLine("IconFile=" + location);
-                }
-            }
+            CreateStartupLink();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            Application.Run(new SecretForm());
+        }
+
+        private static void BindHotkeys()
+        {
+            var area = Settings.Instance.GetValue<Hotkey>("Area", "Hotkey") ?? _defaultAreaHotkey;
+            var window = Settings.Instance.GetValue<Hotkey>("Window", "Hotkey") ?? _defaultWindowHotkey;
+            var full = Settings.Instance.GetValue<Hotkey>("Fullscreen", "Hotkey") ?? _defaultFullHotkey;
+            
+            _binder = new HotkeyBinder();
+            _binder.Bind(area, args => HandleHotkey(typeof (UserSelectionTemplate)));
+            _binder.Bind(window, args => HandleHotkey(typeof (CurrentWindowTemplate)));
+            _binder.Bind(full, args => HandleHotkey(typeof (FullScreenTemplate)));
+        }
+
+        private static async void HandleHotkey(Type template)
+        {
+            var screenshot = ScreenshotFactory.Create(template);
+            if (screenshot == null)
+                return;
+
+            try
+            {
+                var link = await LensertClient.UploadImageAsync(screenshot);
+
+                Console.WriteLine($"Got link '{link}'");
+
+                NotificationProvider.Show(
+                    "Succesful Upload!",
+                    "Your image was uploaded. Click here to open it.",
+                    () => Process.Start(link));
+
+                Clipboard.SetText(link);
+            }
+            catch (HttpRequestException)
+            {
+                NotificationProvider.Show(
+                    "Upload failed :(",
+                    "Your machine seems to be offline. Don't worry your screenshot was saved localy and will be uploaded when you re-connect.");
+            }
+            finally
+            {
+                screenshot.Dispose();
+            }
+        }
+
+        private static void CreateStartupLink()
+        {
+            var directory = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+            var location = Assembly.GetExecutingAssembly().Location;
+
+            using (var streamWriter = new StreamWriter(Path.Combine(directory, "Lensert.url")))
+            {
+                streamWriter.WriteLine("[InternetShortcut]");
+                streamWriter.WriteLine("URL=file:///" + location);
+                streamWriter.WriteLine("IconIndex=0");
+                streamWriter.WriteLine("IconFile=" + location);
+            }
         }
 
         private static bool IsInstanceRunning()
@@ -72,6 +129,19 @@ namespace Lensert
             {
                 throw new InvalidOperationException(
                     "Ensure there is a Guid attribute defined for this assembly.");
+            }
+        }
+
+        private sealed class SecretForm : Form
+        {
+            public SecretForm()
+            {
+                BindHotkeys();
+            }
+
+            protected override void SetVisibleCore(bool value)
+            {
+                base.SetVisibleCore(false);
             }
         }
     }

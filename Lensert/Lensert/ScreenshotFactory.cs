@@ -14,15 +14,15 @@ namespace Lensert
             _templates = new Dictionary<Type, AbstractScreenshotTemplate>();
         }
 
-        public static Image Create(Type type)
+        public static Image Create(Type template)
         {
-            if (!typeof (AbstractScreenshotTemplate).IsAssignableFrom(type))
-                throw new ArgumentException("Type doesn't inherit from ScreenshotFactory", nameof(type));
+            if (!typeof (AbstractScreenshotTemplate).IsAssignableFrom(template))
+                throw new ArgumentException("Type doesn't inherit from AbstractScreenshotTemplate", nameof(template));
 
-            if (!_templates.ContainsKey(type))
-                _templates[type] = (AbstractScreenshotTemplate) Activator.CreateInstance(type, true);
+            if (!_templates.ContainsKey(template))
+                _templates[template] = (AbstractScreenshotTemplate) Activator.CreateInstance(template, true);
             
-            return _templates[type].TakeScreenshot();
+            return _templates[template].TakeScreenshot();
         }
 
         public static Image Create<T>() where T : AbstractScreenshotTemplate
