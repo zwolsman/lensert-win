@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Lensert.Screenshot
@@ -10,11 +11,19 @@ namespace Lensert.Screenshot
         protected AbstractAreaTemplate()
         {
             SelectionForm = new SelectionForm();
-            SelectionForm.MouseUp += SelectionForm_MouseUp;
+            SelectionForm.KeyUp += SelectionFormOnKeyUp;
+            SelectionForm.Load += SelectionFormOnLoad;
         }
 
-        private void SelectionForm_MouseUp(object sender, MouseEventArgs e)
+        private void SelectionFormOnLoad(object sender, EventArgs eventArgs)
         {
+            SpecialKeyPressed = false;
+        }
+
+        private void SelectionFormOnKeyUp(object sender, KeyEventArgs e)
+        {
+            SpecialKeyPressed = e.KeyCode == Keys.Space;
+            SelectionForm.SelectedArea = Rectangle.Empty;
             SelectionForm.Close();
         }
 

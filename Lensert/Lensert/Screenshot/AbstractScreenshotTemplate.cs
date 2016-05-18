@@ -4,6 +4,7 @@ namespace Lensert.Screenshot
 {
     internal abstract class AbstractScreenshotTemplate
     {
+        public bool SpecialKeyPressed { get; protected set; }
         protected abstract Rectangle GetArea();
 
         public virtual Image TakeScreenshot()
