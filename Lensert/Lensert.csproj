@@ -110,12 +110,6 @@
     <None Include="README.md" />
     <None Include="Resources\lensert_icon_fresh.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Shortcut\Shortcut.csproj">
-      <Project>{5deadf0b-dc7b-430f-982e-647f7b05455d}</Project>
-      <Name>Shortcut</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
