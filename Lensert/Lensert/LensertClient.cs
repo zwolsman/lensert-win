@@ -14,7 +14,7 @@ namespace Lensert
 {
     public static class LensertClient
     {
-        private const string API_URL = "http://lensert.com/upload";
+        private const string API_URL = "https://lensert.com/upload";
 
         private static readonly HttpClient _httpClient;
         private static readonly JavaScriptSerializer _javaScriptSerializer;
