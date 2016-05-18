@@ -27,7 +27,7 @@ namespace Lensert
 
         public static async Task<string> UploadImageAsync(Image bitmap)
         {
-            var memoryStream = new MemoryStream();
+            var memoryStream = new MemoryStream();  
             bitmap.Save(memoryStream, ImageFormat.Png);
             memoryStream.Seek(0, SeekOrigin.Begin);
 

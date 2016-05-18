@@ -219,18 +219,13 @@ namespace Lensert
             GetWindowRect(handle, out rect);
             return rect.ToRectangle();
         }
-
-        public static void WriteToIni(string path, string key, string value, string section)
+        
+        public static void WriteValueToIni<T>(string path, string key, T value, string section, bool comment = false)
         {
-            WritePrivateProfileString(section, key, value, path);
-        }
-
-        public static string ReadFromIni(string path, string key, string section)
-        {
-            var builder = new StringBuilder(255);
-            GetPrivateProfileString(section, key, "", builder, builder.Capacity, path);
-
-            return builder.ToString();
+            var converter = TypeDescriptor.GetConverter(typeof(T));
+            var strValue = converter.ConvertToString(value);
+                
+            WritePrivateProfileString(section, comment ? $";{key}" : key, strValue, path);
         }
 
         public static T ParseValueFromIni<T>(string path, string key, string section)
@@ -238,8 +233,10 @@ namespace Lensert
             try
             {
                 var converter = TypeDescriptor.GetConverter(typeof(T));
-                var value = ReadFromIni(path, key, section);
+                var builder = new StringBuilder(255);
+                GetPrivateProfileString(section, key, "", builder, builder.Capacity, path);
 
+                var value = builder.ToString();
                 return string.IsNullOrEmpty(value)
                     ? default(T)
                     : (T)converter.ConvertFromString(value);

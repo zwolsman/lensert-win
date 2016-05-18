@@ -35,9 +35,9 @@ namespace Lensert
 
         private static void BindHotkeys()
         {
-            var area = Settings.Instance.GetSetting<Hotkey>(SettingType.SelectAreaHotkey);
-            var window = Settings.Instance.GetSetting<Hotkey>(SettingType.SelectWindowHotkey);
-            var full = Settings.Instance.GetSetting<Hotkey>(SettingType.FullscreenHotkey);
+            var area = Settings.GetSetting<Hotkey>(SettingType.SelectAreaHotkey);
+            var window = Settings.GetSetting<Hotkey>(SettingType.SelectWindowHotkey);
+            var full = Settings.GetSetting<Hotkey>(SettingType.FullscreenHotkey);
 
             _binder = new HotkeyBinder();
             _binder.Bind(area, args => HandleHotkey(typeof (UserSelectionTemplate)));

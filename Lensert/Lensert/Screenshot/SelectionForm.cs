@@ -28,9 +28,9 @@ namespace Lensert.Screenshot
 #endif
             DoubleBuffered = true;
 
-            _textBrush = new SolidBrush(Settings.Instance.GetSetting<Color>(SettingType.SelectionColor));
+            _textBrush = new SolidBrush(Color.Red);
             _rectangleBrush = new SolidBrush(Color.FromArgb(120, Color.White)); //This is actually a bug where the transparancykey with the Red does register the mous input 
-            _rectanglePen = new Pen(Settings.Instance.GetSetting<Color>(SettingType.SelectionColor)); //(fyi, with any other color the mouse would click through it)
+            _rectanglePen = new Pen(Color.Red); //(fyi, with any other color the mouse would click through it)
         }
 
         public Image Screenshot
