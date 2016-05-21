@@ -68,7 +68,7 @@ namespace Lensert
                 NotificationProvider.Show("Lensert Closing", "All hotkeys failed to bind");
                 Environment.Exit(0);
             }
-            else
+            else if (failedHotkeys.Any())
             {
                 var message = $"Failed to bind: {string.Join(", ", failedHotkeys)}";
                 NotificationProvider.Show("Error", message, Util.OpenLog);
@@ -77,6 +77,7 @@ namespace Lensert
 
         private static async void HandleHotkey(Type template)
         {
+            _log.Info($"Hotkey Handler: {template}..");
             var screenshot = ScreenshotFactory.Create(template);    
             if (screenshot == null || screenshot.Size.Width <= 1 || screenshot.Size.Height <= 1)
                 return;
@@ -84,15 +85,17 @@ namespace Lensert
             try
             {
                 var link = await LensertClient.UploadImageAsync(screenshot);
-
-                Console.WriteLine($"Got link '{link}'");
-
-                NotificationProvider.Show(
-                    "Upload complete",
-                    link,
-                    () => Process.Start(link));
-
-                Clipboard.SetText(link);
+                if (string.IsNullOrEmpty(link))
+                {
+                    _log.Error("UploadImageAsync did not return a valid link");
+                    NotificationProvider.Show("Upload failed", "Uploading the screenshot failed", Util.OpenLog);
+                }
+                else
+                {
+                    _log.Info($"Image uploaded {link}");
+                    NotificationProvider.Show("Upload complete", link, () => Process.Start(link));
+                    Clipboard.SetText(link);
+                }
             }
             catch (HttpRequestException)
             {
