@@ -28,13 +28,15 @@ namespace Lensert
             if (IsInstanceRunning())
                 return;
 
+            AppDomain.CurrentDomain.UnhandledException += UnhandledException;
+
             CreateStartupLink();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new SecretForm());
         }
-
+        
         private static void BindHotkeys()
         {
             _binder = new HotkeyBinder();
@@ -60,8 +62,17 @@ namespace Lensert
                 _binder.Bind(hotkey, args => HandleHotkey(hotkeySetting.Key));
             }
 
-            var message = $"Failed to bind: {string.Join(", ", failedHotkeys)}";
-            NotificationProvider.Show("Error", message, Util.OpenLog);
+            if (failedHotkeys.SequenceEqual(hotkeySettings.Select(s => s.Value)))
+            {
+                _log.Fatal("All hotkeys failed to bind. Exiting..");
+                NotificationProvider.Show("Lensert Closing", "All hotkeys failed to bind");
+                Environment.Exit(0);
+            }
+            else
+            {
+                var message = $"Failed to bind: {string.Join(", ", failedHotkeys)}";
+                NotificationProvider.Show("Error", message, Util.OpenLog);
+            }
         }
 
         private static async void HandleHotkey(Type template)
@@ -138,6 +149,12 @@ namespace Lensert
                 throw new InvalidOperationException(
                     "Ensure there is a Guid attribute defined for this assembly.");
             }
+        }
+
+        private static void UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            _log.Fatal($"Unhandled exception: {e.ExceptionObject}");
+            NotificationProvider.Show("Lensert Closing", "An unhandled error occured please send the log file to the dev.\r\n");
         }
 
         private sealed class SecretForm : Form
