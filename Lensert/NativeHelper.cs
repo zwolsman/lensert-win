@@ -220,12 +220,12 @@ namespace Lensert
             return rect.ToRectangle();
         }
         
-        public static void WriteValueToIni<T>(string path, string key, T value, string section, bool comment = false)
+        public static void WriteValueToIni<T>(string path, string key, T value, string section)
         {
             var converter = TypeDescriptor.GetConverter(typeof(T));
             var strValue = converter.ConvertToString(value);
                 
-            WritePrivateProfileString(section, comment ? $";{key}" : key, strValue, path);
+            WritePrivateProfileString(section, key, strValue, path);
         }
 
         public static T ParseValueFromIni<T>(string path, string key, string section)

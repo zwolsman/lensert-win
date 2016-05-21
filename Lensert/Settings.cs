@@ -26,7 +26,7 @@ namespace Lensert
             foreach (var setting in Enum.GetValues(typeof (SettingType)).Cast<SettingType>())
             {
                 var value = DefaultSetting(setting);
-                NativeHelper.WriteValueToIni(_iniPath, setting.ToString(), value, "Settings", true);
+                NativeHelper.WriteValueToIni(_iniPath, setting.ToString(), value, "Settings");
             }
         }
 

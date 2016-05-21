@@ -46,22 +46,28 @@ namespace Lensert
                 [typeof(FullScreenTemplate)] = SettingType.FullscreenHotkey
             };
 
+            var failedHotkeys = new List<SettingType>();
             foreach (var hotkeySetting in hotkeySettings)
             {
                 var hotkey = Settings.GetSetting<Hotkey>(hotkeySetting.Value);
                 if (hotkey == default(Hotkey))
                 {
-                    _log.Warn($"Hotkey {hotkeySetting.Key} couldn't not be fetched from settings. Therefor the hotkey will not be set.");
+                    failedHotkeys.Add(hotkeySetting.Value);
+                    _log.Warn($"Hotkey {hotkeySetting.Value} couldn't not be fetched from settings. Therefor the hotkey will not be set.");
                     continue;
                 }
                 if (_binder.IsHotkeyAlreadyBound(hotkey))
                 {
-                    _log.Warn($"Hotkey {hotkeySetting.Key} is already bound. Therefor the hotkey will not be set.");
+                    failedHotkeys.Add(hotkeySetting.Value);
+                    _log.Warn($"Hotkey {hotkeySetting.Value} is already bound. Therefor the hotkey will not be set.");
                     continue;
                 }
 
                 _binder.Bind(hotkey, args => HandleHotkey(hotkeySetting.Key));
             }
+
+            var message = $"Failed to bind: {string.Join(", ", failedHotkeys)}";
+            NotificationProvider.Show("Error", message, () => Process.Start(Util.GetLoggerPath()));
         }
 
         private static async void HandleHotkey(Type template)

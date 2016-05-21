@@ -86,6 +86,7 @@
     <Compile Include="ScreenshotFactory.cs" />
     <Compile Include="Screenshot\UserSelectionTemplate.cs" />
     <Compile Include="Screenshot\SelectWindowTemplate.cs" />
+    <Compile Include="Util.cs" />
     <EmbeddedResource Include="Screenshot\SelectionForm.resx">
       <DependentUpon>SelectionForm.cs</DependentUpon>
     </EmbeddedResource>
