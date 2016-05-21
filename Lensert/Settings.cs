@@ -48,8 +48,6 @@ namespace Lensert
                     return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W);
                 case SettingType.FullscreenHotkey:
                     return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F);
-                case SettingType.LogDirectory:
-                    return Path.Combine(_lensertAppData, "Logs");
                 default:
                     throw new ArgumentException("Invalid setting type", nameof(type));
             }
@@ -60,7 +58,6 @@ namespace Lensert
     {
         SelectAreaHotkey,
         SelectWindowHotkey,
-        FullscreenHotkey,
-        LogDirectory
+        FullscreenHotkey
     }
 }
