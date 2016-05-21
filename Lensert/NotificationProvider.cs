@@ -43,7 +43,10 @@ namespace Lensert
             trayIconContextMenu.ResumeLayout(false);
             _notifyIcon.ContextMenuStrip = trayIconContextMenu;
         }
-        
+
+        public static void ShowIcon()
+        { }
+
         public static void Show(Notification notification)
         {
             if (_currentNotification != null && _currentNotification.Priority != -1 && _currentNotification.Priority >= notification.Priority)

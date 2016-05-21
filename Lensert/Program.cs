@@ -167,6 +167,7 @@ namespace Lensert
                 BindHotkeys();
                 _log.Info("Lensert started");
 
+                NotificationProvider.ShowIcon();
             }
 
             protected override void SetVisibleCore(bool value)
