@@ -29,9 +29,13 @@ namespace Lensert
         public static T GetSetting<T>(SettingType type)
         {
             var value = NativeHelper.ParseValueFromIni<T>(_iniPath, type.ToString(), "Settings");
-            return value == null || value.Equals(default(T))
-                ? (T) DefaultSetting(type)
-                : value;
+            if (value != null && !value.Equals(default(T)))
+                return value;
+
+            var defaultValue = (T)DefaultSetting(type);
+            _log.Warn($"Failed to parse '{type}' to '{typeof(T)}', restoring default value '{defaultValue}'");
+
+            return defaultValue;
         }
 
         private static void SetupSettingsFile()
