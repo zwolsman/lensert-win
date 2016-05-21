@@ -33,7 +33,8 @@ namespace Lensert
                 return value;
 
             var defaultValue = (T)DefaultSetting(type);
-            _log.Warn($"Failed to parse '{type}' to '{typeof(T)}', restoring default value '{defaultValue}'");
+            _log.Warn($"Failed to parse '{value}' to '{typeof(T)}', restored to default value '{defaultValue}'");
+            NativeHelper.WriteValueToIni(_iniPath, type.ToString(), defaultValue, "Settings");
 
             return defaultValue;
         }
