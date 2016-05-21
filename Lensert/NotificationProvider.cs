@@ -46,22 +46,20 @@ namespace Lensert
         
         public static void Show(Notification notification)
         {
-            if (_currentNotification != null)
-            {
+            if (_currentNotification != null && _currentNotification.Priority != -1 && _currentNotification.Priority >= notification.Priority)
                 _backlog.Enqueue(notification);
-                return;
-            }
-
-            ShowNotificaion(notification);
+            else
+                ShowNotification(notification);
         }
 
-        public static void Show(string title, string text, Action clicked = null)
+        public static void Show(string title, string text, Action clicked = null, int priority = 0)
         {
             var notification = new Notification
             {
                 Title = title,
                 Text = text,
-                Clicked = clicked
+                Clicked = clicked,
+                Priority = priority
             };
 
             Show(notification);
@@ -90,13 +88,19 @@ namespace Lensert
             if (!_backlog.TryDequeue(out notification))
                 return;
 
-            ShowNotificaion(notification);
+            ShowNotification(notification);
         }
 
-        private static void ShowNotificaion(Notification notification)
+        private static void ShowNotification(Notification notification)
         {
+            _notifyIcon.Visible = false;
+            Notification peeked;
+            if (_backlog.TryPeek(out peeked) && peeked == notification)
+                _backlog.TryDequeue(out peeked);
+
             _currentNotification = notification;
 
+            _notifyIcon.Visible = true;
             _notifyIcon.BalloonTipTitle = notification.Title;
             _notifyIcon.BalloonTipText = notification.Text;
             _notifyIcon.ShowBalloonTip(500);
@@ -108,5 +112,6 @@ namespace Lensert
         public string Title { get; set; }
         public string Text { get; set; }
         public Action Clicked { get; set; }
+        public int Priority { get; set; }
     }
 }

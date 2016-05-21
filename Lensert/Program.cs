@@ -93,7 +93,7 @@ namespace Lensert
                 else
                 {
                     _log.Info($"Image uploaded {link}");
-                    NotificationProvider.Show("Upload complete", link, () => Process.Start(link));
+                    NotificationProvider.Show("Upload complete", link, () => Process.Start(link), -1);      // priority: -1 -> always get overwritten even by itself (spamming lensert e.g.)
                     Clipboard.SetText(link);
                 }
             }
@@ -166,6 +166,7 @@ namespace Lensert
             {
                 BindHotkeys();
                 _log.Info("Lensert started");
+
             }
 
             protected override void SetVisibleCore(bool value)
