@@ -78,7 +78,10 @@ namespace Lensert
         private static async void HandleHotkey(Type template)
         {
             _log.Info($"Hotkey Handler: {template}..");
-            var screenshot = ScreenshotFactory.Create(template);    
+            _binder.HotkeysEnabled = false;
+
+            var screenshot = ScreenshotFactory.Create(template);
+            _binder.HotkeysEnabled = true;
             if (screenshot == null || screenshot.Size.Width <= 1 || screenshot.Size.Height <= 1)
                 return;
 
