@@ -23,8 +23,12 @@ namespace Lensert.Screenshot
         private void SelectionFormOnKeyUp(object sender, KeyEventArgs e)
         {
             SpecialKeyPressed = e.KeyCode == Keys.Space;
-            SelectionForm.SelectedArea = Rectangle.Empty;
-            SelectionForm.Close();
+
+            if (SpecialKeyPressed)
+            {
+                SelectionForm.SelectedArea = Rectangle.Empty;
+                SelectionForm.Close();
+            }
         }
 
         protected override Rectangle GetArea()
