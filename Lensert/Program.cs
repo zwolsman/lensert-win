@@ -19,7 +19,7 @@ namespace Lensert
 {
     internal static class Program
     {
-        private static readonly ILog _log = LogManager.GetLogger("Startup");
+        private static readonly ILog _log = LogManager.GetLogger(typeof(Program));
         private static HotkeyBinder _binder;
         
         [STAThread]

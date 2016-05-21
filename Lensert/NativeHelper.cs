@@ -228,15 +228,20 @@ namespace Lensert
             WritePrivateProfileString(section, key, strValue, path);
         }
 
+        public static string ReadValueFromIni(string path, string key, string section)
+        {
+            var builder = new StringBuilder(255);
+            GetPrivateProfileString(section, key, "", builder, builder.Capacity, path);
+
+            return builder.ToString();
+        }
+
         public static T ParseValueFromIni<T>(string path, string key, string section)
         {
             try
             {
                 var converter = TypeDescriptor.GetConverter(typeof(T));
-                var builder = new StringBuilder(255);
-                GetPrivateProfileString(section, key, "", builder, builder.Capacity, path);
-
-                var value = builder.ToString();
+                var value = ReadValueFromIni(path, key, section);
                 return string.IsNullOrEmpty(value)
                     ? default(T)
                     : (T)converter.ConvertFromString(value);
