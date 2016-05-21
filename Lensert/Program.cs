@@ -19,7 +19,7 @@ namespace Lensert
 {
     internal static class Program
     {
-        private static ILog _log = LogManager.GetLogger("Startup");
+        private static readonly ILog _log = LogManager.GetLogger("Startup");
         private static HotkeyBinder _binder;
         
         [STAThread]
@@ -37,14 +37,31 @@ namespace Lensert
 
         private static void BindHotkeys()
         {
-            var area = Settings.GetSetting<Hotkey>(SettingType.SelectAreaHotkey);
-            var window = Settings.GetSetting<Hotkey>(SettingType.SelectWindowHotkey);
-            var full = Settings.GetSetting<Hotkey>(SettingType.FullscreenHotkey);
-
             _binder = new HotkeyBinder();
-            _binder.Bind(area, args => HandleHotkey(typeof (UserSelectionTemplate)));
-            _binder.Bind(window, args => HandleHotkey(typeof (SelectWindowTemplate)));
-            _binder.Bind(full, args => HandleHotkey(typeof (FullScreenTemplate)));
+            
+            var hotkeySettings = new Dictionary<Type, SettingType>
+            {
+                [typeof(UserSelectionTemplate)] = SettingType.SelectAreaHotkey,
+                [typeof(SelectWindowTemplate)] = SettingType.SelectWindowHotkey,
+                [typeof(FullScreenTemplate)] = SettingType.FullscreenHotkey
+            };
+
+            foreach (var hotkeySetting in hotkeySettings)
+            {
+                var hotkey = Settings.GetSetting<Hotkey>(hotkeySetting.Value);
+                if (hotkey == default(Hotkey))
+                {
+                    //_log.Warn($"Hotkey {hotkeySetting.Key} couldn't not be fetched from settings. Therefor the hotkey will not be set.");
+                    continue;
+                }
+                if (_binder.IsHotkeyAlreadyBound(hotkey))
+                {
+                    //_log.Warn($"Hotkey {hotkeySetting.Key} is already bound. Therefor the hotkey will not be set.");
+                    continue;
+                }
+
+                _binder.Bind(hotkey, args => HandleHotkey(hotkeySetting.Key));
+            }
         }
 
         private static async void HandleHotkey(Type template)
