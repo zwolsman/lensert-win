@@ -50,12 +50,6 @@ namespace Lensert
             foreach (var hotkeySetting in hotkeySettings)
             {
                 var hotkey = Settings.GetSetting<Hotkey>(hotkeySetting.Value);
-                if (hotkey == default(Hotkey))
-                {
-                    failedHotkeys.Add(hotkeySetting.Value);
-                    _log.Warn($"Hotkey {hotkeySetting.Value} couldn't not be fetched from settings. Therefor the hotkey will not be set.");
-                    continue;
-                }
                 if (_binder.IsHotkeyAlreadyBound(hotkey))
                 {
                     failedHotkeys.Add(hotkeySetting.Value);
@@ -67,7 +61,7 @@ namespace Lensert
             }
 
             var message = $"Failed to bind: {string.Join(", ", failedHotkeys)}";
-            NotificationProvider.Show("Error", message, () => Process.Start(Util.GetLoggerPath()));
+            NotificationProvider.Show("Error", message, Util.OpenLog);
         }
 
         private static async void HandleHotkey(Type template)
@@ -151,7 +145,6 @@ namespace Lensert
             public SecretForm()
             {
                 BindHotkeys();
-                NotificationProvider.Show();
                 _log.Info("Lensert started");
             }
 

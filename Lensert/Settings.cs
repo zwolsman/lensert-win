@@ -36,6 +36,8 @@ namespace Lensert
             _log.Warn($"Failed to parse '{value}' to '{typeof(T)}', restored to default value '{defaultValue}'");
             NativeHelper.WriteValueToIni(_iniPath, type.ToString(), defaultValue, "Settings");
 
+            NotificationProvider.Show("Error", "Settings file was corrupted and has been auto-fixed.", Util.OpenLog);
+
             return defaultValue;
         }
 
@@ -43,7 +45,13 @@ namespace Lensert
         {
             var missingSettings = Enum.GetValues(typeof (SettingType))
                 .Cast<SettingType>()
-                .Where(s => string.IsNullOrEmpty(NativeHelper.ReadValueFromIni(_iniPath, s.ToString(), "Settings")));
+                .Where(s => string.IsNullOrEmpty(NativeHelper.ReadValueFromIni(_iniPath, s.ToString(), "Settings")))
+                .ToList();
+
+            if (!missingSettings.Any())
+                return;
+
+            NotificationProvider.Show("Error", "Settings file was corrupted and has been auto-fixed.", Util.OpenLog);
 
             foreach (var setting in missingSettings)
             {
