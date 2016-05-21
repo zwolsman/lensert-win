@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Drawing;
 using System.Windows.Forms;
 using Lensert.Properties;
@@ -8,9 +9,9 @@ namespace Lensert
     internal static class NotificationProvider
     {
         private static readonly NotifyIcon _notifyIcon;
-
-        private static Action _clicked;
-
+        private static readonly ConcurrentQueue<Notification> _backlog;
+        private static Notification _currentNotification;
+        
         static NotificationProvider()
         {
             _notifyIcon = new NotifyIcon
@@ -20,8 +21,11 @@ namespace Lensert
                 Icon = Resources.lensert_icon_fresh,
                 Text = "Lensert"
             };
-            
+
+            _backlog = new ConcurrentQueue<Notification>();
+
             _notifyIcon.BalloonTipClicked += OnBalloonClicked;
+            _notifyIcon.BalloonTipClosed += OnBalloonClosed;
 
             var trayIconContextMenu = new ContextMenuStrip();
             var closeMenuItem = new ToolStripMenuItem();
@@ -39,6 +43,29 @@ namespace Lensert
             trayIconContextMenu.ResumeLayout(false);
             _notifyIcon.ContextMenuStrip = trayIconContextMenu;
         }
+        
+        public static void Show(Notification notification)
+        {
+            if (_currentNotification != null)
+            {
+                _backlog.Enqueue(notification);
+                return;
+            }
+
+            ShowNotificaion(notification);
+        }
+
+        public static void Show(string title, string text, Action clicked = null)
+        {
+            var notification = new Notification
+            {
+                Title = title,
+                Text = text,
+                Clicked = clicked
+            };
+
+            Show(notification);
+        }
 
         private static void CloseMenuItem_Click(object sender, EventArgs e)
         {
@@ -48,21 +75,36 @@ namespace Lensert
         
         private static void OnBalloonClicked(object sender, EventArgs eventArgs)
         {
-            _clicked?.Invoke();
+            _currentNotification?.Clicked?.Invoke();
+            OnBalloonClosed(null, EventArgs.Empty);
         }
 
-        public static void Show()
+        private static void OnBalloonClosed(object sender, EventArgs eventArgs)
         {
-            _notifyIcon.Visible = true;
+            if (_backlog.IsEmpty)
+                return;
+
+            Notification notification;
+            if (!_backlog.TryDequeue(out notification))
+                return;
+
+            ShowNotificaion(notification);
         }
 
-        public static void Show(string title, string text, Action clicked = null)
+        private static void ShowNotificaion(Notification notification)
         {
-            _clicked = clicked;
+            _currentNotification = notification;
 
-            _notifyIcon.BalloonTipTitle = title;
-            _notifyIcon.BalloonTipText = text;
+            _notifyIcon.BalloonTipTitle = notification.Title;
+            _notifyIcon.BalloonTipText = notification.Text;
             _notifyIcon.ShowBalloonTip(500);
         }
+    }
+
+    internal class Notification
+    {
+        public string Title { get; set; }
+        public string Text { get; set; }
+        public Action Clicked { get; set; }
     }
 }
