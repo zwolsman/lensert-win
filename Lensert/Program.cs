@@ -12,12 +12,14 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using log4net;
 using Shortcut;
 
 namespace Lensert
 {
     internal static class Program
     {
+        private static ILog _log = LogManager.GetLogger("Startup");
         private static HotkeyBinder _binder;
         
         [STAThread]
@@ -127,6 +129,7 @@ namespace Lensert
             {
                 BindHotkeys();
                 NotificationProvider.Show();
+                _log.Info("Lensert started");
             }
 
             protected override void SetVisibleCore(bool value)

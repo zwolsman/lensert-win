@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,15 +8,16 @@ namespace Lensert
 {
     internal static class Settings
     {
+        private static readonly string _lensertAppData;
         private static readonly string _iniPath;
 
         static Settings()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lensert");
-            if (!Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
+            _lensertAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lensert");
+            if (!Directory.Exists(_lensertAppData))
+                Directory.CreateDirectory(_lensertAppData);
 
-            _iniPath = Path.Combine(directory, "Settings.ini");
+            _iniPath = Path.Combine(_lensertAppData, "Settings.ini");
             if (File.Exists(_iniPath))
                 return;
 
@@ -49,6 +48,8 @@ namespace Lensert
                     return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W);
                 case SettingType.FullscreenHotkey:
                     return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F);
+                case SettingType.LogDirectory:
+                    return Path.Combine(_lensertAppData, "Logs");
                 default:
                     throw new ArgumentException("Invalid setting type", nameof(type));
             }
@@ -59,6 +60,7 @@ namespace Lensert
     {
         SelectAreaHotkey,
         SelectWindowHotkey,
-        FullscreenHotkey
+        FullscreenHotkey,
+        LogDirectory
     }
 }
