@@ -81,6 +81,8 @@ namespace Lensert
 
         private static void OnBalloonClosed(object sender, EventArgs eventArgs)
         {
+            _currentNotification = null;
+
             if (_backlog.IsEmpty)
                 return;
 
