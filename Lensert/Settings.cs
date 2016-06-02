@@ -10,16 +10,11 @@ namespace Lensert
     internal static class Settings
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(Settings));
-        private static readonly string _lensertAppData;
         private static readonly string _iniPath;
 
         static Settings()
         {
-            _lensertAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lensert");
-            if (!Directory.Exists(_lensertAppData))
-                Directory.CreateDirectory(_lensertAppData);
-
-            _iniPath = Path.Combine(_lensertAppData, "Settings.ini");
+            _iniPath = Path.Combine(AssemblyManager.AppData, "Settings.ini");
             if (!File.Exists(_iniPath))
                 File.Create(_iniPath).Dispose();
 

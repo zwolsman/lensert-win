@@ -1,13 +1,39 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Lensert
 {
     internal static class AssemblyManager
     {
-        public static bool IsLensertAlreadyRunning()
+        public static string AppData { get; }
+        private static readonly bool _firstLaunch;
+
+        static AssemblyManager()
+        {
+            AppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lensert");
+            if (!Directory.Exists(AppData))
+            {
+                Directory.CreateDirectory(AppData);
+                _firstLaunch = true;
+            }
+        }
+
+        public static bool HandleStartup()
+        {
+            if (IsAlreadyRunning())
+                return false;
+
+            if (_firstLaunch)
+            {
+                var result = MessageBox.Show("Start Lensert when Windows start?", "Lensert", MessageBoxButtons.YesNo);
+            }
+        }
+        
+        private static bool IsAlreadyRunning()
         {
             try
             {
@@ -20,6 +46,19 @@ namespace Lensert
             }
         }
 
+        private static void CreateStartupLink()
+        {
+            var directory = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+            var location = Assembly.GetExecutingAssembly().Location;
+
+            using (var streamWriter = new StreamWriter(Path.Combine(directory, "Lensert.url")))
+            {
+                streamWriter.WriteLine("[InternetShortcut]");
+                streamWriter.WriteLine("URL=file:///" + location);
+                streamWriter.WriteLine("IconIndex=0");
+                streamWriter.WriteLine("IconFile=" + location);
+            }
+        }
 
         private static string GetMutexName()
         {

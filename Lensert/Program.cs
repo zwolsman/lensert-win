@@ -25,12 +25,10 @@ namespace Lensert
         [STAThread]
         public static void Main()
         {
-            if (AssemblyManager.IsLensertAlreadyRunning())
+            if (AssemblyManager.HandleStartup())
                 return;
 
             AppDomain.CurrentDomain.UnhandledException += UnhandledException;
-
-            CreateStartupLink();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -109,20 +107,6 @@ namespace Lensert
             finally
             {
                 screenshot.Dispose();
-            }
-        }
-
-        private static void CreateStartupLink()
-        {
-            var directory = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-            var location = Assembly.GetExecutingAssembly().Location;
-
-            using (var streamWriter = new StreamWriter(Path.Combine(directory, "Lensert.url")))
-            {
-                streamWriter.WriteLine("[InternetShortcut]");
-                streamWriter.WriteLine("URL=file:///" + location);
-                streamWriter.WriteLine("IconIndex=0");
-                streamWriter.WriteLine("IconFile=" + location);
             }
         }
         
