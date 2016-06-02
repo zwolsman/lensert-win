@@ -25,7 +25,7 @@ namespace Lensert
         [STAThread]
         public static void Main()
         {
-            if (IsInstanceRunning())
+            if (AssemblyManager.IsLensertAlreadyRunning())
                 return;
 
             AppDomain.CurrentDomain.UnhandledException += UnhandledException;
@@ -125,38 +125,7 @@ namespace Lensert
                 streamWriter.WriteLine("IconFile=" + location);
             }
         }
-
-        private static bool IsInstanceRunning()
-        {
-            try
-            {
-                var mutex = new Mutex(false, MutexName());
-                return !mutex.WaitOne(TimeSpan.Zero, false);
-            }
-            catch
-            {
-                return true;
-            }
-        }
-
-        private static string MutexName() => $"Global\\{{{ResolveAssemblyGuid()}}}";
-
-        private static string ResolveAssemblyGuid()
-        {
-            try
-            {
-                var assembly = Assembly.GetExecutingAssembly();
-                var assemblyAttributes = assembly.GetCustomAttributes(typeof(GuidAttribute), false);
-                var guidAttribute = (GuidAttribute)assemblyAttributes.GetValue(0);
-                return guidAttribute.Value;
-            }
-            catch
-            {
-                throw new InvalidOperationException(
-                    "Ensure there is a Guid attribute defined for this assembly.");
-            }
-        }
-
+        
         private static void UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             _log.Fatal($"Unhandled exception: {e.ExceptionObject}");
