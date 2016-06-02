@@ -1,36 +1,73 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using log4net;
 
 namespace Lensert
 {
     internal static class AssemblyManager
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(AssemblyManager));
+
         public static string AppData { get; }
-        private static readonly bool _firstLaunch;
+        public static bool FirstLaunch { get; }
 
         static AssemblyManager()
         {
             AppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lensert");
-            if (!Directory.Exists(AppData))
-            {
+            if (!Directory.Exists(AppData))         // I believe log4net already make this folder -> sanity check
                 Directory.CreateDirectory(AppData);
-                _firstLaunch = true;
-            }
+
+#if DEBUG
+            FirstLaunch = false;
+#else
+            FirstLaunch = !Assembly.GetExecutingAssembly().Location.EndsWith("lensert-win.exe");       // terrible check :$
+#endif
+
+            _log.Info($"First launch: {FirstLaunch}");
         }
 
         public static bool HandleStartup()
         {
-            if (IsAlreadyRunning())
-                return false;
-
-            if (_firstLaunch)
+            if (!FirstLaunch && !Settings.GetSetting<bool>(SettingType.StartupOnLogon))
             {
-                var result = MessageBox.Show("Start Lensert when Windows start?", "Lensert", MessageBoxButtons.YesNo);
+                _log.Info("StartupOnLogon Disabled");
+                return false;
             }
+
+            if (FirstLaunch)
+            {
+                Settings.Reset();
+
+                var path = Path.Combine(AppData, "lensert-win.exe");
+                File.Copy(Assembly.GetExecutingAssembly().Location, path, true);
+                Process.Start(path);
+
+                _log.Info("Installed Lensert :)");
+                new System.Threading.Timer(x => Environment.Exit(0), null, 200, 0);
+
+                return true;
+            }
+
+            if (IsAlreadyRunning())
+            {
+                _log.Info("Lensert is already running");
+                return false;
+            }
+
+            CreateStartupLink();
+            Task.Run(UpdateHandler);
+            return true;
+        }
+
+        private static Task UpdateHandler()
+        {
+            return Task.FromResult(0);
         }
         
         private static bool IsAlreadyRunning()

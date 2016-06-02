@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventArgs\HotkeyEventArgs.cs" />
+    <Compile Include="AssemblyManager.cs" />
     <Compile Include="NotificationProvider.cs" />
     <Compile Include="LensertClient.cs" />
     <Compile Include="Screenshot\CurrentWindowTemplate.cs" />
@@ -100,7 +101,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

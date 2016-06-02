@@ -18,7 +18,12 @@ namespace Lensert
             if (!File.Exists(_iniPath))
                 File.Create(_iniPath).Dispose();
 
-            SetupSettingsFile();
+            Reset();
+        }
+
+        public static void SetSetting<T>(SettingType type, T value)
+        {
+            NativeHelper.WriteValueToIni(_iniPath, type.ToString(), value, "Settings");
         }
 
         public static T GetSetting<T>(SettingType type)
@@ -36,7 +41,7 @@ namespace Lensert
             return defaultValue;
         }
 
-        private static void SetupSettingsFile()
+        public static void Reset()
         {
             var missingSettings = Enum.GetValues(typeof (SettingType))
                 .Cast<SettingType>()
@@ -46,7 +51,8 @@ namespace Lensert
             if (!missingSettings.Any())
                 return;
 
-            NotificationProvider.Show("Error", "Settings file was corrupted and has been auto-fixed.", Util.OpenLog);
+            if (missingSettings.Count != Enum.GetValues(typeof(SettingType)).Length)
+                NotificationProvider.Show("Error", "Settings file was corrupted and has been auto-fixed.", Util.OpenLog);
 
             foreach (var setting in missingSettings)
             {
@@ -66,6 +72,8 @@ namespace Lensert
                     return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W);
                 case SettingType.FullscreenHotkey:
                     return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F);
+                case SettingType.StartupOnLogon:
+                    return true;
                 default:
                     throw new ArgumentException("Invalid setting type", nameof(type));
             }
@@ -76,6 +84,7 @@ namespace Lensert
     {
         SelectAreaHotkey,
         SelectWindowHotkey,
-        FullscreenHotkey
+        FullscreenHotkey,
+        StartupOnLogon
     }
 }

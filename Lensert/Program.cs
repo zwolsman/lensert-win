@@ -2,15 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using log4net;
 using Shortcut;
@@ -25,8 +18,15 @@ namespace Lensert
         [STAThread]
         public static void Main()
         {
-            if (AssemblyManager.HandleStartup())
+            _log.Info("Lensert started");
+
+            if (!AssemblyManager.HandleStartup())
+            {
+                _log.Info("Handle startup says not to start this instance.");
                 return;
+            }
+
+            
 
             AppDomain.CurrentDomain.UnhandledException += UnhandledException;
 
@@ -120,8 +120,10 @@ namespace Lensert
         {
             public SecretForm()
             {
-                BindHotkeys();
-                _log.Info("Lensert started");
+                if (AssemblyManager.FirstLaunch)            // we secretly know we get killed
+                    NotificationProvider.Show("Lensert", "Lensert now starts with Windows!");
+                else
+                    BindHotkeys();
 
                 NotificationProvider.ShowIcon();
             }
