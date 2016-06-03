@@ -26,9 +26,10 @@ namespace Lensert
                 return;
             }
 
-            
 
+#if !DEBUG
             AppDomain.CurrentDomain.UnhandledException += UnhandledException;
+#endif
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -67,6 +68,12 @@ namespace Lensert
 
         private static Task UpdateHandler()
         {
+            var fileVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+            using (var client = new HttpClient())
+            {
+                
+            }
+
             return Task.FromResult(0);
         }
         

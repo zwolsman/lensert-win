@@ -21,9 +21,7 @@ namespace Lensert
                                          .Root.Appenders.OfType<FileAppender>()
                                          .FirstOrDefault();
 
-            return rootAppender != null 
-                ? rootAppender.File 
-                : string.Empty;
+            return rootAppender?.File ?? string.Empty;
         }
     }
 }
