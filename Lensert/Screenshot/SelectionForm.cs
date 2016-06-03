@@ -41,7 +41,7 @@ namespace Lensert.Screenshot
                 _cleanScreenshot?.Dispose();
                 _shadedScreenshot?.Dispose();
 
-                _cleanScreenshot = ResizeImage(value, Bounds.Width, Bounds.Height);
+                _cleanScreenshot = ResizeImage(value, Bounds);
 
                 _shadedScreenshot = new Bitmap(_cleanScreenshot);
                 using (var graphics = Graphics.FromImage(_shadedScreenshot))
@@ -133,10 +133,9 @@ namespace Lensert.Screenshot
             e.Graphics.DrawString(dimension, Font, _textBrush, x, y); //draws string
         }
 
-        private static Bitmap ResizeImage(Image image, int width, int height)
+        private static Bitmap ResizeImage(Image image, Rectangle rect)
         {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
+            var destImage = new Bitmap(rect.Width, rect.Height);
 
             destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
 
@@ -151,7 +150,9 @@ namespace Lensert.Screenshot
                 using (var wrapMode = new ImageAttributes())
                 {
                     wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+
+                    var destRectangle = new Rectangle(0, 0, rect.Width, rect.Height);
+                    graphics.DrawImage(image, destRectangle, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
                 }
             }
 

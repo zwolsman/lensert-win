@@ -99,7 +99,7 @@ namespace Lensert
             var width = (int)Math.Ceiling(factor * virtualScreen.Width);
             var height = (int)Math.Ceiling(factor * virtualScreen.Height);
 
-            UnscaledBounds = new Rectangle(Point.Empty, new Size(width, height));
+            UnscaledBounds = new Rectangle(virtualScreen.Location, new Size(width, height));
         }
 
         public static Rectangle UnscaledBounds { get; }
