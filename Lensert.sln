@@ -7,18 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lensert", "Lensert\Lensert.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortcut", "Shortcut\Shortcut\Shortcut.csproj", "{5DEADF0B-DC7B-430F-982E-647F7B05455D}"
 EndProject
-Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "lensert-win", "..\..\..\..\AppData\Local\Lensert\lensert-win.exe", "{FD062786-A7D1-4565-8335-9006738E50A9}"
-	ProjectSection(DebuggerProjectSystem) = preProject
-		PortSupplier = 00000000-0000-0000-0000-000000000000
-		Executable = C:\Users\joell\AppData\Local\Lensert\lensert-win.exe
-		RemoteMachine = JOEL-DESKTOP
-		StartingDirectory = C:\Users\joell\AppData\Local\Lensert
-		Environment = Default
-		LaunchingEngine = 00000000-0000-0000-0000-000000000000
-		UseLegacyDebugEngines = No
-		LaunchSQLEngine = No
-		AttachLaunchAction = No
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LensertInstaller", "LensertInstaller\LensertInstaller.csproj", "{52BEEAD5-EA52-45AC-9AA6-6AF771E2DAC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,10 +33,14 @@ Global
 		{5DEADF0B-DC7B-430F-982E-647F7B05455D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5DEADF0B-DC7B-430F-982E-647F7B05455D}.Release|x86.ActiveCfg = Release|x86
 		{5DEADF0B-DC7B-430F-982E-647F7B05455D}.Release|x86.Build.0 = Release|x86
-		{FD062786-A7D1-4565-8335-9006738E50A9}.Debug|Any CPU.ActiveCfg = Release|x86
-		{FD062786-A7D1-4565-8335-9006738E50A9}.Debug|x86.ActiveCfg = Release|x86
-		{FD062786-A7D1-4565-8335-9006738E50A9}.Release|Any CPU.ActiveCfg = Release|x86
-		{FD062786-A7D1-4565-8335-9006738E50A9}.Release|x86.ActiveCfg = Release|x86
+		{52BEEAD5-EA52-45AC-9AA6-6AF771E2DAC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52BEEAD5-EA52-45AC-9AA6-6AF771E2DAC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52BEEAD5-EA52-45AC-9AA6-6AF771E2DAC8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{52BEEAD5-EA52-45AC-9AA6-6AF771E2DAC8}.Debug|x86.Build.0 = Debug|Any CPU
+		{52BEEAD5-EA52-45AC-9AA6-6AF771E2DAC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52BEEAD5-EA52-45AC-9AA6-6AF771E2DAC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52BEEAD5-EA52-45AC-9AA6-6AF771E2DAC8}.Release|x86.ActiveCfg = Release|Any CPU
+		{52BEEAD5-EA52-45AC-9AA6-6AF771E2DAC8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
