@@ -7,13 +7,13 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using log4net;
+using NLog;
 
 namespace Lensert
 {
     internal static class AssemblyManager
     {
-        private static readonly ILog _log = LogManager.GetLogger(typeof(AssemblyManager));
+        private static readonly ILogger _log = LogManager.GetCurrentClassLogger();
 
         public static string AppData { get; }
         public static bool FirstLaunch { get; }

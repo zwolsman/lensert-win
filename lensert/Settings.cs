@@ -2,14 +2,14 @@
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using log4net;
+using NLog;
 using Shortcut;
 
 namespace Lensert
 {
     internal static class Settings
     {
-        private static readonly ILog _log = LogManager.GetLogger(typeof(Settings));
+        private static readonly ILogger _log = LogManager.GetCurrentClassLogger();
         private static readonly string _iniPath;
 
         static Settings()

@@ -5,14 +5,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Windows.Forms;
-using log4net;
+using NLog;
 using Shortcut;
 
 namespace Lensert
 {
     internal static class Program
     {
-        private static readonly ILog _log = LogManager.GetLogger(typeof(Program));
+        private static readonly ILogger _log = LogManager.GetCurrentClassLogger();
         private static HotkeyBinder _binder;
         
         [STAThread]

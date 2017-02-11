@@ -1,27 +1,48 @@
-﻿using System.Diagnostics;
-using System.Linq;
-using log4net;
-using log4net.Appender;
-using log4net.Repository.Hierarchy;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using NLog;
+using NLog.Targets;
+using NLog.Targets.Wrappers;
 
 namespace Lensert
 {
     internal static class Util
     {
+        private const string LOG_TARGET = "logfile";
+
         public static void OpenLog()
         {
-            var path = GetLoggerPath();
+            var path = GetLogFileName(LOG_TARGET);
             if (!string.IsNullOrEmpty(path))
                 Process.Start(path);
         }
 
-        private static string GetLoggerPath()
+        private static string GetLogFileName(string targetName)
         {
-            var rootAppender = ((Hierarchy)LogManager.GetRepository())
-                                         .Root.Appenders.OfType<FileAppender>()
-                                         .FirstOrDefault();
+            if ((LogManager.Configuration == null) || (LogManager.Configuration.ConfiguredNamedTargets.Count == 0))
+                throw new Exception("LogManager contains no Configuration or there are no named targets");
 
-            return rootAppender?.File ?? string.Empty;
+            var target = LogManager.Configuration.FindTargetByName(targetName);
+            if (target == null)
+                throw new Exception($"Could not find target named: {targetName}");
+
+            var wrapperTarget = target as WrapperTargetBase;
+
+            // Unwrap the target if necessary.
+            var fileTarget = wrapperTarget == null
+                ? target as FileTarget
+                : wrapperTarget.WrappedTarget as FileTarget;
+
+            if (fileTarget == null)
+                throw new Exception($"Could not get a FileTarget from {target.GetType()}");
+
+            var logEventInfo = new LogEventInfo {TimeStamp = DateTime.Now};
+            var fileName = fileTarget.FileName.Render(logEventInfo);
+
+            return File.Exists(fileName)
+                ? fileName
+                : string.Empty;
         }
     }
 }
