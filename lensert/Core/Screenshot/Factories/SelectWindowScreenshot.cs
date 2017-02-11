@@ -2,14 +2,15 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Lensert.Helpers;
 
-namespace Lensert.Screenshot
+namespace Lensert.Core.Screenshot.Factories
 {
-    internal sealed class SelectWindowTemplate : AbstractAreaTemplate
+    internal sealed class SelectWindowScreenshot : AreaScreenshot
     {
         private IEnumerable<Rectangle> _rectangles;
 
-        public SelectWindowTemplate()
+        public SelectWindowScreenshot()
         {
             SelectionForm.MouseMove += SelectionForm_MouseMove;
         }
@@ -23,9 +24,14 @@ namespace Lensert.Screenshot
             SelectionForm.SelectedArea = selectedRectangle;
         }
 
+        public override Image TakeScreenshot()
+        {
+            return base.TakeScreenshot();
+        }
+
         protected override Rectangle GetArea()
         {
-            _rectangles = NativeHelper.GetWindowDimensions();
+            _rectangles = Native.GetWindowDimensions();
             return base.GetArea();
         }
     }

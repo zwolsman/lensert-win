@@ -47,6 +47,10 @@
     </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.2\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
@@ -66,29 +70,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EventArgs\HotkeyEventArgs.cs" />
-    <Compile Include="AssemblyManager.cs" />
-    <Compile Include="NotificationProvider.cs" />
-    <Compile Include="LensertClient.cs" />
-    <Compile Include="Screenshot\CurrentWindowTemplate.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="Screenshot\SelectionForm.cs">
+    <Compile Include="Core\LensertHotkeyHandler.cs" />
+    <Compile Include="Core\IHotkeyHandler.cs" />
+    <Compile Include="Core\IImageUploader.cs" />
+    <Compile Include="DependencyInjection\KernelFactory.cs" />
+    <Compile Include="DependencyInjection\NinjectBindings.cs" />
+    <Compile Include="Core\AssemblyManager.cs" />
+    <Compile Include="Core\NotificationProvider.cs" />
+    <Compile Include="Helpers\LensertClient.cs" />
+    <Compile Include="Core\Screenshot\Factories\CurrentWindowScreenshot.cs" />
+    <Compile Include="Core\HotkeyForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Screenshot\SelectionForm.Designer.cs">
+    <Compile Include="Helpers\Settings.cs" />
+    <Compile Include="Core\Screenshot\SelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Core\Screenshot\SelectionForm.Designer.cs">
       <DependentUpon>SelectionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NativeHelper.cs" />
-    <Compile Include="Screenshot\AbstractAreaTemplate.cs" />
-    <Compile Include="Screenshot\FullScreenTemplate.cs" />
-    <Compile Include="Screenshot\AbstractScreenshotTemplate.cs" />
-    <Compile Include="ScreenshotFactory.cs" />
-    <Compile Include="Screenshot\UserSelectionTemplate.cs" />
-    <Compile Include="Screenshot\SelectWindowTemplate.cs" />
-    <Compile Include="Util.cs" />
-    <EmbeddedResource Include="Screenshot\SelectionForm.resx">
+    <Compile Include="Helpers\Native.cs" />
+    <Compile Include="Core\Screenshot\Factories\AreaScreenshot.cs" />
+    <Compile Include="Core\Screenshot\Factories\FullScreenshot.cs" />
+    <Compile Include="Core\Screenshot\ScreenshotFactory.cs" />
+    <Compile Include="Core\Screenshot\Factories\UserSelectionScreenshot.cs" />
+    <Compile Include="Core\Screenshot\Factories\SelectWindowScreenshot.cs" />
+    <Compile Include="Helpers\LogFile.cs" />
+    <EmbeddedResource Include="Core\Screenshot\SelectionForm.resx">
       <DependentUpon>SelectionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

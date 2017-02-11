@@ -1,138 +1,67 @@
-﻿using Lensert.Screenshot;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
+﻿using System;
 using System.Windows.Forms;
+using Lensert.Core;
+using Lensert.DependencyInjection;
+using Ninject;
 using NLog;
-using Shortcut;
 
 namespace Lensert
 {
     internal static class Program
     {
-        private static readonly ILogger _log = LogManager.GetCurrentClassLogger();
-        private static HotkeyBinder _binder;
-        
+        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+
         [STAThread]
-        public static void Main()
+        private static void Main(string[] args)
         {
-            _log.Info("Lensert started");
+#if DEBUG
+            MainImpl();
+#else
+            try
+            {
+                AppDomain.CurrentDomain.UnhandledException += UnhandledException;
+                MainImpl();
+            }
+            catch (Exception e)
+            {
+                _logger.Fatal(e, "Unhandled exception");
+                Environment.Exit(-1);
+            }
+#endif
+        }
+
+        private static void MainImpl()
+        {
+            _logger.Info("Lensert started");
 
             if (!AssemblyManager.HandleStartup())
             {
-                _log.Info("Handle startup says not to start this instance.");
+                _logger.Warn("Handle startup says not to start this instance.");
                 return;
             }
 
-
-#if !DEBUG
-            AppDomain.CurrentDomain.UnhandledException += UnhandledException;
-#endif
+            var uploader = KernelFactory.Resolve<IHotkeyHandler>();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SecretForm());
-        }
-        
-        private static void BindHotkeys()
-        {
-            _binder = new HotkeyBinder();
-            
-            var hotkeySettings = new Dictionary<Type, SettingType>
-            {
-                [typeof(UserSelectionTemplate)] = SettingType.SelectAreaHotkey,
-                [typeof(SelectWindowTemplate)] = SettingType.SelectWindowHotkey,
-                [typeof(FullScreenTemplate)] = SettingType.FullscreenHotkey
-            };
-
-            var failedHotkeys = new List<SettingType>();
-            foreach (var hotkeySetting in hotkeySettings)
-            {
-                var hotkey = Settings.GetSetting<Hotkey>(hotkeySetting.Value);
-                if (_binder.IsHotkeyAlreadyBound(hotkey))
-                {
-                    failedHotkeys.Add(hotkeySetting.Value);
-                    _log.Warn($"Hotkey {hotkeySetting.Value} is already bound. Therefor the hotkey will not be set.");
-                    continue;
-                }
-
-                _binder.Bind(hotkey, args => HandleHotkey(hotkeySetting.Key));
-            }
-
-            if (failedHotkeys.SequenceEqual(hotkeySettings.Select(s => s.Value)))
-            {
-                _log.Fatal("All hotkeys failed to bind. Exiting..");
-                NotificationProvider.Show("Lensert Closing", "All hotkeys failed to bind");
-                Environment.Exit(0);
-            }
-            else if (failedHotkeys.Any())
-            {
-                var message = $"Failed to bind: {string.Join(", ", failedHotkeys)}";
-                NotificationProvider.Show("Error", message, Util.OpenLog);
-            }
+            Application.Run(new HotkeyForm(uploader));
         }
 
-        private static async void HandleHotkey(Type template)
-        {
-            _log.Info($"Hotkey Handler: {template}..");
-            _binder.HotkeysEnabled = false;
-
-            var screenshot = ScreenshotFactory.Create(template);
-            _binder.HotkeysEnabled = true;
-            if (screenshot == null || screenshot.Size.Width <= 1 || screenshot.Size.Height <= 1)
-                return;
-
-            try
-            {
-                var link = await LensertClient.UploadImageAsync(screenshot);
-                if (string.IsNullOrEmpty(link))
-                {
-                    _log.Error("UploadImageAsync did not return a valid link");
-                    NotificationProvider.Show("Upload failed", "Uploading the screenshot failed", Util.OpenLog);
-                }
-                else
-                {
-                    _log.Info($"Image uploaded {link}");
-                    NotificationProvider.Show("Upload complete", link, () => Process.Start(link), -1);      // priority: -1 -> always get overwritten even by itself (spamming lensert e.g.)
-                    Clipboard.SetText(link);
-                }
-            }
-            catch (HttpRequestException)
-            {
-                NotificationProvider.Show(
-                    "Upload failed :(",
-                    "Your machine seems to be offline. Don't worry your screenshot was saved localy and will be uploaded when you re-connect.");
-            }
-            finally
-            {
-                screenshot.Dispose();
-            }
-        }
-        
         private static void UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            _log.Fatal($"Unhandled exception: {e.ExceptionObject}");
-            NotificationProvider.Show("Lensert Closing", "An unhandled error occured please send the log file to the dev.\r\n");
-        }
-
-        private sealed class SecretForm : Form
-        {
-            public SecretForm()
+            try
             {
-                if (AssemblyManager.FirstLaunch)            // we secretly know we get killed
-                    NotificationProvider.Show("Lensert", "Lensert now starts with Windows!");
+                NotificationProvider.Show("Lensert Closing", "An unhandled error occured please send the log file to the dev.\r\n");
+
+                var exception = e.ExceptionObject as Exception;
+                if (exception == null)
+                    _logger.Fatal($"ExceptionObject is not an exception: {e.ExceptionObject}");
                 else
-                    BindHotkeys();
-
-                NotificationProvider.ShowIcon();
+                    _logger.Fatal(exception, "Unhandled exception");
             }
+            catch {}
 
-            protected override void SetVisibleCore(bool value)
-            {
-                base.SetVisibleCore(false);
-            }
+            Environment.Exit(-1);
         }
     }
 }

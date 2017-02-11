@@ -1,33 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
+using Lensert.Core;
 
-namespace Lensert
+namespace Lensert.Helpers
 {
-    public static class LensertClient
+    public class LensertClient : IImageUploader
     {
         private const string API_URL = "https://lensert.com/upload";
 
         private static readonly HttpClient _httpClient;
         private static readonly JavaScriptSerializer _javaScriptSerializer;
-        
+
         static LensertClient()
         {
             _httpClient = new HttpClient();
             _javaScriptSerializer = new JavaScriptSerializer();
         }
 
-        public static async Task<string> UploadImageAsync(Image bitmap)
+        public async Task<string> UploadImageAsync(Image bitmap)
         {
-            var memoryStream = new MemoryStream();  
+            var memoryStream = new MemoryStream();
             bitmap.Save(memoryStream, ImageFormat.Png);
             memoryStream.Seek(0, SeekOrigin.Begin);
 

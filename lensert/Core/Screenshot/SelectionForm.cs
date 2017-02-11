@@ -3,23 +3,29 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using Lensert.Helpers;
 
-namespace Lensert.Screenshot
+namespace Lensert.Core.Screenshot
 {
     public sealed partial class SelectionForm : Form
     {
         private const int DIMENSION_TEXT_OFFSET = 2; //TODO: Refactor into settings
 
-        private readonly SolidBrush _rectangleBrush, _textBrush;
+        private readonly SolidBrush _rectangleBrush,
+            _textBrush;
+
         private readonly Pen _rectanglePen;
 
-        private Rectangle _selectedArea, _emtpyRectangle;
-        private Image _shadedScreenshot, _cleanScreenshot;
+        private Rectangle _selectedArea;
+        private readonly Rectangle _emtpyRectangle;
+
+        private Image _shadedScreenshot,
+            _cleanScreenshot;
 
         public SelectionForm()
         {
             InitializeComponent();
-            Bounds = NativeHelper.UnscaledBounds;
+            Bounds = Native.UnscaledBounds;
             _emtpyRectangle = new Rectangle(Bounds.Location, Size.Empty);
 
 #if (DEBUG)
@@ -85,11 +91,6 @@ namespace Lensert.Screenshot
             Close();
         }
 
-        private void SelectionForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            _selectedArea = _emtpyRectangle;
-        }
-
         private void SelectionForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
@@ -98,7 +99,7 @@ namespace Lensert.Screenshot
                 Close();
             }
         }
-        
+
         private void SelectionForm_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.DrawImage(_cleanScreenshot, _selectedArea, _selectedArea, GraphicsUnit.Pixel);
@@ -109,13 +110,17 @@ namespace Lensert.Screenshot
             if (Bounds.Width <= borderRectangle.Right)
             {
                 var deltaRight = borderRectangle.Right - Bounds.Right;
-                borderRectangle.Width -= deltaRight == 0 ? 1 : deltaRight;
+                borderRectangle.Width -= deltaRight == 0
+                    ? 1
+                    : deltaRight;
             }
 
             if (Bounds.Height <= borderRectangle.Bottom)
             {
                 var deltaBottom = borderRectangle.Bottom - Bounds.Bottom;
-                borderRectangle.Height -= deltaBottom == 0 ? 1 : deltaBottom; //compensates for out of bounds (only visually, 
+                borderRectangle.Height -= deltaBottom == 0
+                    ? 1
+                    : deltaBottom; //compensates for out of bounds (only visually, 
             } //screenshot does reach till the end and beyond)
             e.Graphics.DrawRectangle(_rectanglePen, borderRectangle); //Draw the border
 

@@ -5,13 +5,13 @@ using NLog;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
 
-namespace Lensert
+namespace Lensert.Helpers
 {
-    internal static class Util
+    internal static class LogFile
     {
         private const string LOG_TARGET = "logfile";
 
-        public static void OpenLog()
+        public static void Open()
         {
             var path = GetLogFileName(LOG_TARGET);
             if (!string.IsNullOrEmpty(path))

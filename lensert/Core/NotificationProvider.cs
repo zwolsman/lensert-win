@@ -4,14 +4,14 @@ using System.Drawing;
 using System.Windows.Forms;
 using Lensert.Properties;
 
-namespace Lensert
+namespace Lensert.Core
 {
     internal static class NotificationProvider
     {
         private static readonly NotifyIcon _notifyIcon;
         private static readonly ConcurrentQueue<Notification> _backlog;
         private static Notification _currentNotification;
-        
+
         static NotificationProvider()
         {
             _notifyIcon = new NotifyIcon
@@ -44,12 +44,11 @@ namespace Lensert
             _notifyIcon.ContextMenuStrip = trayIconContextMenu;
         }
 
-        public static void ShowIcon()
-        { }
+        public static void ShowIcon() {}
 
         public static void Show(Notification notification)
         {
-            if (_currentNotification != null && _currentNotification.Priority != -1 && _currentNotification.Priority >= notification.Priority)
+            if ((_currentNotification != null) && (_currentNotification.Priority != -1) && (_currentNotification.Priority >= notification.Priority))
                 _backlog.Enqueue(notification);
             else
                 ShowNotification(notification);
@@ -73,7 +72,7 @@ namespace Lensert
             _notifyIcon.Visible = false;
             Application.Exit();
         }
-        
+
         private static void OnBalloonClicked(object sender, EventArgs eventArgs)
         {
             _currentNotification?.Clicked?.Invoke();
@@ -98,7 +97,7 @@ namespace Lensert
         {
             _notifyIcon.Visible = false;
             Notification peeked;
-            if (_backlog.TryPeek(out peeked) && peeked == notification)
+            if (_backlog.TryPeek(out peeked) && (peeked == notification))
                 _backlog.TryDequeue(out peeked);
 
             _currentNotification = notification;

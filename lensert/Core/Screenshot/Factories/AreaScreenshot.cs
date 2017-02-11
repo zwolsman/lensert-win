@@ -2,13 +2,13 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Lensert.Screenshot
+namespace Lensert.Core.Screenshot.Factories
 {
-    internal abstract class AbstractAreaTemplate : AbstractScreenshotTemplate
+    internal abstract class AreaScreenshot : ScreenshotFactory
     {
         protected readonly SelectionForm SelectionForm;
 
-        protected AbstractAreaTemplate()
+        protected AreaScreenshot()
         {
             SelectionForm = new SelectionForm();
             SelectionForm.KeyUp += SelectionFormOnKeyUp;
@@ -33,7 +33,7 @@ namespace Lensert.Screenshot
             if (SelectionForm.Visible)
                 return Rectangle.Empty;
 
-            var screenshot = ScreenshotFactory.Create<FullScreenTemplate>();
+            var screenshot = Create<FullScreenshot>();
             SelectionForm.Screenshot = screenshot;
             SelectionForm.ShowDialog();
             return SelectionForm.SelectedArea;

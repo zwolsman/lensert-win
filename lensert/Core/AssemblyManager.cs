@@ -6,22 +6,19 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using Lensert.Helpers;
 using NLog;
 
-namespace Lensert
+namespace Lensert.Core
 {
     internal static class AssemblyManager
     {
-        private static readonly ILogger _log = LogManager.GetCurrentClassLogger();
-
-        public static string AppData { get; }
-        public static bool FirstLaunch { get; }
+        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
         static AssemblyManager()
         {
             AppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lensert");
-            if (!Directory.Exists(AppData))         // I believe log4net already make this folder -> sanity check
+            if (!Directory.Exists(AppData)) // I believe log4net already make this folder -> sanity check
                 Directory.CreateDirectory(AppData);
 
 #if DEBUG
@@ -30,14 +27,17 @@ namespace Lensert
             FirstLaunch = !Assembly.GetExecutingAssembly().Location.EndsWith("lensert-win.exe");       // terrible check :$
 #endif
 
-            _log.Info($"First launch: {FirstLaunch}");
+            _logger.Info($"First launch: {FirstLaunch}");
         }
+
+        public static string AppData { get; }
+        public static bool FirstLaunch { get; }
 
         public static bool HandleStartup()
         {
             if (!FirstLaunch && !Settings.GetSetting<bool>(SettingType.StartupOnLogon))
             {
-                _log.Info("StartupOnLogon Disabled");
+                _logger.Info("StartupOnLogon Disabled");
                 return false;
             }
 
@@ -49,15 +49,15 @@ namespace Lensert
                 File.Copy(Assembly.GetExecutingAssembly().Location, path, true);
                 Process.Start(path);
 
-                _log.Info("Installed Lensert :)");
-                new System.Threading.Timer(x => Environment.Exit(0), null, 200, 0);
+                _logger.Info("Installed Lensert :)");
+                new Timer(x => Environment.Exit(0), null, 200, 0);
 
                 return true;
             }
 
             if (IsAlreadyRunning())
             {
-                _log.Info("Lensert is already running");
+                _logger.Info("Lensert is already running");
                 return false;
             }
 
@@ -69,14 +69,11 @@ namespace Lensert
         private static Task UpdateHandler()
         {
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
-            using (var client = new HttpClient())
-            {
-                
-            }
+            using (var client = new HttpClient()) {}
 
             return Task.FromResult(0);
         }
-        
+
         private static bool IsAlreadyRunning()
         {
             try
@@ -110,7 +107,7 @@ namespace Lensert
             {
                 var assembly = Assembly.GetExecutingAssembly();
                 var assemblyAttributes = assembly.GetCustomAttributes(typeof(GuidAttribute), false);
-                var guidAttribute = (GuidAttribute)assemblyAttributes.GetValue(0);
+                var guidAttribute = (GuidAttribute) assemblyAttributes.GetValue(0);
                 return $"Global\\{{{guidAttribute.Value}}}";
             }
             catch

@@ -2,13 +2,13 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Lensert.Screenshot
+namespace Lensert.Core.Screenshot.Factories
 {
-    internal sealed class UserSelectionTemplate : AbstractAreaTemplate
+    internal sealed class UserSelectionScreenshot : AreaScreenshot
     {
         private Point _drawStart;
 
-        public UserSelectionTemplate()
+        public UserSelectionScreenshot()
         {
             SelectionForm.MouseDown += SelectionForm_MouseDown;
             SelectionForm.MouseMove += SelectionForm_MouseMove;
