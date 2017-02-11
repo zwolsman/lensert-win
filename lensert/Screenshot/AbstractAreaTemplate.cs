@@ -25,10 +25,7 @@ namespace Lensert.Screenshot
             SpecialKeyPressed = e.KeyCode == Keys.Space;
 
             if (SpecialKeyPressed)
-            {
-                SelectionForm.SelectedArea = Rectangle.Empty;
                 SelectionForm.Close();
-            }
         }
 
         protected override Rectangle GetArea()

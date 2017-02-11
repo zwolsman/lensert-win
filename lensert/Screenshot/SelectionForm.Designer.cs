@@ -44,6 +44,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Select an area - Lensert";
             this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectionForm_FormClosing);
             this.Load += new System.EventHandler(this.SelectionForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.SelectionForm_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SelectionForm_KeyDown);

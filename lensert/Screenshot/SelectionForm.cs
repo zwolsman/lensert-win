@@ -13,13 +13,14 @@ namespace Lensert.Screenshot
         private readonly SolidBrush _rectangleBrush, _textBrush;
         private readonly Pen _rectanglePen;
 
-        private Rectangle _selectedArea;
+        private Rectangle _selectedArea, _emtpyRectangle;
         private Image _shadedScreenshot, _cleanScreenshot;
 
         public SelectionForm()
         {
             InitializeComponent();
             Bounds = NativeHelper.UnscaledBounds;
+            _emtpyRectangle = new Rectangle(Bounds.Location, Size.Empty);
 
 #if (DEBUG)
             {
@@ -53,7 +54,18 @@ namespace Lensert.Screenshot
 
         public Rectangle SelectedArea
         {
-            get { return _selectedArea; }
+            get
+            {
+                var location = _selectedArea.Location;
+                if (Bounds.Location.X < 0)
+                    location.X += Bounds.Location.X;
+
+                if (Bounds.Location.Y < 0)
+                    location.Y += Bounds.Location.Y;
+
+                return new Rectangle(location, _selectedArea.Size);
+            }
+
             set
             {
                 _selectedArea = value;
@@ -65,7 +77,7 @@ namespace Lensert.Screenshot
 
         private void SelectionForm_Load(object sender, EventArgs e)
         {
-            _selectedArea = Rectangle.Empty;
+            _selectedArea = _emtpyRectangle;
         }
 
         private void SelectionForm_MouseUp(object sender, MouseEventArgs e)
@@ -73,33 +85,20 @@ namespace Lensert.Screenshot
             Close();
         }
 
+        private void SelectionForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _selectedArea = _emtpyRectangle;
+        }
+
         private void SelectionForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
             {
-                SelectedArea = Rectangle.Empty;
+                SelectedArea = _emtpyRectangle;
                 Close();
             }
         }
-
-        private Rectangle RectangleAbs(Rectangle rectangle)
-        {
-            var rectFixed = rectangle;
-            if (rectangle.Width < 0)
-            {
-                rectFixed.X += rectangle.Width;
-                rectFixed.Width = Math.Abs(rectangle.Width);
-            }
-
-            if (rectFixed.Height < 0)
-            {
-                rectFixed.Y += rectangle.Height;
-                rectFixed.Height = Math.Abs(rectangle.Height);
-            }
-
-            return rectFixed;
-        }
-
+        
         private void SelectionForm_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.DrawImage(_cleanScreenshot, _selectedArea, _selectedArea, GraphicsUnit.Pixel);
