@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lensert", "Lensert\Lensert.csproj", "{15E3D870-38BB-44E4-BB9F-91366AFC6DE8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortcut", "Shortcut\Shortcut\Shortcut.csproj", "{5DEADF0B-DC7B-430F-982E-647F7B05455D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LensertInstaller", "LensertInstaller\LensertInstaller.csproj", "{52BEEAD5-EA52-45AC-9AA6-6AF771E2DAC8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lensert-updater", "lensert-updater\lensert-updater.csproj", "{52BEEAD5-EA52-45AC-9AA6-6AF771E2DAC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
