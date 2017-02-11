@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -27,13 +28,34 @@ namespace Lensert.Helpers
         }
 
         public static Rectangle UnscaledBounds { get; }
-        
+
         public static Rectangle GetForegroundWindowAea()
         {
             var handle = GetForegroundWindow();
             return handle == IntPtr.Zero
                 ? Rectangle.Empty
                 : GetWindowRectangle(handle);
+        }
+
+        public static Bitmap TakeCurrentCursorsWindowScreenshot()
+        {
+            var handle = GetTopCursorsWindowHandle();
+
+            NativeRect rect;
+            GetWindowRect(handle, out rect);
+
+            var rectangle = rect.ToRectangle();
+            var bitmap = new Bitmap(rectangle.Width, rectangle.Height, PixelFormat.Format32bppArgb);
+
+            using (var graphics = Graphics.FromImage(bitmap))
+            {
+                var hdcBitmap = graphics.GetHdc();
+                PrintWindow(handle, hdcBitmap, 0);
+
+                graphics.ReleaseHdc(hdcBitmap);
+            }
+
+            return bitmap;
         }
 
         public static Bitmap TakeScreenshot(Rectangle area)
@@ -112,12 +134,26 @@ namespace Lensert.Helpers
                 var value = ReadValueFromIni(path, key, section);
                 return string.IsNullOrEmpty(value)
                     ? default(T)
-                    : (T)converter.ConvertFromString(value);
+                    : (T) converter.ConvertFromString(value);
             }
             catch
             {
                 return default(T);
             }
+        }
+
+        private static IntPtr GetTopCursorsWindowHandle()
+        {
+            NativePoint point;
+            GetCursorPos(out point);
+
+            var handle = WindowFromPoint(point);
+
+            IntPtr parentHandle;
+            while ((parentHandle = GetParent(handle)) != IntPtr.Zero)
+                handle = parentHandle;
+
+            return handle;
         }
 
         private static int GetWindowState(IntPtr handle)
@@ -128,10 +164,10 @@ namespace Lensert.Helpers
             return placement.showCmd;
         }
 
-        private static string GetClassName(IntPtr hWnd)
+        private static string GetClassName(IntPtr handle)
         {
             var sb = new StringBuilder(256);
-            GetClassName(hWnd, sb, sb.Capacity);
+            GetClassName(handle, sb, sb.Capacity);
 
             return sb.ToString();
         }
@@ -152,7 +188,7 @@ namespace Lensert.Helpers
             GetWindowRect(handle, out rect);
             return rect.ToRectangle();
         }
-        
+
         private static float GetScalingFactor()
         {
             var g = Graphics.FromHwnd(IntPtr.Zero);
@@ -162,12 +198,12 @@ namespace Lensert.Helpers
 
             return desktopVertres/(float) screenVertres;
         }
-        
+
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll")]
-        private static extern bool GetWindowRect(IntPtr hWnd, out NativeRect lpRect);
+        private static extern bool GetWindowRect(IntPtr handle, out NativeRect lpRect);
 
         [DllImport("kernel32.dll")]
         private static extern int GetLastError();
@@ -212,10 +248,10 @@ namespace Lensert.Helpers
         private static extern bool IsWindow(IntPtr handle);
 
         [DllImport("dwmapi.dll")]
-        private static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out NativeRect pvAttribute, int cbAttribute);
+        private static extern int DwmGetWindowAttribute(IntPtr handle, int dwAttribute, out NativeRect pvAttribute, int cbAttribute);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+        private static extern int GetClassName(IntPtr handle, StringBuilder lpClassName, int nMaxCount);
 
         [DllImport("kernel32")]
         private static extern long WritePrivateProfileString(string section, string key, string value, string path);
@@ -228,7 +264,19 @@ namespace Lensert.Helpers
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetWindowPlacement(IntPtr hWnd, ref WindowPlacement lpwndpl);
+        private static extern bool GetWindowPlacement(IntPtr handle, ref WindowPlacement lpwndpl);
+
+        [DllImport("user32.dll")]
+        private static extern bool PrintWindow(IntPtr handle, IntPtr hdcBlt, int nFlags);
+
+        [DllImport("user32.dll")]
+        private static extern bool GetCursorPos(out NativePoint lpPoint);
+
+        [DllImport("user32.dll", ExactSpelling = true, CharSet = CharSet.Auto)]
+        private static extern IntPtr GetParent(IntPtr handle);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr WindowFromPoint(NativePoint point);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct NativeRect
@@ -241,7 +289,16 @@ namespace Lensert.Helpers
             public Rectangle ToRectangle() => new Rectangle(Left, Top, Right - Left, Bottom - Top);
         }
 
-        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+        [StructLayout(LayoutKind.Sequential)]
+        private struct NativePoint
+        {
+            private readonly int X;
+            private readonly int Y;
+
+            public Point ToPoitn() => new Point(X, Y);
+        }
+
+        private delegate bool EnumWindowsProc(IntPtr handle, IntPtr lParam);
 
         private struct WindowPlacement
         {
