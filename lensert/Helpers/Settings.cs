@@ -35,7 +35,7 @@ namespace Lensert.Helpers
             if ((value != null) && !value.Equals(default(T)))
                 return value;
 
-            var defaultValue = (T)DefaultSetting(type);
+            var defaultValue = (T) DefaultSetting(type);
             _logger.Warn($"Failed to parse '{value}' to '{typeof(T)}', restored to default value '{defaultValue}'");
             Native.WriteValueToIni(_iniPath, type.ToString(), defaultValue, "Settings");
 
@@ -48,14 +48,14 @@ namespace Lensert.Helpers
         {
             var settings = Enum.GetValues(typeof(SettingType)).Cast<SettingType>();
 
-            return settings.Where(s => DefaultSetting(s).GetType().IsAssignableFrom(typeof(T))).ToDictionary(k => k, GetSetting<T>);
+            return settings.Where(s => DefaultSetting(s).GetType().IsAssignableFrom(typeof(T))).ToDictionary<SettingType, SettingType, T>(k => k, GetSetting<T>);
         }
 
         public static SettingType GetSettingType<T>(T t)
         {
             var settings = Enum.GetValues(typeof(SettingType)).Cast<SettingType>();
             return settings.First(s => EqualityComparer<T>.Default.Equals(t, GetSetting<T>(s)));
-        } 
+        }
 
         public static void Reset()
         {
@@ -69,10 +69,7 @@ namespace Lensert.Helpers
 
             if (!missingSettings.Any())
                 return;
-
-            if (missingSettings.Count != Enum.GetValues(typeof(SettingType)).Length)
-                NotificationProvider.Show("Error", "Settings file was corrupted and has been auto-fixed.", LogFile.Open);
-
+            
             foreach (var setting in missingSettings)
             {
                 var value = DefaultSetting(setting);
@@ -93,6 +90,9 @@ namespace Lensert.Helpers
                 return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F);
             case SettingType.StartupOnLogon:
                 return true;
+            case SettingType.CheckForUpdates:
+                return true;
+
             default:
                 throw new ArgumentException("Invalid setting type", nameof(type));
             }
@@ -104,6 +104,7 @@ namespace Lensert.Helpers
         SelectAreaHotkey,
         SelectWindowHotkey,
         FullscreenHotkey,
-        StartupOnLogon
+        StartupOnLogon,
+        CheckForUpdates
     }
 }

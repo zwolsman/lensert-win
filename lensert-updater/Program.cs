@@ -35,8 +35,6 @@ namespace Lensert.Updater
         private static async Task MainImpl(string[] args)
         {
             Trace.TraceInformation("lensert-updater started");
-
-            // TODO: check if we may update from settings
             
             var version = new Version(await DownloadString(URL_LENSERT_VERSION));
             Trace.TraceInformation($"server version: {version}");

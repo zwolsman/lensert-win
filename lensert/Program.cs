@@ -1,18 +1,26 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 using Lensert.Core;
 using Lensert.DependencyInjection;
 using Lensert.Helpers;
 using NLog;
+using Timer = System.Threading.Timer;
+using System.IO.Compression;
+using System.Linq;
 
 namespace Lensert
 {
     internal static class Program
     {
+        private const string LENSERT_URL = "https://lensert.com/download?type=win";
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
         [STAThread]
@@ -36,6 +44,13 @@ namespace Lensert
 
         private static void MainImpl()
         {
+#if DEBUG
+            {
+                var consoleRule = LogManager.Configuration.LoggingRules.First(r => r.Targets.Any(t => t.Name == "console"));
+                consoleRule.EnableLoggingForLevel(LogLevel.Debug);
+            }
+#endif
+
             _logger.Info("Lensert started");
 
             if (IsAlreadyRunning())
@@ -43,6 +58,11 @@ namespace Lensert
                 _logger.Warn("Lensert instance already running, exiting..");
                 return;
             }
+
+#if !DEBUG
+            if (Settings.GetSetting<bool>(SettingType.CheckForUpdates))
+                new Timer(UpdateRoutine, null, TimeSpan.Zero, TimeSpan.FromHours(1));
+#endif
 
             if (Settings.GetSetting<bool>(SettingType.StartupOnLogon))
                 CreateStartupLink();
@@ -52,6 +72,23 @@ namespace Lensert
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new HotkeyForm(uploader));
+        }
+
+        private static async void UpdateRoutine(object state)
+        {
+            var file = await DownloadFileToTemp(LENSERT_URL);
+            var updateDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert-installer");
+
+            if (Directory.Exists(updateDirectory))
+                Directory.Delete(updateDirectory, true);
+
+            ZipFile.ExtractToDirectory(file, updateDirectory);
+
+            file = Path.Combine(updateDirectory, "lensert-installer.exe");
+            if (File.Exists(file))
+                Process.Start(file);
+            else
+                _logger.Error("Extracted updater not found!");
         }
 
         private static void UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -101,6 +138,20 @@ namespace Lensert
             {
                 return true;
             }
+        }
+
+        private static async Task<string> DownloadFileToTemp(string url)
+        {
+            var tempFile = Path.GetTempFileName();
+
+            using (var fileStream = File.OpenWrite(tempFile))
+            using (var httpClient = new HttpClient())
+            {
+                var httpStream = await httpClient.GetStreamAsync(url);
+                await httpStream.CopyToAsync(fileStream);
+            }
+
+            return tempFile;
         }
     }
 }
