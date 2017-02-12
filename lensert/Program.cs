@@ -1,8 +1,12 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using Lensert.Core;
 using Lensert.DependencyInjection;
-using Ninject;
+using Lensert.Helpers;
 using NLog;
 
 namespace Lensert
@@ -34,11 +38,14 @@ namespace Lensert
         {
             _logger.Info("Lensert started");
 
-            if (!AssemblyManager.HandleStartup())
+            if (IsAlreadyRunning())
             {
-                _logger.Warn("Handle startup says not to start this instance.");
+                _logger.Warn("Lensert instance already running, exiting..");
                 return;
             }
+
+            if (Settings.GetSetting<bool>(SettingType.StartupOnLogon))
+                CreateStartupLink();
 
             var uploader = KernelFactory.Resolve<IHotkeyHandler>();
 
@@ -62,6 +69,38 @@ namespace Lensert
             catch {}
 
             Environment.Exit(-1);
+        }
+
+        private static void CreateStartupLink()
+        {
+            var directory = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+            var location = Assembly.GetExecutingAssembly().Location;
+
+            using (var streamWriter = new StreamWriter(Path.Combine(directory, "Lensert.url")))
+            {
+                streamWriter.WriteLine("[InternetShortcut]");
+                streamWriter.WriteLine("URL=file:///" + location);
+                streamWriter.WriteLine("IconIndex=0");
+                streamWriter.WriteLine("IconFile=" + location);
+            }
+        }
+
+        private static bool IsAlreadyRunning()
+        {
+            try
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+                var assemblyAttributes = assembly.GetCustomAttributes(typeof(GuidAttribute), false);
+                var guidAttribute = (GuidAttribute) assemblyAttributes.GetValue(0);
+                var mutexName = $"Global\\{{{guidAttribute.Value}}}";
+
+                var mutex = new Mutex(false, mutexName);
+                return !mutex.WaitOne(TimeSpan.Zero, false);
+            }
+            catch
+            {
+                return true;
+            }
         }
     }
 }

@@ -75,7 +75,6 @@
     <Compile Include="Core\IImageUploader.cs" />
     <Compile Include="DependencyInjection\KernelFactory.cs" />
     <Compile Include="DependencyInjection\NinjectBindings.cs" />
-    <Compile Include="Core\AssemblyManager.cs" />
     <Compile Include="Core\NotificationProvider.cs" />
     <Compile Include="Helpers\LensertClient.cs" />
     <Compile Include="Core\Screenshot\Factories\CurrentWindowScreenshot.cs" />

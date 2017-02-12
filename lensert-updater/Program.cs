@@ -10,7 +10,7 @@ namespace Lensert.Updater
 {
     internal class Program
     {
-        private const string URL_LENSERT_ZIP = "https://lensert.com/download?type=win";
+        private const string URL_LENSERT_ZIP = "https://lensert.com/download?type=win&installer=false";
         private const string URL_LENSERT_VERSION = "https://lensert.com/version?type=win";
         private static readonly string _installationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert");
         

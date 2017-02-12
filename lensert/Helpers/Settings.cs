@@ -16,12 +16,13 @@ namespace Lensert.Helpers
 
         static Settings()
         {
-            _iniPath = Path.Combine(AssemblyManager.AppData, "Settings.ini");
-            if (!File.Exists(_iniPath))
-                File.Create(_iniPath).Dispose();
+            InstallationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert");
+            _iniPath = Path.Combine(InstallationDirectory, "Settings.ini");
 
             Reset();
         }
+
+        public static string InstallationDirectory { get; }
 
         public static void SetSetting<T>(SettingType type, T value)
         {
@@ -58,6 +59,9 @@ namespace Lensert.Helpers
 
         public static void Reset()
         {
+            if (!File.Exists(_iniPath))
+                File.Create(_iniPath).Dispose();
+
             var missingSettings = Enum.GetValues(typeof(SettingType))
                 .Cast<SettingType>()
                 .Where(s => string.IsNullOrEmpty(Native.ReadValueFromIni(_iniPath, s.ToString(), "Settings")))
