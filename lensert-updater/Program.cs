@@ -11,6 +11,7 @@ namespace Lensert.Updater
     internal class Program
     {
         private const string URL_LENSERT_ZIP = "https://lensert.com/download?type=win";
+        private const string URL_LENSERT_VERSION = "https://lensert.com/version?type=win";
         private static readonly string _installationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert");
         
         static void Main(string[] args)
@@ -36,10 +37,25 @@ namespace Lensert.Updater
             Trace.TraceInformation("lensert-updater started");
 
             // TODO: check if we may update from settings
-            // TODO: check if update exist/newest version
+            
+            var version = new Version(await DownloadString(URL_LENSERT_VERSION));
+            Trace.TraceInformation($"server version: {version}");
+
+            var file = Path.Combine(_installationDirectory, "lensert.exe");
+            if (File.Exists(file))
+            {
+                var localVersion = new Version(FileVersionInfo.GetVersionInfo(file).FileVersion);
+                Trace.TraceInformation($"local lensert version: {localVersion}");
+
+                if (localVersion >= version)
+                {
+                    Trace.TraceInformation("latest version, bye");
+                    return;
+                }
+            }
 
             Trace.TraceInformation("downloading lensert..");
-            var file = await DownloadFileToTemp(URL_LENSERT_ZIP);
+            file = await DownloadFileToTemp(URL_LENSERT_ZIP);
             Trace.TraceInformation($"downloaded new zip file to {file}");
 
             // we weren't able to shutdown lensert..
@@ -65,7 +81,7 @@ namespace Lensert.Updater
 
             Trace.TraceInformation("lensert-updater complete :)");
         }
-
+        
         private static async Task<bool> KillLensert()
         {
             for (var i = 5; i > 0; --i)
@@ -81,6 +97,14 @@ namespace Lensert.Updater
             }
 
             return !Process.GetProcessesByName("lensert").Any();
+        }
+
+        private static async Task<string> DownloadString(string url)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                return await httpClient.GetStringAsync(url);
+            }
         }
 
         private static async Task<string> DownloadFileToTemp(string url)
