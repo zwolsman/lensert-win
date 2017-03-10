@@ -5,7 +5,7 @@ namespace Lensert.Core.Screenshot.Factories
 {
     internal sealed class FullScreenshot : ScreenshotFactory
     {
-        protected override Rectangle GetArea()
-            => Native.UnscaledBounds;
+        public override Image TakeScreenshot()
+            => Native.TakeScreenshot(Native.UnscaledBounds);
     }
 }

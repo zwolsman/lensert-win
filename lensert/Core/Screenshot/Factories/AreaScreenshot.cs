@@ -28,15 +28,16 @@ namespace Lensert.Core.Screenshot.Factories
                 SelectionForm.Close();
         }
 
-        protected override Rectangle GetArea()
+        public override Image TakeScreenshot()
         {
             if (SelectionForm.Visible)
-                return Rectangle.Empty;
+                return null;
 
-            var screenshot = Create<FullScreenshot>();
+            var screenshot = new Bitmap(Create<FullScreenshot>());
             SelectionForm.Screenshot = screenshot;
             SelectionForm.ShowDialog();
-            return SelectionForm.SelectedArea;
+
+            return screenshot.Clone(SelectionForm.SelectedArea, screenshot.PixelFormat);
         }
     }
 }

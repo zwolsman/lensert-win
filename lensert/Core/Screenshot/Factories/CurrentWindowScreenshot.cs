@@ -5,7 +5,10 @@ namespace Lensert.Core.Screenshot.Factories
 {
     internal class CurrentWindowScreenshot : ScreenshotFactory
     {
-        protected override Rectangle GetArea()
-            => Native.GetForegroundWindowAea();
+        public override Image TakeScreenshot()
+        {
+            var screenshot = new Bitmap(Create<FullScreenshot>());
+            return screenshot.Clone(Native.GetForegroundWindowAea(), screenshot.PixelFormat);
+        }
     }
 }

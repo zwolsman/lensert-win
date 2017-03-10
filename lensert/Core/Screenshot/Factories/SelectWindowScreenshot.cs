@@ -42,15 +42,10 @@ namespace Lensert.Core.Screenshot.Factories
 
         public override Image TakeScreenshot()
         {
-            base.TakeScreenshot();
-
-            return Native.TakeCurrentCursorsWindowScreenshot();
-        }
-
-        protected override Rectangle GetArea()
-        {
             _rectangles = Native.GetWindowDimensions();
-            return base.GetArea();
+
+            base.TakeScreenshot();
+            return Native.TakeCurrentCursorsWindowScreenshot();
         }
     }
 }

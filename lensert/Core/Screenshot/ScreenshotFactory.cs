@@ -44,12 +44,6 @@ namespace Lensert.Core.Screenshot
                     : null);
         }
         
-        protected abstract Rectangle GetArea();
-
-        public virtual Image TakeScreenshot()
-        {
-            var area = GetArea();
-            return Native.TakeScreenshot(area);
-        }
+        public abstract Image TakeScreenshot();
     }
 }
