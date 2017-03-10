@@ -69,7 +69,7 @@ namespace Lensert.Helpers
 
             if (!missingSettings.Any())
                 return;
-            
+
             foreach (var setting in missingSettings)
             {
                 var value = DefaultSetting(setting);
@@ -86,6 +86,8 @@ namespace Lensert.Helpers
                 return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.A);
             case SettingType.SelectWindowHotkey:
                 return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W);
+            case SettingType.CurrentWindowHotkey:
+                return new Hotkey(Modifiers.Control | Modifiers.Shift | Modifiers.Alt, Keys.W);
             case SettingType.FullscreenHotkey:
                 return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F);
             case SettingType.StartupOnLogon:
@@ -103,6 +105,7 @@ namespace Lensert.Helpers
     {
         SelectAreaHotkey,
         SelectWindowHotkey,
+        CurrentWindowHotkey,
         FullscreenHotkey,
         StartupOnLogon,
         CheckForUpdates

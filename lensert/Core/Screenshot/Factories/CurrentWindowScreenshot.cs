@@ -7,8 +7,12 @@ namespace Lensert.Core.Screenshot.Factories
     {
         public override Image TakeScreenshot()
         {
-            var screenshot = new Bitmap(Create<FullScreenshot>());
-            return screenshot.Clone(Native.GetForegroundWindowAea(), screenshot.PixelFormat);
+            var area = Native.GetForegroundWindowAea();
+            if (!Native.UnscaledBounds.Contains(area))
+                return null;
+
+            using (var screenshot = new Bitmap(Create<FullScreenshot>()))
+                return screenshot.Clone(area, screenshot.PixelFormat);
         }
     }
 }

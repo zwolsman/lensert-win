@@ -82,7 +82,7 @@ namespace Lensert.Helpers
             var list = new List<Rectangle>();
             EnumWindows((handle, lparam) =>
             {
-                if ((GetClassName(handle) != "Shell_TrayWnd") && (!IsWindow(handle) || !IsWindowVisible(handle)))
+                if ((!IsWindow(handle) || !IsWindowVisible(handle)) && GetClassName(handle) != "Shell_TrayWnd")
                     return true;
 
                 var rectangle = GetWindowRectangle(handle);

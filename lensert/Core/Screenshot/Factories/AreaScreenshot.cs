@@ -33,11 +33,15 @@ namespace Lensert.Core.Screenshot.Factories
             if (SelectionForm.Visible)
                 return null;
 
-            var screenshot = new Bitmap(Create<FullScreenshot>());
-            SelectionForm.Screenshot = screenshot;
-            SelectionForm.ShowDialog();
+            using (var screenshot = new Bitmap(Create<FullScreenshot>()))
+            {
+                SelectionForm.Screenshot = screenshot;
+                SelectionForm.ShowDialog();
 
-            return screenshot.Clone(SelectionForm.SelectedArea, screenshot.PixelFormat);
+                return SelectionForm.SelectedArea.Width == 0 || SelectionForm.SelectedArea.Height == 0
+                    ? null
+                    : screenshot.Clone(SelectionForm.SelectedArea, screenshot.PixelFormat);
+            }
         }
     }
 }

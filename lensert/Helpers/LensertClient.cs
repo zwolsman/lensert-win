@@ -25,35 +25,37 @@ namespace Lensert.Helpers
 
         public async Task<string> UploadImageAsync(Image bitmap)
         {
-            var memoryStream = new MemoryStream();
-            bitmap.Save(memoryStream, ImageFormat.Png);
-            memoryStream.Seek(0, SeekOrigin.Begin);
-
-            var streamContent = new StreamContent(memoryStream);
-            streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/png");
-
-            var multipartDataContent = new MultipartFormDataContent
+            using (var memoryStream = new MemoryStream())
             {
-                {streamContent, "shot", "screenshot.png"}
-            };
+                bitmap.Save(memoryStream, ImageFormat.Png);
+                memoryStream.Seek(0, SeekOrigin.Begin);
 
-            var responseMessage = await _httpClient.PostAsync(API_URL, multipartDataContent);
-            if (!responseMessage.IsSuccessStatusCode)
-                return null;
+                var streamContent = new StreamContent(memoryStream);
+                streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/png");
 
-            var responseString = await responseMessage.Content.ReadAsStringAsync();
-            var json = _javaScriptSerializer.Deserialize<dynamic>(responseString);
+                var multipartDataContent = new MultipartFormDataContent
+                {
+                    {streamContent, "shot", "screenshot.png"}
+                };
 
-            streamContent.Dispose();
-            multipartDataContent.Dispose();
-            if (json["result"] == ":(")
-            {
-                Console.WriteLine("Error!");
-                Console.WriteLine(json["error"]["code"]);
-                Console.WriteLine(json["error"]["message"]);
+                var responseMessage = await _httpClient.PostAsync(API_URL, multipartDataContent);
+                if (!responseMessage.IsSuccessStatusCode)
+                    return null;
+
+                var responseString = await responseMessage.Content.ReadAsStringAsync();
+                var json = _javaScriptSerializer.Deserialize<dynamic>(responseString);
+
+                streamContent.Dispose();
+                multipartDataContent.Dispose();
+                if (json["result"] == ":(")
+                {
+                    Console.WriteLine("Error!");
+                    Console.WriteLine(json["error"]["code"]);
+                    Console.WriteLine(json["error"]["message"]);
+                }
+
+                return json["link"];
             }
-
-            return json["link"];
         }
     }
 }
