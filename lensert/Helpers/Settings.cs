@@ -14,6 +14,17 @@ namespace Lensert.Helpers
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private static readonly string _iniPath;
 
+        private static readonly Dictionary<SettingType, object> _defaultSettings = new Dictionary<SettingType, object>
+        {
+            [SettingType.SelectAreaHotkey] = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.A),
+            [SettingType.SelectWindowHotkey] = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W),
+            [SettingType.CurrentWindowHotkey] = new Hotkey(Modifiers.Control | Modifiers.Shift | Modifiers.Alt, Keys.A),
+            [SettingType.FullscreenHotkey] = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F),
+            [SettingType.StartupOnLogon] = true,
+            [SettingType.CheckForUpdates] = true,
+            [SettingType.SaveBackup] = true
+        };
+
         static Settings()
         {
             InstallationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert");
@@ -35,7 +46,7 @@ namespace Lensert.Helpers
             if ((value != null) && !value.Equals(default(T)))
                 return value;
 
-            var defaultValue = (T) DefaultSetting(type);
+            var defaultValue = (T) _defaultSettings[type];
             _logger.Warn($"Failed to parse '{value}' to '{typeof(T)}', restored to default value '{defaultValue}'");
             Native.WriteValueToIni(_iniPath, type.ToString(), defaultValue, "Settings");
 
@@ -48,7 +59,7 @@ namespace Lensert.Helpers
         {
             var settings = Enum.GetValues(typeof(SettingType)).Cast<SettingType>();
 
-            return settings.Where(s => DefaultSetting(s).GetType().IsAssignableFrom(typeof(T))).ToDictionary<SettingType, SettingType, T>(k => k, GetSetting<T>);
+            return settings.Where(s => _defaultSettings[s].GetType().IsAssignableFrom(typeof(T))).ToDictionary<SettingType, SettingType, T>(k => k, GetSetting<T>);
         }
 
         public static SettingType GetSettingType<T>(T t)
@@ -72,31 +83,9 @@ namespace Lensert.Helpers
 
             foreach (var setting in missingSettings)
             {
-                var value = DefaultSetting(setting);
+                var value = _defaultSettings[setting];
                 Native.WriteValueToIni(_iniPath, setting.ToString(), value, "Settings");
                 _logger.Info($"Restored missing '{setting}' setting to default value");
-            }
-        }
-
-        private static object DefaultSetting(SettingType type)
-        {
-            switch (type)
-            {
-            case SettingType.SelectAreaHotkey:
-                return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.A);
-            case SettingType.SelectWindowHotkey:
-                return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W);
-            case SettingType.CurrentWindowHotkey:
-                return new Hotkey(Modifiers.Control | Modifiers.Shift | Modifiers.Alt, Keys.W);
-            case SettingType.FullscreenHotkey:
-                return new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F);
-            case SettingType.StartupOnLogon:
-                return true;
-            case SettingType.CheckForUpdates:
-                return true;
-
-            default:
-                throw new ArgumentException("Invalid setting type", nameof(type));
             }
         }
     }
@@ -108,6 +97,7 @@ namespace Lensert.Helpers
         CurrentWindowHotkey,
         FullscreenHotkey,
         StartupOnLogon,
-        CheckForUpdates
+        CheckForUpdates,
+        SaveBackup
     }
 }
