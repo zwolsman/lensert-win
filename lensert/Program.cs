@@ -86,10 +86,27 @@ namespace Lensert
             ZipFile.ExtractToDirectory(file, updateDirectory);
 
             file = Path.Combine(updateDirectory, "lensert-installer.exe");
-            if (File.Exists(file))
-                Process.Start(file);
-            else
+            if (!File.Exists(file))
                 _logger.Error("Extracted updater not found!");
+
+            var timeout = 5;
+            var process = Process.Start(file);
+            while (!process.HasExited && --timeout > 0)
+            {
+                await Task.Delay(1000);
+                process.Refresh();
+            }
+
+            // installer still runs :O
+            process = Process.GetProcessesByName("lensert-installer").FirstOrDefault();
+            if (process != null)
+                process.Kill();
+
+            // cleanup after installer
+            if (!Directory.Exists(updateDirectory))
+                throw new InvalidOperationException("Dafuck happend.");
+
+            Directory.Delete(updateDirectory, true);
         }
 
         private static void UnhandledException(object sender, UnhandledExceptionEventArgs e)
