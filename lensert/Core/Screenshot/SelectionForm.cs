@@ -63,15 +63,8 @@ namespace Lensert.Core.Screenshot
             get
             {
                 var location = _selectedArea.Location;
-                if (Bounds.Location.X < 0)
-                    location.X += Bounds.Location.X;
-
-                if (Bounds.Location.Y < 0)
-                    location.Y += Bounds.Location.Y;
-
                 return new Rectangle(location, _selectedArea.Size);
             }
-
             set
             {
                 _selectedArea = value;
