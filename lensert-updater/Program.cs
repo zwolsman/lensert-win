@@ -45,11 +45,11 @@ namespace Lensert.Updater
                 var localVersion = new Version(FileVersionInfo.GetVersionInfo(file).FileVersion);
                 Trace.TraceInformation($"local lensert version: {localVersion}");
 
-                if (localVersion >= version)
-                {
-                    Trace.TraceInformation("latest version, bye");
-                    return;
-                }
+                //if (localVersion >= version)
+                //{
+                //    Trace.TraceInformation("latest version, bye");
+                //    return;
+                //}
             }
 
             Trace.TraceInformation("downloading lensert..");
@@ -63,11 +63,22 @@ namespace Lensert.Updater
                 return; 
             }
 
-            // remove old lensert; TODO: don't delete the settings file
-            if (Directory.Exists(_installationDirectory))
+            var directoryInfo = new DirectoryInfo(_installationDirectory);
+            if (directoryInfo.Exists)
             {
                 Trace.TraceInformation("deleting previous lensert");
-                Directory.Delete(_installationDirectory, true);
+
+                var extensionsToDelete = new[] {".exe", ".dll", ".config"};
+                var filesToDelete = extensionsToDelete.SelectMany(e => directoryInfo.GetFiles($"*{e}").Where(f => f.Extension.Equals(e, StringComparison.InvariantCultureIgnoreCase)));
+                foreach (var f in filesToDelete)
+                {
+                    try
+                    {
+                        // make sure to delete readonly
+                        f.Attributes = FileAttributes.Normal;
+                        f.Delete();
+                    } catch { }
+                }
             }
 
             Trace.TraceInformation("extracting lensert..");
