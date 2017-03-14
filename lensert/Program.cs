@@ -22,6 +22,7 @@ namespace Lensert
     {
         private const string LENSERT_URL = "https://lensert.com/download?type=win";
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private static Timer _updateTimer;
 
         [STAThread]
         private static void Main(string[] args)
@@ -61,7 +62,7 @@ namespace Lensert
 
 #if !DEBUG
             if (Settings.GetSetting<bool>(SettingType.CheckForUpdates))
-                new Timer(UpdateRoutine, null, TimeSpan.Zero, TimeSpan.FromHours(1));
+                _updateTimer = new Timer(UpdateRoutine, null, TimeSpan.Zero, TimeSpan.FromHours(1));
 #endif
 
             if (Settings.GetSetting<bool>(SettingType.StartupOnLogon))
