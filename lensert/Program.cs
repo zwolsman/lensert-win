@@ -57,15 +57,25 @@ namespace Lensert
             ProfileOptimization.SetProfileRoot(profilePath);
             ProfileOptimization.StartProfile("Start.Profile");
             
-
             _logger.Info($"'{Environment.CommandLine}' started");
             if (args.Length == 0)
             {
-                
+                _logger.Warn("Lensert must be invoked with argument");
+                if (!Process.GetProcessesByName("lensert-daemon").Any())
+                {
+                    _logger.Info("Daemon not running, started checking for updates..");
+                    await UpdateRoutine();
+                }
+
+                await Task.Yield();
+                return;
             }
-            else if (args.Length != 1)
+
+            if (args.Length != 1)
             {
                 _logger.Error($"Lensert must be started with one argument, but {args.Length} where given");
+
+                await Task.Yield();
                 return;
             }
 
@@ -105,20 +115,53 @@ namespace Lensert
             var process = Process.Start(file);
             while (!process.HasExited && --timeout > 0)
             {
+                _logger.Info($"Waiting on installer ({timeout} remaining..)");
                 await Task.Delay(1000);
                 process.Refresh();
             }
 
             // installer still runs :O
             process = Process.GetProcessesByName("lensert-installer").FirstOrDefault();
-            if (process != null)
-                process.Kill();
+            process?.Kill();
 
             // cleanup after installer
             if (!Directory.Exists(updateDirectory))
                 throw new InvalidOperationException("Dafuck happend.");
 
             Directory.Delete(updateDirectory, true);
+            _logger.Info("Installer completed.");
+        }
+
+        private static void CreateStartupLink()
+        {
+            var directory = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+            var location = Path.Combine(Settings.InstallationDirectory, "lensert-daemon.exe");
+
+            // delete old shortcut
+            if (File.Exists(Path.Combine(directory, "Lensert.url")))
+                File.Delete(Path.Combine(directory, "Lensert.url"));
+
+            using (var streamWriter = new StreamWriter(Path.Combine(directory, "lensert-daemon.url")))
+            {
+                streamWriter.WriteLine("[InternetShortcut]");
+                streamWriter.WriteLine("URL=file:///" + location);
+                streamWriter.WriteLine("IconIndex=0");
+                streamWriter.WriteLine("IconFile=" + location);
+            }
+        }
+        
+        private static async Task<string> DownloadFileToTemp(string url)
+        {
+            var tempFile = Path.GetTempFileName();
+
+            using (var fileStream = File.OpenWrite(tempFile))
+            using (var httpClient = new HttpClient())
+            {
+                var httpStream = await httpClient.GetStreamAsync(url);
+                await httpStream.CopyToAsync(fileStream);
+            }
+
+            return tempFile;
         }
 
         private static void UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -133,55 +176,9 @@ namespace Lensert
                 else
                     _logger.Fatal(exception, "Unhandled exception");
             }
-            catch {}
+            catch { }
 
             Environment.Exit(-1);
-        }
-
-        private static void CreateStartupLink()
-        {
-            var directory = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-            var location = Assembly.GetExecutingAssembly().Location;
-
-            using (var streamWriter = new StreamWriter(Path.Combine(directory, "Lensert.url")))
-            {
-                streamWriter.WriteLine("[InternetShortcut]");
-                streamWriter.WriteLine("URL=file:///" + location);
-                streamWriter.WriteLine("IconIndex=0");
-                streamWriter.WriteLine("IconFile=" + location);
-            }
-        }
-
-        private static bool IsAlreadyRunning()
-        {
-            try
-            {
-                var assembly = Assembly.GetExecutingAssembly();
-                var assemblyAttributes = assembly.GetCustomAttributes(typeof(GuidAttribute), false);
-                var guidAttribute = (GuidAttribute) assemblyAttributes.GetValue(0);
-                var mutexName = $"Global\\{{{guidAttribute.Value}}}";
-
-                var mutex = new Mutex(false, mutexName);
-                return !mutex.WaitOne(TimeSpan.Zero, false);
-            }
-            catch
-            {
-                return true;
-            }
-        }
-
-        private static async Task<string> DownloadFileToTemp(string url)
-        {
-            var tempFile = Path.GetTempFileName();
-
-            using (var fileStream = File.OpenWrite(tempFile))
-            using (var httpClient = new HttpClient())
-            {
-                var httpStream = await httpClient.GetStreamAsync(url);
-                await httpStream.CopyToAsync(fileStream);
-            }
-
-            return tempFile;
         }
     }
 }
