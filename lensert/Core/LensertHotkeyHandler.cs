@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Lensert.Core.Screenshot;
 using Lensert.Core.Screenshot.Factories;
@@ -63,7 +64,7 @@ namespace Lensert.Core
 
                 _logger.Info($"Image uploaded {link}");
                 NotificationProvider.Show("Upload complete", link, () => Process.Start(link), -1); // priority: -1 -> always get overwritten even by itself (spamming lensert e.g.)
-                Clipboard.SetText(link);
+                Clipboard.SetDataObject(link, false, 10, 200);
 
                 if (!Settings.GetSetting<bool>(SettingType.SaveBackup))
                     return;
@@ -77,6 +78,12 @@ namespace Lensert.Core
                 NotificationProvider.Show(
                     "Upload failed :(",
                     "Your machine seems to be offline. Don't worry your screenshot was saved localy and will be uploaded when you re-connect.");
+            }
+            catch (ExternalException)
+            {
+                NotificationProvider.Show(
+                    "Clipboard Error",
+                    "Lensert failed to copy the link to the clipboard");
             }
             finally
             {
