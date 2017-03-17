@@ -18,6 +18,7 @@ typedef struct Hotkey_t
 {
 	const char Name[BUFSIZE];
 	const char HotkeyPattern[BUFSIZE];
+	LPARAM EventLParam;
 } Hotkey_t;
 
 typedef struct Lookup_t
@@ -133,6 +134,37 @@ static int ParseHotkey(const Hotkey_t* hotkey, UINT* modifier, UINT* vk)
 	return OK;
 }
 
+static int FindHotkeyByLParam(LPARAM lParam, Hotkey_t** hotkey)
+{
+	for (int i = 0; i < sizeof(g_Hotkeys); ++i)
+	{
+		if (g_Hotkeys[i].EventLParam == lParam)
+		{
+			*hotkey = &g_Hotkeys[i];
+			return OK;
+		}
+	}
+
+	return ERR;
+}
+
+static int RegisterHotkeys(int hotkeys)
+{
+	for (int i = 0; i < hotkeys; ++i)
+	{
+		UINT modifier, vk;
+		if (ParseHotkey(&g_Hotkeys[i], &modifier, &vk) == ERR)
+			return ERR; // TODO: Show error
+
+		if (!RegisterHotKey(NULL, i, modifier, vk))
+			return ERR;
+
+		g_Hotkeys[i].EventLParam = (modifier & 0xFFFF) | (vk << 16);
+	}
+
+	return OK;
+}
+
 int main()
 {
 	if (InitializeSettingsPath() == ERR)
@@ -142,23 +174,23 @@ int main()
 	if (hotkeys == ERR)
 		return ERR;
 
-	for (int i = 0; i < hotkeys; ++i)
-	{
-		UINT modifier, vk;
-		if (ParseHotkey(&g_Hotkeys[i], &modifier, &vk) == ERR)
-			return ERR; // TODO: Show error
+	if (RegisterHotkeys(hotkeys) == ERR)
+		return ERR;
 
-		if (!RegisterHotKey(NULL, i, modifier, vk))
-			return ERR;
-	}
-
+	Hotkey_t* hotkey = NULL;
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
 		if (msg.message != WM_HOTKEY)
 			continue;
 
-		printf("%04X %04X\n", msg.lParam & 0xFFFF, msg.lParam >> 16);
+		if (FindHotkeyByLParam(msg.lParam, &hotkey) == ERR)
+		{
+			printf("Hotkey event received, but didn't match any hotkeys :O");
+			continue;
+		}
+
+		printf("Pressed: %s\n", hotkey->Name);
 	}
 
 	return 0;
