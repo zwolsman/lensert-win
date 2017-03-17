@@ -190,7 +190,28 @@ int main()
 			continue;
 		}
 
-		printf("Pressed: %s\n", hotkey->Name);
+		char commandLine[BUFSIZE];
+		snprintf(commandLine, sizeof(commandLine), "lensert.exe %.32s", hotkey->Name);
+
+		STARTUPINFO startupInfo = {0};
+		startupInfo.cb = sizeof(startupInfo);
+		PROCESS_INFORMATION processInformation = { 0 };
+
+		if (!CreateProcess(
+			NULL, 
+			commandLine, 
+			NULL, 
+			NULL, 
+			FALSE, 
+			HIGH_PRIORITY_CLASS, 
+			NULL, 
+			NULL, 
+			&startupInfo, 
+			&processInformation
+		))
+			return ERR;
+
+		printf("Launched Lensert %.32s\n", hotkey->Name);
 	}
 
 	return 0;

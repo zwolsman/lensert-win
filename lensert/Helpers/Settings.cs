@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using Lensert.Core;
 using NLog;
-using Shortcut;
 
 namespace Lensert.Helpers
 {
@@ -16,11 +14,11 @@ namespace Lensert.Helpers
 
         private static readonly Dictionary<SettingType, object> _defaultSettings = new Dictionary<SettingType, object>
         {
-            [SettingType.SelectAreaHotkey] = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.A),
-            [SettingType.SelectWindowHotkey] = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W),
-            [SettingType.CurrentWindowHotkey] = new Hotkey(Modifiers.Control | Modifiers.Shift | Modifiers.Alt, Keys.A),
-            [SettingType.FullscreenHotkey] = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F),
-            [SettingType.ClipboardHotkey] = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.C),
+            [SettingType.SelectAreaHotkey] = "Control, Shift, A",// new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.A),
+            [SettingType.SelectWindowHotkey] = "Control, Shift, W",// new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W),
+            [SettingType.CurrentWindowHotkey] = "Control, Shift, Alt, A",//new Hotkey(Modifiers.Control | Modifiers.Shift | Modifiers.Alt, Keys.A),
+            [SettingType.FullscreenHotkey] = "Control, Shift, F",//new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F),
+            [SettingType.ClipboardHotkey] = "Control, Shift, C",//new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.C),
             [SettingType.StartupOnLogon] = true,
             [SettingType.CheckForUpdates] = true,
             [SettingType.SaveBackup] = true

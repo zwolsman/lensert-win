@@ -5,12 +5,12 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Lensert.Core;
-using Lensert.DependencyInjection;
 using Lensert.Helpers;
 using NLog;
 using Timer = System.Threading.Timer;
@@ -27,12 +27,12 @@ namespace Lensert
         private static void Main(string[] args)
         {
 #if DEBUG
-            MainImpl();
+            MainImpl(args).Wait();
 #else
             try
             {
                 AppDomain.CurrentDomain.UnhandledException += UnhandledException;
-                MainImpl();
+                MainImpl(args).Wait();
             }
             catch (Exception e)
             {
@@ -42,16 +42,26 @@ namespace Lensert
 #endif
         }
 
-        private static void MainImpl()
+        private static async Task MainImpl(string[] args)
         {
 #if DEBUG
-            {
-                var consoleRule = LogManager.Configuration.LoggingRules.First(r => r.Targets.Any(t => t.Name == "console"));
-                consoleRule.EnableLoggingForLevel(LogLevel.Debug);
-            }
+            var consoleRule = LogManager.Configuration.LoggingRules.First(r => r.Targets.Any(t => t.Name == "console"));
+            consoleRule.EnableLoggingForLevel(LogLevel.Debug);
 #endif
 
-            _logger.Info("Lensert started");
+            var profilePath = Path.Combine(Settings.InstallationDirectory, "profileroot");
+            if (!Directory.Exists(profilePath))
+                Directory.CreateDirectory(profilePath);
+
+            _logger.Info($"'{Environment.CommandLine}' started");
+            if (args.Length != 1)
+            {
+                _logger.Error($"Lensert must be started with one argument, but {args.Length} where given");
+                return;
+            }
+
+            var hotkeySettings = Settings.GetSettings<string>().Where(keyValue => keyValue.Key.ToString().EndsWith("Hotkey"));
+            var settingType = hotkeySettings.Single(keyValue => keyValue.Key.ToString().StartsWith(args[0])).Key;
 
             if (IsAlreadyRunning())
             {
@@ -67,11 +77,11 @@ namespace Lensert
             if (Settings.GetSetting<bool>(SettingType.StartupOnLogon))
                 CreateStartupLink();
 
-            var uploader = KernelFactory.Resolve<IHotkeyHandler>();
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new HotkeyForm(uploader));
+
+            var hotkeyHandler = new LensertHotkeyHandler(new LensertClient());
+            await hotkeyHandler.HandleHotkey(settingType);
         }
 
         private static async void UpdateRoutine(object state)

@@ -6,16 +6,16 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Lensert.Core.Screenshot;
 using Lensert.Core.Screenshot.Factories;
 using Lensert.Helpers;
 using NLog;
-using Shortcut;
 
 namespace Lensert.Core
 {
-    internal sealed class LensertHotkeyHandler : IHotkeyHandler
+    internal sealed class LensertHotkeyHandler
     {
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private static readonly string _backupDirectory = Path.Combine(Settings.InstallationDirectory, "backup");
@@ -38,17 +38,14 @@ namespace Lensert.Core
                 Directory.CreateDirectory(_backupDirectory);
         }
 
-        public async void HandleHotkey(HotkeyPressedEventArgs eventArgs)
+        public async Task HandleHotkey(SettingType settingType)
         {
-            var settingType = Settings.GetSettingType(eventArgs.Hotkey);
             var type = _hotkeyDictionary[settingType];
 
-            _logger.Info($"Hotkey pressed: {eventArgs.Hotkey} ({settingType})");
-            //            _binder.HotkeysEnabled = false;
+            _logger.Info($"Processing : {settingType}");
 
             using (var screenshot = ScreenshotFactory.Create(type))
             {
-                //_binder.HotkeysEnabled = true;
                 if (screenshot == null || screenshot.Size.Width <= 1 || screenshot.Size.Height <= 1)
                     return;
 

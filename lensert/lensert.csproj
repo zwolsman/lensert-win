@@ -47,10 +47,6 @@
     </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.2\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
@@ -72,17 +68,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\LensertHotkeyHandler.cs" />
-    <Compile Include="Core\IHotkeyHandler.cs" />
     <Compile Include="Core\IImageUploader.cs" />
     <Compile Include="Core\Screenshot\Factories\ClipboardScreenshot.cs" />
-    <Compile Include="DependencyInjection\KernelFactory.cs" />
-    <Compile Include="DependencyInjection\NinjectBindings.cs" />
     <Compile Include="Core\NotificationProvider.cs" />
     <Compile Include="Helpers\LensertClient.cs" />
     <Compile Include="Core\Screenshot\Factories\CurrentWindowScreenshot.cs" />
-    <Compile Include="Core\HotkeyForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Helpers\Settings.cs" />
     <Compile Include="Core\Screenshot\SelectionForm.cs">
       <SubType>Form</SubType>
@@ -135,12 +125,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\lensert_icon_fresh.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Shortcut\Shortcut\Shortcut.csproj">
-      <Project>{5deadf0b-dc7b-430f-982e-647f7b05455d}</Project>
-      <Name>Shortcut</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
