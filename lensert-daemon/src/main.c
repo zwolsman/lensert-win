@@ -8,11 +8,16 @@
 #include <Windows.h>
 #include <ShlObj.h>
 
+// macros
+#define BUFSIZE 32
+#define ERR -1
+#define OK 1
+
 // types
 typedef struct Hotkey_t
 {
-	const char Name[32];
-	const char HotkeyPattern[32];
+	const char Name[BUFSIZE];
+	const char HotkeyPattern[BUFSIZE];
 } Hotkey_t;
 
 typedef struct Lookup_t
@@ -25,14 +30,16 @@ typedef struct Lookup_t
 const char g_SettingsFile[MAX_PATH];
 static Hotkey_t g_Hotkeys[8];
 
-static void InitializeSettingsPath()
+static int InitializeSettingsPath()
 {
 	// get local appdata
-	SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, g_SettingsFile);
+	if (SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, g_SettingsFile) != S_OK)
+		return ERR;
 
 	// very safe catenation
 	const char* const relativeIniPath = "\\lensert\\Settings.ini";
 	strncat_s(g_SettingsFile, sizeof(g_SettingsFile), relativeIniPath, sizeof(g_SettingsFile) - strnlen_s(g_SettingsFile, sizeof(g_SettingsFile)) - sizeof(relativeIniPath) - 1);
+	return OK;
 }
 
 static int ParseHotkeysFromSettings()
@@ -41,7 +48,7 @@ static int ParseHotkeysFromSettings()
 
 	char sectionBuffer[MAX_PATH];
 	if (!GetPrivateProfileString("Settings", NULL, "", sectionBuffer, sizeof(sectionBuffer), g_SettingsFile))
-		return -1;
+		return ERR;
 
 	char* line = sectionBuffer;
 	
@@ -52,8 +59,8 @@ static int ParseHotkeysFromSettings()
 		
 		if (strcmp(line + lineLength - sizeof(strHotkey) + 1, strHotkey) == 0)
 		{
-			strncpy_s(g_Hotkeys[index].Name, 32, line, lineLength - sizeof(strHotkey) + 1);
-			GetPrivateProfileString("Settings", line, "", g_Hotkeys[index].HotkeyPattern, 32, g_SettingsFile);
+			strncpy_s(g_Hotkeys[index].Name, BUFSIZE, line, lineLength - sizeof(strHotkey) + 1);
+			GetPrivateProfileString("Settings", line, "", g_Hotkeys[index].HotkeyPattern, BUFSIZE, g_SettingsFile);
 
 			++index;
 		}
@@ -85,14 +92,14 @@ static int ParseModifier(const char* token, size_t len, UINT* modifier)
 		if (strncmp(p->Key, token, len) == 0)
 		{
 			*modifier = p->Value;
-			return 1;
+			return OK;
 		}
 	}
 
-	return 0;
+	return ERR;
 }
 
-static void ParseHotkey(const Hotkey_t* hotkey, UINT* modifier, UINT* vk)
+static int ParseHotkey(const Hotkey_t* hotkey, UINT* modifier, UINT* vk)
 {
 	assert(hotkey);
 	assert(modifier);
@@ -101,37 +108,48 @@ static void ParseHotkey(const Hotkey_t* hotkey, UINT* modifier, UINT* vk)
 	*modifier = 0;
 	*vk = 0;
 
-	char buf[32];
+	char buf[BUFSIZE];
 	strncpy_s(buf, sizeof(buf), hotkey->HotkeyPattern, sizeof(buf) - sizeof(hotkey->HotkeyPattern) - 1);
 
 	char* next_token;
 	char* token = strtok_s(buf, ", ", &next_token);
+	if (token == NULL)
+		return ERR;
+	
 	while (token)
 	{
 		UINT tmp;
 		size_t len = strnlen_s(token, sizeof(buf));
 		if (len == 1 && *vk == 0)
 			*vk = (unsigned)token[0];
-		else if (len > 1 && ParseModifier(token, len, &tmp))
+		else if (len > 1 && ParseModifier(token, len, &tmp) == OK)
 			*modifier |= tmp;
-		// else error?
+		else
+			return ERR;
 
 		token = strtok_s(NULL, ", ", &next_token);
 	}	
+
+	return OK;
 }
 
 int main()
 {
-	InitializeSettingsPath();
+	if (InitializeSettingsPath() == ERR)
+		return ERR;
+
 	int hotkeys = ParseHotkeysFromSettings();
+	if (hotkeys == ERR)
+		return ERR;
 
 	for (int i = 0; i < hotkeys; ++i)
 	{
 		UINT modifier, vk;
-		ParseHotkey(&g_Hotkeys[i], &modifier, &vk);
+		if (ParseHotkey(&g_Hotkeys[i], &modifier, &vk) == ERR)
+			return ERR; // TODO: Show error
 
 		if (!RegisterHotKey(NULL, i, modifier, vk))
-			return 1;
+			return ERR;
 	}
 
 	MSG msg;
