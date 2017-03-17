@@ -203,7 +203,7 @@ int main()
 			NULL, 
 			NULL, 
 			FALSE, 
-			HIGH_PRIORITY_CLASS, 
+			NORMAL_PRIORITY_CLASS, 
 			NULL, 
 			NULL, 
 			&startupInfo, 

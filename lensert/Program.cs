@@ -57,7 +57,11 @@ namespace Lensert
             ProfileOptimization.StartProfile("Start.Profile");
 
             _logger.Info($"'{Environment.CommandLine}' started");
-            if (args.Length != 1)
+            if (args.Length == 0)
+            {
+                
+            }
+            else if (args.Length != 1)
             {
                 _logger.Error($"Lensert must be started with one argument, but {args.Length} where given");
                 return;
@@ -65,29 +69,20 @@ namespace Lensert
 
             var hotkeySettings = Settings.GetSettings<string>().Where(keyValue => keyValue.Key.ToString().EndsWith("Hotkey"));
             var settingType = hotkeySettings.Single(keyValue => keyValue.Key.ToString().StartsWith(args[0])).Key;
-
-            if (IsAlreadyRunning())
-            {
-                _logger.Warn("Lensert instance already running, exiting..");
-                return;
-            }
+            
+            var hotkeyHandler = new LensertHotkeyHandler(new LensertClient());
+            await hotkeyHandler.HandleHotkey(settingType);
 
 #if !DEBUG
             if (Settings.GetSetting<bool>(SettingType.CheckForUpdates))
-                _updateTimer = new Timer(UpdateRoutine, null, TimeSpan.Zero, TimeSpan.FromHours(1));
+                await UpdateRoutine();
 #endif
 
             if (Settings.GetSetting<bool>(SettingType.StartupOnLogon))
                 CreateStartupLink();
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-            var hotkeyHandler = new LensertHotkeyHandler(new LensertClient());
-            await hotkeyHandler.HandleHotkey(settingType);
         }
 
-        private static async void UpdateRoutine(object state)
+        private static async Task UpdateRoutine()
         {
             var file = await DownloadFileToTemp(LENSERT_URL);
             var updateDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert-installer");
