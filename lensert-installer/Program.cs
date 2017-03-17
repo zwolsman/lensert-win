@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Lensert.Updater
+namespace Lensert.Installer
 {
     internal class Program
     {
@@ -45,11 +45,11 @@ namespace Lensert.Updater
                 var localVersion = new Version(FileVersionInfo.GetVersionInfo(file).FileVersion);
                 Trace.TraceInformation($"local lensert version: {localVersion}");
 
-                //if (localVersion >= version)
-                //{
-                //    Trace.TraceInformation("latest version, bye");
-                //    return;
-                //}
+                if (localVersion >= version)
+                {
+                    Trace.TraceInformation("latest version, bye");
+                    return;
+                }
             }
 
             Trace.TraceInformation("downloading lensert..");
