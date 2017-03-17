@@ -25,7 +25,8 @@ namespace Lensert.Core
             [SettingType.FullscreenHotkey] = typeof(FullScreenshot),
             [SettingType.SelectAreaHotkey] = typeof(UserSelectionScreenshot),
             [SettingType.SelectWindowHotkey] = typeof(SelectWindowScreenshot),
-            [SettingType.CurrentWindowHotkey] = typeof(CurrentWindowScreenshot)
+            [SettingType.CurrentWindowHotkey] = typeof(CurrentWindowScreenshot),
+            [SettingType.ClipboardHotkey] = typeof(ClipboardScreenshot)
         };
 
         private readonly IImageUploader _imageUploader;

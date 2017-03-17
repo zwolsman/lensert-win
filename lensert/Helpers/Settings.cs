@@ -20,6 +20,7 @@ namespace Lensert.Helpers
             [SettingType.SelectWindowHotkey] = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W),
             [SettingType.CurrentWindowHotkey] = new Hotkey(Modifiers.Control | Modifiers.Shift | Modifiers.Alt, Keys.A),
             [SettingType.FullscreenHotkey] = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F),
+            [SettingType.ClipboardHotkey] = new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.C),
             [SettingType.StartupOnLogon] = true,
             [SettingType.CheckForUpdates] = true,
             [SettingType.SaveBackup] = true
@@ -96,6 +97,7 @@ namespace Lensert.Helpers
         SelectWindowHotkey,
         CurrentWindowHotkey,
         FullscreenHotkey,
+        ClipboardHotkey,
         StartupOnLogon,
         CheckForUpdates,
         SaveBackup
