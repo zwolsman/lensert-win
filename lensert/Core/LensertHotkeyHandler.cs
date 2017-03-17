@@ -52,6 +52,7 @@ namespace Lensert.Core
                     return;
 
                 string link = null;
+                var failedOnUpload = false;
 
                 try
                 {
@@ -71,18 +72,21 @@ namespace Lensert.Core
                 }
                 catch (HttpRequestException)
                 {
-                    NotificationProvider.Show(
-                        "Upload failed :(",
-                        "Your machine seems to be offline. Don't worry your screenshot was saved localy and will be uploaded when you re-connect.");
+                    failedOnUpload = true;
                 }
                 catch (ExternalException)
                 {
-                    NotificationProvider.Show(
-                        "Clipboard Error",
-                        "Lensert failed to copy the link to the clipboard");
+                    if (!string.IsNullOrEmpty(link))
+                    {
+                        NotificationProvider.Show(
+                            "Clipboard Error",
+                            "Lensert failed to copy the link to the clipboard",
+                            () => Process.Start(link),
+                            -1);
+                    }
                 }
 
-                if (!Settings.GetSetting<bool>(SettingType.SaveBackup))
+                if (!Settings.GetSetting<bool>(SettingType.SaveBackup) && !failedOnUpload)
                     return;
 
                 try
@@ -93,12 +97,29 @@ namespace Lensert.Core
 
                     var filename = Path.Combine(_backupDirectory, $"{DateTime.Now:ddMMyyHHmmssfff}-{lensertId}.png");
                     screenshot.Save(filename, ImageFormat.Png);
+
+                    if (failedOnUpload)
+                    {
+                        NotificationProvider.Show(
+                            "Upload failed",
+                            "Lensert was unable to upload the image to the server, but it has been saved locally. (click to show)",
+                            () => Process.Start("explorer.exe", $"/select, \"{filename}\""));
+                    }
                 }
                 catch (Exception)
                 {
-                    NotificationProvider.Show(
-                           "Backup Error",
-                           "Lensert failed to save the last screenshot");
+                    if (failedOnUpload)
+                    {
+                        NotificationProvider.Show(
+                            "Lensert Error",
+                            "Lensert failed both on uploading and creating a local backup. The last screenshot is lost for eternity..");
+                    }
+                    else
+                    {
+                        NotificationProvider.Show(
+                            "Backup Error",
+                            "Lensert failed to save the last screenshot");
+                    }
                 }
             }
         }
