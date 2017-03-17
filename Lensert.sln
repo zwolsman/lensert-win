@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lensert", "Lensert\lensert.csproj", "{15E3D870-38BB-44E4-BB9F-91366AFC6DE8}"
 EndProject
@@ -58,6 +58,7 @@ Global
 		{52BEEAD5-EA52-45AC-9AA6-6AF771E2DAC8}.Release|x86.ActiveCfg = Release|Any CPU
 		{52BEEAD5-EA52-45AC-9AA6-6AF771E2DAC8}.Release|x86.Build.0 = Release|Any CPU
 		{21ADECB8-37C7-4F23-B4A5-1C6C9E62F9D4}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{21ADECB8-37C7-4F23-B4A5-1C6C9E62F9D4}.Debug|Any CPU.Build.0 = Debug|Win32
 		{21ADECB8-37C7-4F23-B4A5-1C6C9E62F9D4}.Debug|x64.ActiveCfg = Debug|x64
 		{21ADECB8-37C7-4F23-B4A5-1C6C9E62F9D4}.Debug|x64.Build.0 = Debug|x64
 		{21ADECB8-37C7-4F23-B4A5-1C6C9E62F9D4}.Debug|x86.ActiveCfg = Debug|Win32
