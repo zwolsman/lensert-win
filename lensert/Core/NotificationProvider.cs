@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Drawing;
 using System.Windows.Forms;
 using Lensert.Properties;
 
@@ -11,14 +10,11 @@ namespace Lensert.Core
         private static readonly NotifyIcon _notifyIcon;
         private static readonly ConcurrentQueue<Notification> _backlog;
         private static Notification _currentNotification;
-        private static bool _isVisible;
 
         static NotificationProvider()
         {
             _notifyIcon = new NotifyIcon
             {
-                //BalloonTipIcon = ToolTipIcon.Info,
-                Visible = true,
                 Icon = Resources.lensert_icon_fresh,
                 Text = "Lensert"
             };
@@ -27,32 +23,6 @@ namespace Lensert.Core
 
             _notifyIcon.BalloonTipClicked += OnBalloonClicked;
             _notifyIcon.BalloonTipClosed += OnBalloonClosed;
-
-            var trayIconContextMenu = new ContextMenuStrip();
-            var closeMenuItem = new ToolStripMenuItem();
-            trayIconContextMenu.SuspendLayout();
-
-            trayIconContextMenu.Items.AddRange(new ToolStripItem[] {closeMenuItem});
-            trayIconContextMenu.Name = "trayIconContextMenu";
-            trayIconContextMenu.Size = new Size(153, 70);
-
-            closeMenuItem.Name = "closeMenuItem";
-            closeMenuItem.Size = new Size(152, 22);
-            closeMenuItem.Text = "Close";
-            closeMenuItem.Click += CloseMenuItem_Click;
-
-            trayIconContextMenu.ResumeLayout(false);
-            _notifyIcon.ContextMenuStrip = trayIconContextMenu;
-        }
-
-        public static void ShowIcon() {}
-
-        public static void Show(Notification notification)
-        {
-            if (_currentNotification != null && _currentNotification.Priority != -1 && _currentNotification.Priority >= notification.Priority)
-                _backlog.Enqueue(notification);
-            else
-                ShowNotification(notification);
         }
 
         public static void Show(string title, string text, Action clicked = null, int priority = 0)
@@ -68,10 +38,12 @@ namespace Lensert.Core
             Show(notification);
         }
 
-        private static void CloseMenuItem_Click(object sender, EventArgs e)
+        private static void Show(Notification notification)
         {
-            _notifyIcon.Visible = false;
-            Application.Exit();
+            if (_currentNotification != null && _currentNotification.Priority != -1 && _currentNotification.Priority >= notification.Priority)
+                _backlog.Enqueue(notification);
+            else
+                ShowNotification(notification);
         }
 
         private static void OnBalloonClicked(object sender, EventArgs eventArgs)
@@ -85,7 +57,10 @@ namespace Lensert.Core
             _currentNotification = null;
 
             if (_backlog.IsEmpty)
+            {
+                _notifyIcon.Visible = false;
                 return;
+            }
 
             Notification notification;
             if (!_backlog.TryDequeue(out notification))
@@ -113,13 +88,13 @@ namespace Lensert.Core
         {
             return _currentNotification != null;
         }
-    }
 
-    internal class Notification
-    {
-        public string Title { get; set; }
-        public string Text { get; set; }
-        public Action Clicked { get; set; }
-        public int Priority { get; set; }
+        private class Notification
+        {
+            public string Title { get; set; }
+            public string Text { get; set; }
+            public Action Clicked { get; set; }
+            public int Priority { get; set; }
+        }
     }
 }
