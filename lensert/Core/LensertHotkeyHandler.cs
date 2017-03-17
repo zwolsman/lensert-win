@@ -45,49 +45,61 @@ namespace Lensert.Core
             _logger.Info($"Hotkey pressed: {eventArgs.Hotkey} ({settingType})");
             //            _binder.HotkeysEnabled = false;
 
-            var screenshot = ScreenshotFactory.Create(type);
-            //_binder.HotkeysEnabled = true;
-            if ((screenshot == null) || (screenshot.Size.Width <= 1) || (screenshot.Size.Height <= 1))
-                return;
-
-            try
+            using (var screenshot = ScreenshotFactory.Create(type))
             {
-                // upload to the server
-                var link = await _imageUploader.UploadImageAsync(screenshot);
-                if (string.IsNullOrEmpty(link))
-                {
-                    _logger.Error("UploadImageAsync did not return a valid link");
-                    NotificationProvider.Show("Upload failed", "Uploading the screenshot failed", LogFile.Open);
-
+                //_binder.HotkeysEnabled = true;
+                if ((screenshot == null) || (screenshot.Size.Width <= 1) || (screenshot.Size.Height <= 1))
                     return;
-                }
 
-                _logger.Info($"Image uploaded {link}");
-                NotificationProvider.Show("Upload complete", link, () => Process.Start(link), -1); // priority: -1 -> always get overwritten even by itself (spamming lensert e.g.)
-                Clipboard.SetDataObject(link, false, 10, 200);
+                string link = null;
+
+                try
+                {
+                    // upload to the server
+                    link = await _imageUploader.UploadImageAsync(screenshot);
+                    if (string.IsNullOrEmpty(link))
+                    {
+                        _logger.Error("UploadImageAsync did not return a valid link");
+                        NotificationProvider.Show("Upload failed", "Uploading the screenshot failed", LogFile.Open);
+                    }
+                    else
+                    {
+                        _logger.Info($"Image uploaded {link}");
+                        NotificationProvider.Show("Upload complete", link, () => Process.Start(link), -1); // priority: -1 -> always get overwritten even by itself (spamming lensert e.g.)
+                        Clipboard.SetDataObject(link, false, 10, 200);
+                    }
+                }
+                catch (HttpRequestException)
+                {
+                    NotificationProvider.Show(
+                        "Upload failed :(",
+                        "Your machine seems to be offline. Don't worry your screenshot was saved localy and will be uploaded when you re-connect.");
+                }
+                catch (ExternalException)
+                {
+                    NotificationProvider.Show(
+                        "Clipboard Error",
+                        "Lensert failed to copy the link to the clipboard");
+                }
 
                 if (!Settings.GetSetting<bool>(SettingType.SaveBackup))
                     return;
 
-                var lensertId = link.Split('/').Last();
-                var filename = Path.Combine(_backupDirectory, $"{DateTime.Now:ddMMyy}-{lensertId}.png");
-                screenshot.Save(filename, ImageFormat.Png);
-            }
-            catch (HttpRequestException)
-            {
-                NotificationProvider.Show(
-                    "Upload failed :(",
-                    "Your machine seems to be offline. Don't worry your screenshot was saved localy and will be uploaded when you re-connect.");
-            }
-            catch (ExternalException)
-            {
-                NotificationProvider.Show(
-                    "Clipboard Error",
-                    "Lensert failed to copy the link to the clipboard");
-            }
-            finally
-            {
-                screenshot.Dispose();
+                try
+                {
+                    var lensertId = link != null
+                        ? link.Split('/').Last()
+                        : "failed";
+
+                    var filename = Path.Combine(_backupDirectory, $"{DateTime.Now:ddMMyyHHmmssfff}-{lensertId}.png");
+                    screenshot.Save(filename, ImageFormat.Png);
+                }
+                catch (Exception)
+                {
+                    NotificationProvider.Show(
+                           "Backup Error",
+                           "Lensert failed to save the last screenshot");
+                }
             }
         }
     }
