@@ -11,6 +11,7 @@ namespace Lensert.Core
         private static readonly NotifyIcon _notifyIcon;
         private static readonly ConcurrentQueue<Notification> _backlog;
         private static Notification _currentNotification;
+        private static bool _isVisible;
 
         static NotificationProvider()
         {
@@ -106,6 +107,11 @@ namespace Lensert.Core
             _notifyIcon.BalloonTipTitle = notification.Title;
             _notifyIcon.BalloonTipText = notification.Text;
             _notifyIcon.ShowBalloonTip(500);
+        }
+
+        public static bool IsVisible()
+        {
+            return _currentNotification != null;
         }
     }
 

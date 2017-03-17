@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Lensert.Core;
 using Lensert.Helpers;
+using Nito.AsyncEx;
 using NLog;
 using Timer = System.Threading.Timer;
 
@@ -27,12 +28,12 @@ namespace Lensert
         private static void Main(string[] args)
         {
 #if DEBUG
-            MainImpl(args).Wait();
+            AsyncContext.Run(() => MainImpl(args));
 #else
             try
             {
                 AppDomain.CurrentDomain.UnhandledException += UnhandledException;
-                MainImpl(args).Wait();
+                AsyncContext.Run(() => MainImpl(args));
             }
             catch (Exception e)
             {
@@ -55,6 +56,7 @@ namespace Lensert
 
             ProfileOptimization.SetProfileRoot(profilePath);
             ProfileOptimization.StartProfile("Start.Profile");
+            
 
             _logger.Info($"'{Environment.CommandLine}' started");
             if (args.Length == 0)
@@ -69,7 +71,7 @@ namespace Lensert
 
             var hotkeySettings = Settings.GetSettings<string>().Where(keyValue => keyValue.Key.ToString().EndsWith("Hotkey"));
             var settingType = hotkeySettings.Single(keyValue => keyValue.Key.ToString().StartsWith(args[0])).Key;
-            
+
             var hotkeyHandler = new LensertHotkeyHandler(new LensertClient());
             await hotkeyHandler.HandleHotkey(settingType);
 
@@ -80,6 +82,9 @@ namespace Lensert
 
             if (Settings.GetSetting<bool>(SettingType.StartupOnLogon))
                 CreateStartupLink();
+
+            while (NotificationProvider.IsVisible())
+                await Task.Delay(100);
         }
 
         private static async Task UpdateRoutine()

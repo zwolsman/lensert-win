@@ -65,7 +65,7 @@ namespace Lensert.Core
                     {
                         _logger.Info($"Image uploaded {link}");
                         NotificationProvider.Show("Upload complete", link, () => Process.Start(link), -1); // priority: -1 -> always get overwritten even by itself (spamming lensert e.g.)
-                        Clipboard.SetDataObject(link, false, 10, 200);
+                        Clipboard.SetDataObject(link, true, 10, 200);
                     }
                 }
                 catch (HttpRequestException)
