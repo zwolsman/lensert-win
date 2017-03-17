@@ -53,6 +53,9 @@ namespace Lensert
             if (!Directory.Exists(profilePath))
                 Directory.CreateDirectory(profilePath);
 
+            ProfileOptimization.SetProfileRoot(profilePath);
+            ProfileOptimization.StartProfile("Start.Profile");
+
             _logger.Info($"'{Environment.CommandLine}' started");
             if (args.Length != 1)
             {
