@@ -74,6 +74,7 @@
     <Compile Include="Core\LensertHotkeyHandler.cs" />
     <Compile Include="Core\IHotkeyHandler.cs" />
     <Compile Include="Core\IImageUploader.cs" />
+    <Compile Include="Core\Screenshot\Factories\ClipboardScreenshot.cs" />
     <Compile Include="DependencyInjection\KernelFactory.cs" />
     <Compile Include="DependencyInjection\NinjectBindings.cs" />
     <Compile Include="Core\NotificationProvider.cs" />

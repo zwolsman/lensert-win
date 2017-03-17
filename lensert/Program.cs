@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows.Forms;
 using Lensert.Core;
 using Lensert.DependencyInjection;
 using Lensert.Helpers;
 using NLog;
 using Timer = System.Threading.Timer;
-using System.IO.Compression;
-using System.Linq;
 
 namespace Lensert
 {

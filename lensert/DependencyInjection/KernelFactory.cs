@@ -1,5 +1,4 @@
-﻿using System;
-using Ninject;
+﻿using Ninject;
 using Ninject.Parameters;
 
 namespace Lensert.DependencyInjection

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Windows.Forms;
-using Lensert.Core.Screenshot;
 using Lensert.Helpers;
 using NLog;
 using Shortcut;
@@ -35,7 +32,7 @@ namespace Lensert.Core
         private void BindHotkeys()
         {
             var hotkeySettings = Settings.GetSettings<Hotkey>().ToArray();
-            
+
             var failedHotkeys = new List<SettingType>();
             foreach (var hotkeySetting in hotkeySettings)
             {
@@ -45,9 +42,7 @@ namespace Lensert.Core
                     _logger.Warn($"Hotkey {hotkeySetting.Value} is already bound. Therefor the hotkey will not be set.");
                 }
                 else
-                {
                     _binder.Bind(hotkeySetting.Value, _hotkeyHandler.HandleHotkey);
-                }
             }
 
             if (!failedHotkeys.Any())

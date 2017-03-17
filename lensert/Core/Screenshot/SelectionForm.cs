@@ -10,6 +10,7 @@ namespace Lensert.Core.Screenshot
     public sealed partial class SelectionForm : Form
     {
         private const int DIMENSION_TEXT_OFFSET = 2; //TODO: Refactor into settings
+        private readonly Rectangle _emtpyRectangle;
 
         private readonly SolidBrush _rectangleBrush,
             _textBrush;
@@ -17,7 +18,6 @@ namespace Lensert.Core.Screenshot
         private readonly Pen _rectanglePen;
 
         private Rectangle _selectedArea;
-        private readonly Rectangle _emtpyRectangle;
 
         private Image _shadedScreenshot,
             _cleanScreenshot;
@@ -125,7 +125,7 @@ namespace Lensert.Core.Screenshot
 
             var currentScreenBounds = Screen.FromPoint(MousePosition).Bounds;
             if (y + size.Height > currentScreenBounds.Height)
-                y -= size.Height + DIMENSION_TEXT_OFFSET*2;
+                y -= size.Height + DIMENSION_TEXT_OFFSET * 2;
 
             e.Graphics.DrawString(dimension, Font, _textBrush, x, y); //draws string
         }

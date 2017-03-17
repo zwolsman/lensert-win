@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Drawing;
 using Lensert.Core.Screenshot.Factories;
-using Lensert.Helpers;
 
 namespace Lensert.Core.Screenshot
 {
     internal abstract class ScreenshotFactory
     {
         private static readonly Dictionary<Type, ScreenshotFactory> _templates;
-        public bool SpecialKeyPressed { get; protected set; }
 
         static ScreenshotFactory()
         {
             _templates = new Dictionary<Type, ScreenshotFactory>();
         }
+
+        public bool SpecialKeyPressed { get; protected set; }
 
         public static Image Create(Type templateType)
         {
@@ -31,7 +31,7 @@ namespace Lensert.Core.Screenshot
                 ? HandleSpecialKey(templateType)
                 : image;
         }
-        
+
         public static Image Create<T>() where T : ScreenshotFactory
             => Create(typeof(T));
 
@@ -43,7 +43,7 @@ namespace Lensert.Core.Screenshot
                     ? Create<SelectWindowScreenshot>()
                     : null);
         }
-        
+
         public abstract Image TakeScreenshot();
     }
 }

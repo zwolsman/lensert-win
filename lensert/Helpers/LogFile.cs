@@ -20,7 +20,7 @@ namespace Lensert.Helpers
 
         private static string GetLogFileName(string targetName)
         {
-            if ((LogManager.Configuration == null) || (LogManager.Configuration.ConfiguredNamedTargets.Count == 0))
+            if (LogManager.Configuration == null || LogManager.Configuration.ConfiguredNamedTargets.Count == 0)
                 throw new Exception("LogManager contains no Configuration or there are no named targets");
 
             var target = LogManager.Configuration.FindTargetByName(targetName);

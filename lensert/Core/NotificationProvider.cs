@@ -48,7 +48,7 @@ namespace Lensert.Core
 
         public static void Show(Notification notification)
         {
-            if ((_currentNotification != null) && (_currentNotification.Priority != -1) && (_currentNotification.Priority >= notification.Priority))
+            if (_currentNotification != null && _currentNotification.Priority != -1 && _currentNotification.Priority >= notification.Priority)
                 _backlog.Enqueue(notification);
             else
                 ShowNotification(notification);
@@ -97,7 +97,7 @@ namespace Lensert.Core
         {
             _notifyIcon.Visible = false;
             Notification peeked;
-            if (_backlog.TryPeek(out peeked) && (peeked == notification))
+            if (_backlog.TryPeek(out peeked) && peeked == notification)
                 _backlog.TryDequeue(out peeked);
 
             _currentNotification = notification;

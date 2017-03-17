@@ -21,8 +21,8 @@ namespace Lensert.Helpers
             var factor = GetScalingFactor();
             var virtualScreen = SystemInformation.VirtualScreen;
 
-            var width = (int) Math.Ceiling(factor*virtualScreen.Width);
-            var height = (int) Math.Ceiling(factor*virtualScreen.Height);
+            var width = (int) Math.Ceiling(factor * virtualScreen.Width);
+            var height = (int) Math.Ceiling(factor * virtualScreen.Height);
 
             UnscaledBounds = new Rectangle(virtualScreen.Location, new Size(width, height));
         }
@@ -93,12 +93,12 @@ namespace Lensert.Helpers
                     var differenceY = SystemInformation.WorkingArea.Y - rectangle.Y;
                     if (differenceX > 0)
                     {
-                        rectangle.Width -= differenceX*2;
+                        rectangle.Width -= differenceX * 2;
                         rectangle.X += differenceX;
                     }
                     if (differenceY > 0)
                     {
-                        rectangle.Height -= differenceY*2;
+                        rectangle.Height -= differenceY * 2;
                         rectangle.Y += differenceY;
                     }
                 }
@@ -196,7 +196,7 @@ namespace Lensert.Helpers
             var screenVertres = GetDeviceCaps(desktop, DEVICE_CAP_VERTES);
             var desktopVertres = GetDeviceCaps(desktop, DEVICE_CAP_DESKTOPVERTES);
 
-            return desktopVertres/(float) screenVertres;
+            return desktopVertres / (float) screenVertres;
         }
 
         [DllImport("user32.dll")]
@@ -276,7 +276,7 @@ namespace Lensert.Helpers
         private static extern IntPtr GetParent(IntPtr handle);
 
         [DllImport("user32.dll")]
-        static extern IntPtr WindowFromPoint(NativePoint point);
+        private static extern IntPtr WindowFromPoint(NativePoint point);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct NativeRect

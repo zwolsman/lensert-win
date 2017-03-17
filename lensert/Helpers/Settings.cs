@@ -43,7 +43,7 @@ namespace Lensert.Helpers
         public static T GetSetting<T>(SettingType type)
         {
             var value = Native.ParseValueFromIni<T>(_iniPath, type.ToString(), "Settings");
-            if ((value != null) && !value.Equals(default(T)))
+            if (value != null && !value.Equals(default(T)))
                 return value;
 
             var defaultValue = (T) _defaultSettings[type];
@@ -59,7 +59,7 @@ namespace Lensert.Helpers
         {
             var settings = Enum.GetValues(typeof(SettingType)).Cast<SettingType>();
 
-            return settings.Where(s => _defaultSettings[s].GetType().IsAssignableFrom(typeof(T))).ToDictionary<SettingType, SettingType, T>(k => k, GetSetting<T>);
+            return settings.Where(s => _defaultSettings[s].GetType().IsAssignableFrom(typeof(T))).ToDictionary(k => k, GetSetting<T>);
         }
 
         public static SettingType GetSettingType<T>(T t)

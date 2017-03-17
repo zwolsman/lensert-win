@@ -48,7 +48,7 @@ namespace Lensert.Core
             using (var screenshot = ScreenshotFactory.Create(type))
             {
                 //_binder.HotkeysEnabled = true;
-                if ((screenshot == null) || (screenshot.Size.Width <= 1) || (screenshot.Size.Height <= 1))
+                if (screenshot == null || screenshot.Size.Width <= 1 || screenshot.Size.Height <= 1)
                     return;
 
                 string link = null;
