@@ -1,6 +1,7 @@
 // std libraries
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 // platform libraries
 #define WIN32_LEAN_AND_MEAN
@@ -14,11 +15,27 @@ typedef struct Hotkey_t
 	const char HotkeyPattern[32];
 } Hotkey_t;
 
+typedef struct Lookup_t
+{
+	const char* Key;
+	unsigned Value;
+} Lookup_t;
+
 // globals
 const char g_SettingsFile[MAX_PATH];
 static Hotkey_t g_Hotkeys[8];
 
-static int GetHotkeys()
+static void InitializeSettingsPath()
+{
+	// get local appdata
+	SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, g_SettingsFile);
+
+	// very safe catenation
+	const char* const relativeIniPath = "\\lensert\\Settings.ini";
+	strncat_s(g_SettingsFile, sizeof(g_SettingsFile), relativeIniPath, sizeof(g_SettingsFile) - strnlen_s(g_SettingsFile, sizeof(g_SettingsFile)) - sizeof(relativeIniPath) - 1);
+}
+
+static int ParseHotkeysFromSettings()
 {
 	const char strHotkey[] = "Hotkey";
 
@@ -44,23 +61,78 @@ static int GetHotkeys()
 		line += lineLength + 1;
 	}
 	
+	return index;
+}
+
+static int ParseModifier(const char* token, size_t len, UINT* modifier)
+{
+	assert(token);
+	assert(len > 0);
+	assert(modifier);
+
+	static Lookup_t table[] =
+	{
+		{ "Alt", 0x0001 },
+		{ "Control", 0x0002 },
+		//{ "Alt", 0x0001 }, TODO: Norepeat?
+		{ "Shift", 0x0004 },
+		{ "Win", 0x0008 },
+		{ NULL, 0 }
+	};
+
+	for (Lookup_t* p = table; p->Key; ++p)
+	{
+		if (strncmp(p->Key, token, len) == 0)
+		{
+			*modifier = p->Value;
+			return 1;
+		}
+	}
+
 	return 0;
+}
+
+static void ParseHotkey(const Hotkey_t* hotkey, UINT* modifier, UINT* vk)
+{
+	assert(hotkey);
+	assert(modifier);
+	assert(vk);
+
+	*modifier = 0;
+	*vk = 0;
+
+	char buf[32];
+	strncpy_s(buf, sizeof(buf), hotkey->HotkeyPattern, sizeof(buf) - sizeof(hotkey->HotkeyPattern) - 1);
+
+	char* next_token;
+	char* token = strtok_s(buf, ", ", &next_token);
+	while (token)
+	{
+		UINT tmp;
+		size_t len = strnlen_s(token, sizeof(buf));
+		if (len == 1 && *vk == 0)
+			*vk = (unsigned)token[0];
+		else if (len > 1 && ParseModifier(token, len, &tmp))
+			*modifier |= tmp;
+		// else error?
+
+		token = strtok_s(NULL, ", ", &next_token);
+	}	
 }
 
 int main()
 {
-	// set the settings file
-	if (!SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, g_SettingsFile) == S_OK)
-		return 1;
+	InitializeSettingsPath();
+	int hotkeys = ParseHotkeysFromSettings();
 
-	// very safe catenation
-	const char* const relativeIniPath = "\\lensert\\Settings.ini";
-	strncat_s(g_SettingsFile, sizeof(g_SettingsFile), relativeIniPath, sizeof(g_SettingsFile)-strnlen_s(g_SettingsFile, sizeof(g_SettingsFile))-sizeof(relativeIniPath)-1);
+	for (int i = 0; i < hotkeys; ++i)
+	{
+		UINT modifier, vk;
+		ParseHotkey(&g_Hotkeys[i], &modifier, &vk);
 
-	GetHotkeys();
-
-	if (!RegisterHotKey(NULL, 1, MOD_CONTROL | MOD_SHIFT, 0x41))
-		return 1;
+		if (!RegisterHotKey(NULL, i, modifier, vk))
+			return 1;
+	}
 
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))
