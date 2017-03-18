@@ -120,7 +120,7 @@ namespace Lensert.Installer
         {
             for (var i = 5; i > 0; --i)
             {
-                var processes = Process.GetProcessesByName("lensert");
+                var processes = Process.GetProcessesByName("lensert-daemon");
                 if (!processes.Any())
                     return true;
 
@@ -130,7 +130,7 @@ namespace Lensert.Installer
                 await Task.Delay(100);
             }
 
-            return !Process.GetProcessesByName("lensert").Any();
+            return !Process.GetProcessesByName("lensert-daemon").Any();
         }
 
         private static async Task<string> DownloadString(string url)
