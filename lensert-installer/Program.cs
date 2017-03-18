@@ -4,6 +4,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Lensert.Installer
@@ -16,8 +19,9 @@ namespace Lensert.Installer
 
         private static void Main(string[] args)
         {
-            if (args.Length > 0 && args[0] == "-v")
-                Trace.Listeners.Add(new ConsoleTraceListener());
+            Trace.Listeners.Add(new ConsoleTraceListener());
+            Trace.Listeners.Add(new TextWriterTraceListener(Path.Combine(_installationDirectory, "lensert-installer.log")));
+            Trace.AutoFlush = true;
 
 #if DEBUG
             MainImpl(args).Wait();
@@ -127,6 +131,25 @@ namespace Lensert.Installer
             }
 
             return tempFile;
+        }
+
+        private static bool IsAlreadyRunning()
+        {
+            try
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+                var assemblyAttributes = assembly.GetCustomAttributes(typeof(GuidAttribute), false);
+                var guidAttribute = (GuidAttribute) assemblyAttributes.GetValue(0);
+
+                var mutexName = $"Global\\{{{guidAttribute.Value}}}";
+                var mutex = new Mutex(false, mutexName);
+
+                return !mutex.WaitOne(TimeSpan.Zero, false);
+            }
+            catch
+            {
+                return true;
+            }
         }
     }
 }
