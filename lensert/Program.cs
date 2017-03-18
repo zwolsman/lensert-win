@@ -89,12 +89,16 @@ namespace Lensert
             if (Settings.GetSetting<bool>(SettingType.StartupOnLogon))
                 CreateStartupLink();
 
-            while (NotificationProvider.IsVisible())
+            var timeout = 10;
+            while (--timeout > 0 && NotificationProvider.IsVisible())
                 await Task.Delay(100);
         }
 
         private static async Task UpdateRoutine()
         {
+            if (!ShouldCheckForUpdates())
+                return;
+
             var file = await DownloadFileToTemp(LENSERT_URL);
             var updateDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert", "installer");
 
@@ -108,7 +112,14 @@ namespace Lensert
                 _logger.Error("Extracted updater not found!");
 
             var timeout = 5;
-            var process = Process.Start(file);
+            var processInfo = new ProcessStartInfo(file)
+            {
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardOutput = true
+            };
+
+            var process = Process.Start(processInfo);
             while (!process.HasExited && --timeout > 0)
             {
                 _logger.Info($"Waiting on installer ({timeout} remaining..)");
@@ -126,6 +137,17 @@ namespace Lensert
 
             Directory.Delete(updateDirectory, true);
             _logger.Info("Installer completed.");
+        }
+
+        private static bool ShouldCheckForUpdates()
+        {
+            var installationTraceFile = Path.Combine(Settings.InstallationDirectory, "logs", "lensert-installer.log");
+            var logFileInfo = new FileInfo(installationTraceFile);
+            if (!logFileInfo.Exists)
+                return true;
+
+            // should check if last update time has been more than one hour
+            return (DateTime.UtcNow - logFileInfo.LastWriteTimeUtc).Hours > 1;
         }
 
         private static void CreateStartupLink()

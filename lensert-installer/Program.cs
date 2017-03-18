@@ -154,9 +154,7 @@ namespace Lensert.Installer
             // should check if last update time has been more than one hour
             return (DateTime.UtcNow - logFileInfo.LastWriteTimeUtc).Hours > 1;
         }
-
         
-
         private static async Task<string> DownloadString(string url)
         {
             using (var httpClient = new HttpClient())
