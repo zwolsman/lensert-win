@@ -70,7 +70,13 @@ namespace Lensert.Helpers
         public static void Restore()
         {
             if (!File.Exists(_iniPath))
+            {
+                var directory = Path.GetDirectoryName(_iniPath);
+                if (directory != null && !Directory.Exists(directory))
+                    Directory.CreateDirectory(directory);
+
                 File.Create(_iniPath).Dispose();
+            }
 
             var missingSettings = Enum.GetValues(typeof(SettingType))
                 .Cast<SettingType>()
