@@ -29,7 +29,7 @@ namespace Lensert.Helpers
             InstallationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert");
             _iniPath = Path.Combine(InstallationDirectory, "Settings.ini");
 
-            Reset();
+            Restore();
         }
 
         public static string InstallationDirectory { get; }
@@ -67,7 +67,7 @@ namespace Lensert.Helpers
             return settings.First(s => EqualityComparer<T>.Default.Equals(t, GetSetting<T>(s)));
         }
 
-        public static void Reset()
+        public static void Restore()
         {
             if (!File.Exists(_iniPath))
                 File.Create(_iniPath).Dispose();
@@ -86,6 +86,14 @@ namespace Lensert.Helpers
                 Native.WriteValueToIni(_iniPath, setting.ToString(), value, "Settings");
                 _logger.Info($"Restored missing '{setting}' setting to default value");
             }
+        }
+
+        public static void Reset()
+        {
+            if (File.Exists(_iniPath))
+                File.Decrypt(_iniPath);
+
+            Restore();
         }
     }
 

@@ -38,8 +38,8 @@ static int InitializeSettingsPath()
 		return ERR;
 
 	// very safe catenation
-	const char* const relativeIniPath = "\\lensert\\Settings.ini";
-	strncat_s(g_SettingsFile, sizeof(g_SettingsFile), relativeIniPath, sizeof(g_SettingsFile) - strnlen_s(g_SettingsFile, sizeof(g_SettingsFile)) - sizeof(relativeIniPath) - 1);
+	const char relativeIniPath[] = "\\lensert\\Settings.ini";
+	strncat_s(g_SettingsFile, sizeof(g_SettingsFile), relativeIniPath, sizeof(relativeIniPath) - 1);
 	return OK;
 }
 
@@ -110,7 +110,7 @@ static int ParseHotkey(const Hotkey_t* hotkey, UINT* modifier, UINT* vk)
 	*vk = 0;
 
 	char buf[BUFSIZE];
-	strncpy_s(buf, sizeof(buf), hotkey->HotkeyPattern, sizeof(buf) - sizeof(hotkey->HotkeyPattern) - 1);
+	strncpy_s(buf, sizeof(buf), hotkey->HotkeyPattern, sizeof(hotkey->HotkeyPattern) - 1);
 
 	char* next_token;
 	char* token = strtok_s(buf, ", ", &next_token);
@@ -165,17 +165,68 @@ static int RegisterHotkeys(int hotkeys)
 	return OK;
 }
 
+static int StartLensert(const char* arguments, size_t len)
+{
+	assert(arguments);
+
+	STARTUPINFO startupInfo = { 0 };
+	startupInfo.cb = sizeof(startupInfo);
+	PROCESS_INFORMATION processInformation = { 0 };
+
+	char buf[MAX_PATH] = "lensert.exe ";
+	strncat_s(buf, sizeof(buf), arguments, len);
+
+	return CreateProcess(
+		NULL,
+		buf,
+		NULL,
+		NULL,
+		FALSE,
+		NORMAL_PRIORITY_CLASS,
+		NULL,
+		NULL,
+		&startupInfo,
+		&processInformation
+	) ? OK : ERR;		
+}
+
+static int ShowNotification(const char* title, const char* text)
+{
+	assert(title);
+	assert(text);
+
+	size_t titleLength = strnlen_s(title, MAX_PATH/2);
+	size_t textLength = strnlen_s(text, MAX_PATH/2);
+
+	// check if it fits our buffer
+	if (titleLength + textLength + sizeof("--show-notification " + 3) > MAX_PATH)
+		return ERR;
+
+	char arguments[MAX_PATH];
+	snprintf(arguments, sizeof(arguments), "--show-notification \"%s\" \"%s\"", title, text);
+
+	return StartLensert(arguments, strnlen_s(arguments, sizeof(arguments)));
+}
+
 int main()
 {
+	const char resetSettingsArgument[] = "--reset-settings";
+
 	if (InitializeSettingsPath() == ERR)
 		return ERR;
 
 	int hotkeys = ParseHotkeysFromSettings();
 	if (hotkeys == ERR)
+	{
+		StartLensert(resetSettingsArgument, sizeof(resetSettingsArgument) - 1);
 		return ERR;
+	}
 
 	if (RegisterHotkeys(hotkeys) == ERR)
+	{
+		ShowNotification("Hotkey", "Lensert failed to register its hotkeys.");
 		return ERR;
+	}		
 
 	Hotkey_t* hotkey = NULL;
 	MSG msg;
@@ -190,28 +241,7 @@ int main()
 			continue;
 		}
 
-		char commandLine[BUFSIZE];
-		snprintf(commandLine, sizeof(commandLine), "lensert.exe %.32s", hotkey->Name);
-
-		STARTUPINFO startupInfo = {0};
-		startupInfo.cb = sizeof(startupInfo);
-		PROCESS_INFORMATION processInformation = {0};
-
-		if (!CreateProcess(
-			NULL,
-			commandLine,
-			NULL,
-			NULL,
-			FALSE,
-			NORMAL_PRIORITY_CLASS,
-			NULL,
-			NULL,
-			&startupInfo,
-			&processInformation
-		))
-			return ERR;
-
-		printf("Launched Lensert %.32s\n", hotkey->Name);
+		StartLensert(hotkey->Name, strnlen_s(hotkey->Name, sizeof(hotkey->Name)));
 	}
 
 	return 0;

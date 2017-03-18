@@ -54,11 +54,26 @@ namespace Lensert
             _logger.Info($"'{Environment.CommandLine}' started");
             if (args.Length == 1)
             {
-                var hotkeySettings = Settings.GetSettings<string>().Where(keyValue => keyValue.Key.ToString().EndsWith("Hotkey"));
-                var settingType = hotkeySettings.Single(keyValue => keyValue.Key.ToString().StartsWith(args[0])).Key;
+                if (args[0] == "--restore-settings")
+                {
+                    Settings.Restore();
+                }
+                else if (args[0] == "--reset-settings")
+                {
+                    Settings.Reset();
+                }
+                else
+                {
+                    var hotkeySettings = Settings.GetSettings<string>().Where(keyValue => keyValue.Key.ToString().EndsWith("Hotkey"));
+                    var settingType = hotkeySettings.Single(keyValue => keyValue.Key.ToString().StartsWith(args[0])).Key;
 
-                var hotkeyHandler = new LensertHotkeyHandler(new LensertClient());
-                await hotkeyHandler.HandleHotkey(settingType);
+                    var hotkeyHandler = new LensertHotkeyHandler(new LensertClient());
+                    await hotkeyHandler.HandleHotkey(settingType);
+                }
+            }
+            else if (args.Length == 3 && args[0] == "--show-notification")
+            {
+                NotificationProvider.Show(args[1], args[2]);
             }
             else
                 _logger.Warn("Lensert should be invoked by lensert-daemon");
