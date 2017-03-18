@@ -113,7 +113,7 @@ namespace Lensert.Installer
             file = Path.Combine(_installationDirectory, "lensert-daemon.exe");
             Process.Start(file);
 
-            Trace.TraceInformation("lensert-updater complete :)");
+            Trace.TraceInformation("lensert-installer complete :)");
         }
 
         private static async Task<bool> KillLensert()

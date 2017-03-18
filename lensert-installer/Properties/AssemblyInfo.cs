@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("lensert-updater")]
-[assembly: AssemblyDescription("Updater for Lensert.")]
+[assembly: AssemblyTitle("lensert-installer")]
+[assembly: AssemblyDescription("Installer for Lensert.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("lensert-updater")]
+[assembly: AssemblyProduct("lensert-installer")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
