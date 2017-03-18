@@ -84,8 +84,8 @@ namespace Lensert.Installer
             Trace.TraceInformation("extracting lensert..");
             ZipFile.ExtractToDirectory(file, _installationDirectory);
 
-            Trace.TraceInformation("starting lensert..");
-            file = Path.Combine(_installationDirectory, "lensert.exe");
+            Trace.TraceInformation("starting lensert-daemon..");
+            file = Path.Combine(_installationDirectory, "lensert-daemon.exe");
             Process.Start(file);
 
             Trace.TraceInformation("lensert-updater complete :)");

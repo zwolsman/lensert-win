@@ -4,17 +4,13 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Runtime;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Lensert.Core;
 using Lensert.Helpers;
 using Nito.AsyncEx;
 using NLog;
-using Timer = System.Threading.Timer;
 
 namespace Lensert
 {
@@ -22,7 +18,6 @@ namespace Lensert
     {
         private const string LENSERT_URL = "https://lensert.com/download?type=win";
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-        private static Timer _updateTimer;
 
         [STAThread]
         private static void Main(string[] args)
@@ -56,7 +51,7 @@ namespace Lensert
 
             ProfileOptimization.SetProfileRoot(profilePath);
             ProfileOptimization.StartProfile("Start.Profile");
-            
+
             _logger.Info($"'{Environment.CommandLine}' started");
             if (args.Length == 0)
             {
@@ -149,7 +144,7 @@ namespace Lensert
                 streamWriter.WriteLine("IconFile=" + location);
             }
         }
-        
+
         private static async Task<string> DownloadFileToTemp(string url)
         {
             var tempFile = Path.GetTempFileName();
@@ -176,7 +171,7 @@ namespace Lensert
                 else
                     _logger.Fatal(exception, "Unhandled exception");
             }
-            catch { }
+            catch {}
 
             Environment.Exit(-1);
         }

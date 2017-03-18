@@ -52,12 +52,12 @@ static int ParseHotkeysFromSettings()
 		return ERR;
 
 	char* line = sectionBuffer;
-	
+
 	int index = 0;
 	while (*line && index < sizeof(g_Hotkeys))
 	{
 		size_t lineLength = strnlen_s(line, sizeof(sectionBuffer) - (sectionBuffer - line) - 1);
-		
+
 		if (strcmp(line + lineLength - sizeof(strHotkey) + 1, strHotkey) == 0)
 		{
 			strncpy_s(g_Hotkeys[index].Name, BUFSIZE, line, lineLength - sizeof(strHotkey) + 1);
@@ -68,7 +68,7 @@ static int ParseHotkeysFromSettings()
 
 		line += lineLength + 1;
 	}
-	
+
 	return index;
 }
 
@@ -80,12 +80,12 @@ static int ParseModifier(const char* token, size_t len, UINT* modifier)
 
 	static Lookup_t table[] =
 	{
-		{ "Alt", 0x0001 },
-		{ "Control", 0x0002 },
+		{"Alt", 0x0001},
+		{"Control", 0x0002},
 		//{ "Alt", 0x0001 }, TODO: Norepeat?
-		{ "Shift", 0x0004 },
-		{ "Win", 0x0008 },
-		{ NULL, 0 }
+		{"Shift", 0x0004},
+		{"Win", 0x0008},
+		{NULL, 0}
 	};
 
 	for (Lookup_t* p = table; p->Key; ++p)
@@ -116,7 +116,7 @@ static int ParseHotkey(const Hotkey_t* hotkey, UINT* modifier, UINT* vk)
 	char* token = strtok_s(buf, ", ", &next_token);
 	if (token == NULL)
 		return ERR;
-	
+
 	while (token)
 	{
 		UINT tmp;
@@ -129,7 +129,7 @@ static int ParseHotkey(const Hotkey_t* hotkey, UINT* modifier, UINT* vk)
 			return ERR;
 
 		token = strtok_s(NULL, ", ", &next_token);
-	}	
+	}
 
 	return OK;
 }
@@ -195,18 +195,18 @@ int main()
 
 		STARTUPINFO startupInfo = {0};
 		startupInfo.cb = sizeof(startupInfo);
-		PROCESS_INFORMATION processInformation = { 0 };
+		PROCESS_INFORMATION processInformation = {0};
 
 		if (!CreateProcess(
-			NULL, 
-			commandLine, 
-			NULL, 
-			NULL, 
-			FALSE, 
-			NORMAL_PRIORITY_CLASS, 
-			NULL, 
-			NULL, 
-			&startupInfo, 
+			NULL,
+			commandLine,
+			NULL,
+			NULL,
+			FALSE,
+			NORMAL_PRIORITY_CLASS,
+			NULL,
+			NULL,
+			&startupInfo,
 			&processInformation
 		))
 			return ERR;

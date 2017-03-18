@@ -33,8 +33,8 @@ namespace Lensert.Core.Screenshot.Factories
                 if (clipboardData.GetDataPresent(DataFormats.FileDrop, true))
                 {
                     var fileList = (string[]) clipboardData.GetData(DataFormats.FileDrop);
-                    return fileList.Length != 1 
-                        ? null 
+                    return fileList.Length != 1
+                        ? null
                         : Image.FromFile(fileList[0]);
                 }
             }
