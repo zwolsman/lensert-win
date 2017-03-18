@@ -7,7 +7,7 @@ namespace Lensert.Core
 {
     internal static class NotificationProvider
     {
-        private static readonly NotifyIcon _notifyIcon;
+        private static NotifyIcon _notifyIcon;
         private static readonly ConcurrentQueue<Notification> _backlog;
         private static Notification _currentNotification;
 
@@ -95,6 +95,19 @@ namespace Lensert.Core
             public string Text { get; set; }
             public Action Clicked { get; set; }
             public int Priority { get; set; }
+        }
+
+        public static void Dispose()
+        {
+            if (_notifyIcon != null)
+            {
+                _notifyIcon.BalloonTipClosed -= OnBalloonClosed;
+                _notifyIcon.Visible = false;
+                _notifyIcon.Dispose();
+                _notifyIcon = null;
+            }
+
+            _currentNotification = null;
         }
     }
 }

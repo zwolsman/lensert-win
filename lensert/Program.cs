@@ -89,9 +89,14 @@ namespace Lensert
             if (Settings.GetSetting<bool>(SettingType.StartupOnLogon))
                 CreateStartupLink();
 
-            var timeout = 10;
+            var timeout = 4;
+            // make sure the user sees the notification
             while (--timeout > 0 && NotificationProvider.IsVisible())
-                await Task.Delay(100);
+                await Task.Delay(500);
+
+            // make sure the onClick is handled of the notification (if present)
+            await Task.Delay(2000);
+            NotificationProvider.Dispose();
         }
 
         private static async Task UpdateRoutine()
