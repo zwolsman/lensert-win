@@ -169,25 +169,25 @@ static int StartLensert(const char* arguments, size_t len)
 {
 	assert(arguments);
 
-	STARTUPINFO startupInfo = { 0 };
+	STARTUPINFO startupInfo = {0};
 	startupInfo.cb = sizeof(startupInfo);
-	PROCESS_INFORMATION processInformation = { 0 };
+	PROCESS_INFORMATION processInformation = {0};
 
 	char buf[MAX_PATH] = "lensert.exe ";
 	strncat_s(buf, sizeof(buf), arguments, len);
 
 	return CreateProcess(
-		NULL,
-		buf,
-		NULL,
-		NULL,
-		FALSE,
-		NORMAL_PRIORITY_CLASS,
-		NULL,
-		NULL,
-		&startupInfo,
-		&processInformation
-	) ? OK : ERR;		
+		                    NULL,
+		                    buf,
+		                    NULL,
+		                    NULL,
+		                    FALSE,
+		                    NORMAL_PRIORITY_CLASS,
+		                    NULL,
+		                    NULL,
+		                    &startupInfo,
+		                    &processInformation
+	                    ) ? OK : ERR;
 }
 
 static int ShowNotification(const char* title, const char* text)
@@ -195,8 +195,8 @@ static int ShowNotification(const char* title, const char* text)
 	assert(title);
 	assert(text);
 
-	size_t titleLength = strnlen_s(title, MAX_PATH/2);
-	size_t textLength = strnlen_s(text, MAX_PATH/2);
+	size_t titleLength = strnlen_s(title, MAX_PATH / 2);
+	size_t textLength = strnlen_s(text, MAX_PATH / 2);
 
 	// check if it fits our buffer
 	if (titleLength + textLength + sizeof("--show-notification " + 3) > MAX_PATH)
@@ -208,7 +208,11 @@ static int ShowNotification(const char* title, const char* text)
 	return StartLensert(arguments, strnlen_s(arguments, sizeof(arguments)));
 }
 
+#ifdef _DEBUG
 int main()
+#else
+int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+#endif
 {
 	const char resetSettingsArgument[] = "--reset-settings";
 
@@ -226,7 +230,7 @@ int main()
 	{
 		ShowNotification("Hotkey", "Lensert failed to register its hotkeys.");
 		return ERR;
-	}		
+	}
 
 	Hotkey_t* hotkey = NULL;
 	MSG msg;
