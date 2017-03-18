@@ -13,8 +13,8 @@ namespace Lensert.Installer
         private const string URL_LENSERT_ZIP = "https://lensert.com/download?type=win&installer=false";
         private const string URL_LENSERT_VERSION = "https://lensert.com/version?type=win";
         private static readonly string _installationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert");
-        
-        static void Main(string[] args)
+
+        private static void Main(string[] args)
         {
             if (args.Length > 0 && args[0] == "-v")
                 Trace.Listeners.Add(new ConsoleTraceListener());
@@ -31,11 +31,11 @@ namespace Lensert.Installer
             }
 #endif
         }
-        
+
         private static async Task MainImpl(string[] args)
         {
             Trace.TraceInformation("lensert-updater started");
-            
+
             var version = new Version(await DownloadString(URL_LENSERT_VERSION));
             Trace.TraceInformation($"server version: {version}");
 
@@ -60,7 +60,7 @@ namespace Lensert.Installer
             if (!await KillLensert())
             {
                 Trace.TraceError("unable to kill running lensert");
-                return; 
+                return;
             }
 
             var directoryInfo = new DirectoryInfo(_installationDirectory);
@@ -77,7 +77,8 @@ namespace Lensert.Installer
                         // make sure to delete readonly
                         f.Attributes = FileAttributes.Normal;
                         f.Delete();
-                    } catch { }
+                    }
+                    catch {}
                 }
             }
 
@@ -90,7 +91,7 @@ namespace Lensert.Installer
 
             Trace.TraceInformation("lensert-updater complete :)");
         }
-        
+
         private static async Task<bool> KillLensert()
         {
             for (var i = 5; i > 0; --i)
@@ -111,9 +112,7 @@ namespace Lensert.Installer
         private static async Task<string> DownloadString(string url)
         {
             using (var httpClient = new HttpClient())
-            {
                 return await httpClient.GetStringAsync(url);
-            }
         }
 
         private static async Task<string> DownloadFileToTemp(string url)

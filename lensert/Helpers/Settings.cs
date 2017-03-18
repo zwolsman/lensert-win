@@ -14,11 +14,11 @@ namespace Lensert.Helpers
 
         private static readonly Dictionary<SettingType, object> _defaultSettings = new Dictionary<SettingType, object>
         {
-            [SettingType.SelectAreaHotkey] = "Control, Shift, A",// new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.A),
-            [SettingType.SelectWindowHotkey] = "Control, Shift, W",// new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W),
-            [SettingType.CurrentWindowHotkey] = "Control, Shift, Alt, A",//new Hotkey(Modifiers.Control | Modifiers.Shift | Modifiers.Alt, Keys.A),
-            [SettingType.FullscreenHotkey] = "Control, Shift, F",//new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F),
-            [SettingType.ClipboardHotkey] = "Control, Shift, C",//new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.C),
+            [SettingType.SelectAreaHotkey] = "Control, Shift, A", // new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.A),
+            [SettingType.SelectWindowHotkey] = "Control, Shift, W", // new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W),
+            [SettingType.CurrentWindowHotkey] = "Control, Shift, Alt, A", //new Hotkey(Modifiers.Control | Modifiers.Shift | Modifiers.Alt, Keys.A),
+            [SettingType.FullscreenHotkey] = "Control, Shift, F", //new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F),
+            [SettingType.ClipboardHotkey] = "Control, Shift, C", //new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.C),
             [SettingType.StartupOnLogon] = true,
             [SettingType.CheckForUpdates] = true,
             [SettingType.SaveBackup] = true

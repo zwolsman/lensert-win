@@ -5,7 +5,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime;
-using System.Threading;
 using System.Threading.Tasks;
 using Lensert.Core;
 using Lensert.Helpers;
