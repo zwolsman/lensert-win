@@ -59,14 +59,17 @@ namespace Lensert.Installer
             if (IsAlreadyRunning())
             {
                 Trace.TraceWarning("lensert-installer is already running, exiting..");
-                Environment.Exit(-1);
+                return;
             }
 
             var forceCheckForUpdates = args.Length == 1 && args[0] == "--force-update";
             if (!forceCheckForUpdates && !ShouldCheckForUpdates())
             {
                 Trace.TraceInformation("already checked for updates in last hour, exiting..");
-                Environment.Exit(-1);
+                if (!StartDaemon())
+                    Trace.TraceError("failed to start lensert-daemon");
+
+                return;
             }
             
             Trace.TraceInformation("lensert-installer started");
@@ -75,9 +78,9 @@ namespace Lensert.Installer
             Trace.TraceInformation($"downloaded new zip file to {file}");
 
             // we weren't able to shutdown lensert..
-            if (!await KillLensert())
+            if (!await StopDaemon())
             {
-                Trace.TraceError("unable to kill running lensert");
+                Trace.TraceError("unable to stop running lensert-daemon");
                 return;
             }
 
@@ -102,25 +105,30 @@ namespace Lensert.Installer
 
             Trace.TraceInformation("extracting lensert..");
             ZipFile.ExtractToDirectory(file, _lensertDirectory);
+            
+            StartDaemon();
 
-            Trace.TraceInformation("starting lensert-daemon..");
-            file = Path.Combine(_lensertDirectory, "lensert-daemon.exe");
-            Process.Start(file);
-
-            Trace.TraceInformation("lensert-installer complete :)");
+            Trace.TraceInformation("lensert-installer complete");
         }
 
-        private static bool ShouldCheckForUpdates()
+        private static bool StartDaemon()
         {
-            var logFileInfo = new FileInfo(_traceFileName);
-            if (!logFileInfo.Exists)
+            Trace.TraceInformation("starting lensert-daemon..");
+            if (Process.GetProcessesByName("lensert-daemon").Any())
                 return true;
 
-            // should check if last update time has been more than one hour
-            return (DateTime.UtcNow - logFileInfo.LastWriteTimeUtc).Hours > 1;
+            var file = Path.Combine(_lensertDirectory, "lensert-daemon.exe");
+            if (!File.Exists(file))
+            {
+                Trace.TraceError($"lensert-daemon not found at {file}");
+                return false;
+            }
+
+            Process.Start(file);
+            return true;
         }
 
-        private static async Task<bool> KillLensert()
+        private static async Task<bool> StopDaemon()
         {
             for (var i = 5; i > 0; --i)
             {
@@ -136,6 +144,18 @@ namespace Lensert.Installer
 
             return !Process.GetProcessesByName("lensert-daemon").Any();
         }
+
+        private static bool ShouldCheckForUpdates()
+        {
+            var logFileInfo = new FileInfo(_traceFileName);
+            if (!logFileInfo.Exists)
+                return true;
+
+            // should check if last update time has been more than one hour
+            return (DateTime.UtcNow - logFileInfo.LastWriteTimeUtc).Hours > 1;
+        }
+
+        
 
         private static async Task<string> DownloadString(string url)
         {
