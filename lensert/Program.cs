@@ -81,7 +81,7 @@ namespace Lensert
         private static async Task UpdateRoutine()
         {
             var file = await DownloadFileToTemp(LENSERT_URL);
-            var updateDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert-installer");
+            var updateDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert", "installer");
 
             if (Directory.Exists(updateDirectory))
                 Directory.Delete(updateDirectory, true);

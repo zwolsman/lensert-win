@@ -14,8 +14,8 @@ namespace Lensert.Installer
     internal class Program
     {
         private const string URL_LENSERT_ZIP = "https://lensert.com/download?type=win&installer=false";
-        private static readonly string _installationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert");
-        private static readonly string _traceFileName = Path.Combine(_installationDirectory, "lensert-installer.log");
+        private static readonly string _lensertDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert");
+        private static readonly string _traceFileName = Path.Combine(_lensertDirectory, "logs", "lensert-installer.log");
 
         private static void Main(string[] args)
         {
@@ -48,6 +48,10 @@ namespace Lensert.Installer
 
         private static async Task MainImpl(string[] args)
         {
+            var directory = Path.GetDirectoryName(_traceFileName);
+            if (directory != null && !Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+
             Trace.Listeners.Add(new ConsoleTraceListener());
             Trace.Listeners.Add(new TextWriterTraceListener(_traceFileName));
             Trace.AutoFlush = true;
@@ -77,7 +81,7 @@ namespace Lensert.Installer
                 return;
             }
 
-            var directoryInfo = new DirectoryInfo(_installationDirectory);
+            var directoryInfo = new DirectoryInfo(_lensertDirectory);
             if (directoryInfo.Exists)
             {
                 Trace.TraceInformation("deleting previous lensert");
@@ -97,10 +101,10 @@ namespace Lensert.Installer
             }
 
             Trace.TraceInformation("extracting lensert..");
-            ZipFile.ExtractToDirectory(file, _installationDirectory);
+            ZipFile.ExtractToDirectory(file, _lensertDirectory);
 
             Trace.TraceInformation("starting lensert-daemon..");
-            file = Path.Combine(_installationDirectory, "lensert-daemon.exe");
+            file = Path.Combine(_lensertDirectory, "lensert-daemon.exe");
             Process.Start(file);
 
             Trace.TraceInformation("lensert-installer complete :)");
