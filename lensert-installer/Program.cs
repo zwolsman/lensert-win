@@ -14,8 +14,8 @@ namespace Lensert.Installer
     internal class Program
     {
         private const string URL_LENSERT_ZIP = "https://lensert.com/download?type=win&installer=false";
-        private const string URL_LENSERT_VERSION = "https://lensert.com/version?type=win";
         private static readonly string _installationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert");
+        private static readonly string _traceFileName = Path.Combine(_installationDirectory, "lensert-installer.log");
 
         private static void Main(string[] args)
         {
@@ -49,7 +49,7 @@ namespace Lensert.Installer
         private static async Task MainImpl(string[] args)
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
-            Trace.Listeners.Add(new TextWriterTraceListener(Path.Combine(_installationDirectory, "lensert-installer.log")));
+            Trace.Listeners.Add(new TextWriterTraceListener(_traceFileName));
             Trace.AutoFlush = true;
 
             if (IsAlreadyRunning())
@@ -57,27 +57,17 @@ namespace Lensert.Installer
                 Trace.TraceWarning("lensert-installer is already running, exiting..");
                 Environment.Exit(-1);
             }
+
+            var forceCheckForUpdates = args.Length == 1 && args[0] == "--force-update";
+            if (!forceCheckForUpdates && !ShouldCheckForUpdates())
+            {
+                Trace.TraceInformation("already checked for updates in last hour, exiting..");
+                Environment.Exit(-1);
+            }
             
             Trace.TraceInformation("lensert-installer started");
-
-            var version = new Version(await DownloadString(URL_LENSERT_VERSION));
-            Trace.TraceInformation($"server version: {version}");
-
-            var file = Path.Combine(_installationDirectory, "lensert.exe");
-            if (File.Exists(file))
-            {
-                var localVersion = new Version(FileVersionInfo.GetVersionInfo(file).FileVersion);
-                Trace.TraceInformation($"local lensert version: {localVersion}");
-
-                if (localVersion >= version)
-                {
-                    Trace.TraceInformation("latest version, bye");
-                    return;
-                }
-            }
-
-            Trace.TraceInformation("downloading lensert..");
-            file = await DownloadFileToTemp(URL_LENSERT_ZIP);
+            Trace.TraceInformation("downloading lensert-win.zip..");
+            var file = await DownloadFileToTemp(URL_LENSERT_ZIP);
             Trace.TraceInformation($"downloaded new zip file to {file}");
 
             // we weren't able to shutdown lensert..
@@ -114,6 +104,16 @@ namespace Lensert.Installer
             Process.Start(file);
 
             Trace.TraceInformation("lensert-installer complete :)");
+        }
+
+        private static bool ShouldCheckForUpdates()
+        {
+            var logFileInfo = new FileInfo(_traceFileName);
+            if (!logFileInfo.Exists)
+                return true;
+
+            // should check if last update time has been more than one hour
+            return (DateTime.UtcNow - logFileInfo.LastWriteTimeUtc).Hours > 1;
         }
 
         private static async Task<bool> KillLensert()
