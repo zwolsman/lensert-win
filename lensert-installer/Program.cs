@@ -19,25 +19,39 @@ namespace Lensert.Installer
 
         private static void Main(string[] args)
         {
-            Trace.Listeners.Add(new ConsoleTraceListener());
-            Trace.Listeners.Add(new TextWriterTraceListener(Path.Combine(_installationDirectory, "lensert-installer.log")));
-            Trace.AutoFlush = true;
-
 #if DEBUG
             MainImpl(args).Wait();
 #else
             try
             {
+                AppDomain.CurrentDomain.UnhandledException += UnhandledException;
                 MainImpl(args).Wait();
             }
-            catch
+            catch (Exception ex)
             {
+                Trace.TraceError(ex.ToString());
             }
 #endif
         }
 
+        private static void UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            try
+            {
+                var exception = e.ExceptionObject as Exception;
+                Trace.TraceError(exception?.ToString() ?? $"ExceptionObject is not an exception: {e.ExceptionObject}");
+            }
+            catch { }
+
+            Environment.Exit(-1);
+        }
+
         private static async Task MainImpl(string[] args)
         {
+            Trace.Listeners.Add(new ConsoleTraceListener());
+            Trace.Listeners.Add(new TextWriterTraceListener(Path.Combine(_installationDirectory, "lensert-installer.log")));
+            Trace.AutoFlush = true;
+            
             Trace.TraceInformation("lensert-updater started");
 
             var version = new Version(await DownloadString(URL_LENSERT_VERSION));
