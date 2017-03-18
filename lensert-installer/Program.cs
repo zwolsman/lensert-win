@@ -51,8 +51,7 @@ namespace Lensert.Installer
             var directory = Path.GetDirectoryName(_traceFileName);
             if (directory != null && !Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
-
-            Trace.Listeners.Add(new ConsoleTraceListener());
+            
             Trace.Listeners.Add(new TextWriterTraceListener(_traceFileName));
             Trace.AutoFlush = true;
 

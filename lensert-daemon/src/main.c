@@ -219,13 +219,23 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	if (InitializeSettingsPath() == ERR)
 		return ERR;
 
+	int timeout = 10;
+
 	int hotkeys = ParseHotkeysFromSettings();
 	if (hotkeys == ERR)
 	{
-		StartLensert(resetSettingsArgument, sizeof(resetSettingsArgument) - 1);
-		return ERR;
-	}
+		if (StartLensert(resetSettingsArgument, sizeof(resetSettingsArgument) - 1) == ERR)
+			return ERR;
 
+		while ((hotkeys = ParseHotkeysFromSettings()) == ERR)
+		{
+			if (--timeout <= 0)
+				return ERR;
+
+			Sleep(100);
+		}
+	}
+	
 	if (RegisterHotkeys(hotkeys) == ERR)
 	{
 		ShowNotification("Hotkey", "Lensert failed to register its hotkeys.");

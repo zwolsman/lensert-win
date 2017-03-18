@@ -57,19 +57,20 @@ namespace Lensert
                 if (args[0] == "--restore-settings")
                 {
                     Settings.Restore();
+                    return;
                 }
-                else if (args[0] == "--reset-settings")
+
+                if (args[0] == "--reset-settings")
                 {
                     Settings.Reset();
+                    return;
                 }
-                else
-                {
-                    var hotkeySettings = Settings.GetSettings<string>().Where(keyValue => keyValue.Key.ToString().EndsWith("Hotkey"));
-                    var settingType = hotkeySettings.Single(keyValue => keyValue.Key.ToString().StartsWith(args[0])).Key;
 
-                    var hotkeyHandler = new LensertHotkeyHandler(new LensertClient());
-                    await hotkeyHandler.HandleHotkey(settingType);
-                }
+                var hotkeySettings = Settings.GetSettings<string>().Where(keyValue => keyValue.Key.ToString().EndsWith("Hotkey"));
+                var settingType = hotkeySettings.Single(keyValue => keyValue.Key.ToString().StartsWith(args[0])).Key;
+
+                var hotkeyHandler = new LensertHotkeyHandler(new LensertClient());
+                await hotkeyHandler.HandleHotkey(settingType);
             }
             else if (args.Length == 3 && args[0] == "--show-notification")
             {
