@@ -51,8 +51,14 @@ namespace Lensert.Installer
             Trace.Listeners.Add(new ConsoleTraceListener());
             Trace.Listeners.Add(new TextWriterTraceListener(Path.Combine(_installationDirectory, "lensert-installer.log")));
             Trace.AutoFlush = true;
+
+            if (IsAlreadyRunning())
+            {
+                Trace.TraceWarning("lensert-installer is already running, exiting..");
+                Environment.Exit(-1);
+            }
             
-            Trace.TraceInformation("lensert-updater started");
+            Trace.TraceInformation("lensert-installer started");
 
             var version = new Version(await DownloadString(URL_LENSERT_VERSION));
             Trace.TraceInformation($"server version: {version}");
