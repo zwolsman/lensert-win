@@ -52,32 +52,19 @@ namespace Lensert
             ProfileOptimization.StartProfile("Start.Profile");
 
             _logger.Info($"'{Environment.CommandLine}' started");
-            if (args.Length == 0)
+            if (args.Length == 1)
             {
-                _logger.Warn("Lensert must be invoked with argument");
-                if (!Process.GetProcessesByName("lensert-daemon").Any())
-                {
-                    _logger.Info("Daemon not running, started checking for updates..");
-                    await UpdateRoutine();
-                }
+                var hotkeySettings = Settings.GetSettings<string>().Where(keyValue => keyValue.Key.ToString().EndsWith("Hotkey"));
+                var settingType = hotkeySettings.Single(keyValue => keyValue.Key.ToString().StartsWith(args[0])).Key;
 
-                await Task.Yield();
-                return;
+                var hotkeyHandler = new LensertHotkeyHandler(new LensertClient());
+                await hotkeyHandler.HandleHotkey(settingType);
             }
+            else
+                _logger.Warn("Lensert should be invoked by lensert-daemon");
 
-            if (args.Length != 1)
-            {
-                _logger.Error($"Lensert must be started with one argument, but {args.Length} where given");
-
-                await Task.Yield();
-                return;
-            }
-
-            var hotkeySettings = Settings.GetSettings<string>().Where(keyValue => keyValue.Key.ToString().EndsWith("Hotkey"));
-            var settingType = hotkeySettings.Single(keyValue => keyValue.Key.ToString().StartsWith(args[0])).Key;
-
-            var hotkeyHandler = new LensertHotkeyHandler(new LensertClient());
-            await hotkeyHandler.HandleHotkey(settingType);
+            // still check for updates and startup
+            await UpdateRoutine();
 
 #if !DEBUG
             if (Settings.GetSetting<bool>(SettingType.CheckForUpdates))
