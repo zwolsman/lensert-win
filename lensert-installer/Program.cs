@@ -105,6 +105,7 @@ namespace Lensert.Installer
             var extensions = new[] { ".exe", ".dll", ".config" };
             var newFiles = GetFilesWithExtensions(extensions, unpackedDirectoryInfo).ToArray();
             var oldFiles = GetFilesWithExtensions(extensions, installDirectoryInfo).ToArray();
+            var freshInstall = oldFiles.Length == 0;
 
             var shouldUpdate = newFiles.Length != oldFiles.Length || !newFiles.SequenceEqual(oldFiles);
             if (!shouldUpdate)
@@ -139,7 +140,7 @@ namespace Lensert.Installer
             foreach (var f in newFiles)
                 f.MoveTo(Path.Combine(_lensertDirectory, f.Name));
             
-            StartLensert();
+            StartLensert(true, freshInstall);
 
             Trace.TraceInformation("lensert-installer complete");
         }
@@ -147,7 +148,7 @@ namespace Lensert.Installer
         private static IEnumerable<FileInfo> GetFilesWithExtensions(IEnumerable<string> extensions, DirectoryInfo directoryInfo)
             => extensions.SelectMany(e => directoryInfo.GetFiles($"*{e}").Where(f => f.Extension.Equals(e, StringComparison.InvariantCultureIgnoreCase)));
 
-        private static bool StartLensert()
+        private static bool StartLensert(bool updated = false, bool freshInstall = false)
         {
             Trace.TraceInformation("starting lensert-daemon..");
             if (Process.GetProcessesByName("lensert-daemon").Any())
@@ -160,7 +161,15 @@ namespace Lensert.Installer
                 return false;
             }
 
-            Process.Start(file);
+            var args = freshInstall
+                ? "--fresh"
+                : updated
+                    ? "--updated"
+                    : "";
+
+            var startInfo = new ProcessStartInfo(file, args);
+            Process.Start(startInfo);
+
             return true;
         }
         

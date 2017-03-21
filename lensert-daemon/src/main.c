@@ -7,6 +7,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <ShlObj.h>
+#include <Shellapi.h>
 
 // macros
 #define BUFSIZE 32
@@ -241,6 +242,18 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		ShowNotification("Hotkey", "Lensert failed to register its hotkeys.");
 		return ERR;
 	}
+
+	int argc;
+	LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+	
+	if (argv != NULL && argc == 2)
+	{
+		if (wcscmp(argv[1], L"--updated") == 0)
+			ShowNotification("Lensert", "Lensert has been updated to latest version!");
+		else if (wcscmp(argv[1], L"--fresh") == 0)
+			ShowNotification("Lensert", "Lensert has been installed!");
+	}
+
 
 	Hotkey_t* hotkey = NULL;
 	MSG msg;
