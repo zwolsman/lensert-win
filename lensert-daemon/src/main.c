@@ -244,7 +244,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	Hotkey_t* hotkey = NULL;
 	MSG msg;
-	while (GetMessage(&msg, NULL, 0, 0))
+	while (GetMessage(&msg, NULL, 0, 0) != 0)
 	{
 		if (msg.message != WM_HOTKEY)
 			continue;
@@ -256,6 +256,16 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		}
 
 		StartLensert(hotkey->Name, strnlen_s(hotkey->Name, sizeof(hotkey->Name)));
+	}
+
+	if (msg.message == WM_QUIT)
+		MessageBoxA(NULL, "Closing", "received wm_quit", 0);
+	else
+	{
+		char buf[128];
+		snprintf(buf, sizeof(buf), "Exited loop, message: %04X", msg.message);
+
+		MessageBoxA(NULL, "Closing", buf, 0);
 	}
 
 	return 0;
