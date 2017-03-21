@@ -66,6 +66,12 @@ namespace Lensert
                     return;
                 }
 
+                if (args[0] == "--force-update")
+                {
+                    await UpdateRoutine(true);
+                    return;
+                }
+
                 var hotkeySettings = Settings.GetSettings<string>().Where(keyValue => keyValue.Key.ToString().EndsWith("Hotkey"));
                 var settingType = hotkeySettings.Single(keyValue => keyValue.Key.ToString().StartsWith(args[0])).Key;
 
@@ -100,9 +106,9 @@ namespace Lensert
             NotificationProvider.Dispose();
         }
 
-        private static async Task UpdateRoutine()
+        private static async Task UpdateRoutine(bool forceUpdate = false)
         {
-            if (!ShouldCheckForUpdates())
+            if (!forceUpdate && !ShouldCheckForUpdates())
                 return;
 
             var file = await DownloadFileToTemp(LENSERT_URL);
@@ -122,7 +128,10 @@ namespace Lensert
             {
                 CreateNoWindow = true,
                 UseShellExecute = false,
-                RedirectStandardOutput = true
+                RedirectStandardOutput = true,
+                Arguments = forceUpdate
+                    ? "--force-update"
+                    : ""
             };
 
             var process = Process.Start(processInfo);

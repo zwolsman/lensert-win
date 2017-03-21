@@ -55,6 +55,8 @@ namespace Lensert.Installer
             Trace.Listeners.Add(new TextWriterTraceListener(_traceFileName));
             Trace.AutoFlush = true;
 
+            Trace.TraceInformation($"'{Environment.CommandLine}' started");
+
             if (IsAlreadyRunning())
             {
                 Trace.TraceWarning("lensert-installer is already running, exiting..");
@@ -71,7 +73,6 @@ namespace Lensert.Installer
                 return;
             }
             
-            Trace.TraceInformation("lensert-installer started");
             Trace.TraceInformation("downloading lensert-win.zip..");
             var file = await DownloadFileToTemp(URL_LENSERT_ZIP);
             Trace.TraceInformation($"downloaded new zip file to {file}");
