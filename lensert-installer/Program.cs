@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -30,6 +31,8 @@ namespace Lensert.Installer
             catch (Exception ex)
             {
                 Trace.TraceError(ex.ToString());
+
+                StartLensert();
             }
 #endif
         }
@@ -40,6 +43,8 @@ namespace Lensert.Installer
             {
                 var exception = e.ExceptionObject as Exception;
                 Trace.TraceError(exception?.ToString() ?? $"ExceptionObject is not an exception: {e.ExceptionObject}");
+
+                StartLensert();
             }
             catch { }
 
@@ -48,9 +53,9 @@ namespace Lensert.Installer
 
         private static async Task MainImpl(string[] args)
         {
-            var directory = Path.GetDirectoryName(_traceFileName);
-            if (directory != null && !Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
+            var logDirectory = Path.GetDirectoryName(_traceFileName);
+            if (logDirectory != null && !Directory.Exists(logDirectory))
+                Directory.CreateDirectory(logDirectory);
             
             Trace.Listeners.Add(new TextWriterTraceListener(_traceFileName));
             Trace.AutoFlush = true;
@@ -67,7 +72,7 @@ namespace Lensert.Installer
             if (!forceCheckForUpdates && !ShouldCheckForUpdates())
             {
                 Trace.TraceInformation("already checked for updates in last hour, exiting..");
-                if (!StartDaemon())
+                if (!StartLensert())
                     Trace.TraceError("failed to start lensert-daemon");
 
                 return;
@@ -77,41 +82,72 @@ namespace Lensert.Installer
             var file = await DownloadFileToTemp(URL_LENSERT_ZIP);
             Trace.TraceInformation($"downloaded new zip file to {file}");
 
-            // we weren't able to shutdown lensert..
-            if (!await StopDaemon())
+            var unpacked = Path.Combine(_lensertDirectory, "installer", "unpacked");
+            if (Directory.Exists(unpacked))
+                Directory.Delete(unpacked, true);
+            ZipFile.ExtractToDirectory(file, unpacked);
+
+            var unpackedDirectoryInfo = new DirectoryInfo(unpacked);
+            var installDirectoryInfo = new DirectoryInfo(_lensertDirectory);
+
+            if (!unpackedDirectoryInfo.Exists)
             {
-                Trace.TraceError("unable to stop running lensert-daemon");
+                Trace.TraceError($"Unpacked directory '{unpackedDirectoryInfo} does not exist");
                 return;
             }
 
-            var directoryInfo = new DirectoryInfo(_lensertDirectory);
-            if (directoryInfo.Exists)
+            if (!installDirectoryInfo.Exists)
             {
-                Trace.TraceInformation("deleting previous lensert");
-
-                var extensionsToDelete = new[] {".exe", ".dll", ".config"};
-                var filesToDelete = extensionsToDelete.SelectMany(e => directoryInfo.GetFiles($"*{e}").Where(f => f.Extension.Equals(e, StringComparison.InvariantCultureIgnoreCase)));
-                foreach (var f in filesToDelete)
-                {
-                    try
-                    {
-                        // make sure to delete readonly
-                        f.Attributes = FileAttributes.Normal;
-                        f.Delete();
-                    }
-                    catch {}
-                }
+                Trace.TraceError($"Install directory '{installDirectoryInfo} does not exist");
+                return;
             }
 
-            Trace.TraceInformation("extracting lensert..");
-            ZipFile.ExtractToDirectory(file, _lensertDirectory);
+            var extensions = new[] { ".exe", ".dll", ".config" };
+            var newFiles = GetFilesWithExtensions(extensions, unpackedDirectoryInfo).ToArray();
+            var oldFiles = GetFilesWithExtensions(extensions, installDirectoryInfo).ToArray();
+
+            var shouldUpdate = newFiles.Length != oldFiles.Length || !newFiles.SequenceEqual(oldFiles);
+            if (!shouldUpdate)
+            {
+                Trace.TraceInformation("all local files are up to date with server files");
+                Directory.Delete(unpacked, true);
+                return;
+            }
+
+            var oldExecutables = oldFiles.Where(f => f.Extension == ".exe").Select(f => f.Name.Replace(".exe", ""));
+            var tasks = oldExecutables.Select(StopProcess);
+            var results = await Task.WhenAll(tasks.ToArray());
+
+            // if any failed to stop
+            if (results.Any(r => r == false))
+            {
+                Trace.TraceError("unable to stop lensert");
+                return;
+            }
+
+            foreach (var f in oldFiles)
+            {
+                try
+                {
+                    // make sure to delete readonly
+                    f.Attributes = FileAttributes.Normal;
+                    f.Delete();
+                }
+                catch { }
+            }
+
+            foreach (var f in newFiles)
+                f.MoveTo(Path.Combine(_lensertDirectory, f.Name));
             
-            StartDaemon();
+            StartLensert();
 
             Trace.TraceInformation("lensert-installer complete");
         }
 
-        private static bool StartDaemon()
+        private static IEnumerable<FileInfo> GetFilesWithExtensions(IEnumerable<string> extensions, DirectoryInfo directoryInfo)
+            => extensions.SelectMany(e => directoryInfo.GetFiles($"*{e}").Where(f => f.Extension.Equals(e, StringComparison.InvariantCultureIgnoreCase)));
+
+        private static bool StartLensert()
         {
             Trace.TraceInformation("starting lensert-daemon..");
             if (Process.GetProcessesByName("lensert-daemon").Any())
@@ -127,12 +163,12 @@ namespace Lensert.Installer
             Process.Start(file);
             return true;
         }
-
-        private static async Task<bool> StopDaemon()
+        
+        private static async Task<bool> StopProcess(string processName)
         {
             for (var i = 5; i > 0; --i)
             {
-                var processes = Process.GetProcessesByName("lensert-daemon");
+                var processes = Process.GetProcessesByName(processName);
                 if (!processes.Any())
                     return true;
 
@@ -142,8 +178,10 @@ namespace Lensert.Installer
                 await Task.Delay(100);
             }
 
-            return !Process.GetProcessesByName("lensert-daemon").Any();
+            return !Process.GetProcessesByName(processName).Any();
         }
+
+
 
         private static bool ShouldCheckForUpdates()
         {
