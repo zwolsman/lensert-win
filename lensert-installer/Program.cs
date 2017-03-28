@@ -59,9 +59,7 @@ namespace Lensert.Installer
             
             Trace.Listeners.Add(new TextWriterTraceListener(_traceFileName));
             Trace.AutoFlush = true;
-
-            Trace.TraceInformation($"'{Environment.CommandLine}' started");
-
+            
             if (IsAlreadyRunning())
             {
                 Trace.TraceWarning("lensert-installer is already running, exiting..");
@@ -69,7 +67,11 @@ namespace Lensert.Installer
             }
 
             var forceCheckForUpdates = args.Length == 1 && args[0] == "--force-update";
-            if (!forceCheckForUpdates && !ShouldCheckForUpdates())
+            var skipUpdate = !forceCheckForUpdates && !ShouldCheckForUpdates();
+
+            Trace.TraceInformation($"'{Environment.CommandLine}' started");
+
+            if (skipUpdate)
             {
                 Trace.TraceInformation("already checked for updates in last hour, exiting..");
                 if (!StartLensert())
