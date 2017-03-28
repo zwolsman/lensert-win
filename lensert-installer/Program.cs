@@ -109,7 +109,7 @@ namespace Lensert.Installer
             var oldFiles = GetFilesWithExtensions(extensions, installDirectoryInfo).ToArray();
             var freshInstall = oldFiles.Length == 0;
 
-            var shouldUpdate = newFiles.Length != oldFiles.Length || !newFiles.SequenceEqual(oldFiles);
+            var shouldUpdate = newFiles.Length != oldFiles.Length || !newFiles.SequenceEqual(oldFiles, new FileInfoEqualityComparer());
             if (!shouldUpdate)
             {
                 Trace.TraceInformation("all local files are up to date with server files");
@@ -241,6 +241,15 @@ namespace Lensert.Installer
             {
                 return true;
             }
+        }
+
+        private class FileInfoEqualityComparer : IEqualityComparer<FileInfo>
+        {
+            public bool Equals(FileInfo x, FileInfo y)
+                => x.LastWriteTime.Equals(y.LastWriteTime);
+
+            public int GetHashCode(FileInfo obj)
+                => obj.LastWriteTime.GetHashCode();
         }
     }
 }
