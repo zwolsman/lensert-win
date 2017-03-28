@@ -15,7 +15,10 @@ namespace Lensert.Installer
     internal class Program
     {
         private const string URL_LENSERT_ZIP = "https://lensert.com/download?type=win&installer=false";
-        private static readonly string _lensertDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert");
+
+        private static readonly string _lensertDirectory =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "lensert");
+
         private static readonly string _traceFileName = Path.Combine(_lensertDirectory, "logs", "lensert-installer.log");
 
         private static void Main(string[] args)
@@ -46,7 +49,9 @@ namespace Lensert.Installer
 
                 StartLensert();
             }
-            catch { }
+            catch
+            {
+            }
 
             Environment.Exit(-1);
         }
@@ -56,10 +61,10 @@ namespace Lensert.Installer
             var logDirectory = Path.GetDirectoryName(_traceFileName);
             if (logDirectory != null && !Directory.Exists(logDirectory))
                 Directory.CreateDirectory(logDirectory);
-            
+
             Trace.Listeners.Add(new TextWriterTraceListener(_traceFileName));
             Trace.AutoFlush = true;
-            
+
             if (IsAlreadyRunning())
             {
                 Trace.TraceWarning("lensert-installer is already running, exiting..");
@@ -79,7 +84,7 @@ namespace Lensert.Installer
 
                 return;
             }
-            
+
             Trace.TraceInformation("downloading lensert-win.zip..");
             var file = await DownloadFileToTemp(URL_LENSERT_ZIP);
             Trace.TraceInformation($"downloaded new zip file to {file}");
@@ -104,12 +109,13 @@ namespace Lensert.Installer
                 return;
             }
 
-            var extensions = new[] { ".exe", ".dll", ".config" };
+            var extensions = new[] {".exe", ".dll", ".config"};
             var newFiles = GetFilesWithExtensions(extensions, unpackedDirectoryInfo).ToArray();
             var oldFiles = GetFilesWithExtensions(extensions, installDirectoryInfo).ToArray();
             var freshInstall = oldFiles.Length == 0;
 
-            var shouldUpdate = newFiles.Length != oldFiles.Length || !newFiles.SequenceEqual(oldFiles, new FileInfoEqualityComparer());
+            var shouldUpdate = newFiles.Length != oldFiles.Length ||
+                               !newFiles.SequenceEqual(oldFiles, new FileInfoEqualityComparer());
             if (!shouldUpdate)
             {
                 Trace.TraceInformation("all local files are up to date with server files");
@@ -129,26 +135,31 @@ namespace Lensert.Installer
             }
 
             foreach (var f in oldFiles)
-            {
                 try
                 {
                     // make sure to delete readonly
                     f.Attributes = FileAttributes.Normal;
                     f.Delete();
                 }
-                catch { }
-            }
+                catch
+                {
+                }
 
             foreach (var f in newFiles)
                 f.MoveTo(Path.Combine(_lensertDirectory, f.Name));
-            
+
             StartLensert(true, freshInstall);
 
             Trace.TraceInformation("lensert-installer complete");
         }
 
-        private static IEnumerable<FileInfo> GetFilesWithExtensions(IEnumerable<string> extensions, DirectoryInfo directoryInfo)
-            => extensions.SelectMany(e => directoryInfo.GetFiles($"*{e}").Where(f => f.Extension.Equals(e, StringComparison.InvariantCultureIgnoreCase)));
+        private static IEnumerable<FileInfo> GetFilesWithExtensions(IEnumerable<string> extensions,
+            DirectoryInfo directoryInfo)
+            =>
+                extensions.SelectMany(
+                    e =>
+                        directoryInfo.GetFiles($"*{e}")
+                            .Where(f => f.Extension.Equals(e, StringComparison.InvariantCultureIgnoreCase)));
 
         private static bool StartLensert(bool updated = false, bool freshInstall = false)
         {
@@ -174,7 +185,7 @@ namespace Lensert.Installer
 
             return true;
         }
-        
+
         private static async Task<bool> StopProcess(string processName)
         {
             for (var i = 5; i > 0; --i)
@@ -182,17 +193,25 @@ namespace Lensert.Installer
                 var processes = Process.GetProcessesByName(processName);
                 if (!processes.Any())
                     return true;
+                try
+                {
+                    foreach (var process in processes)
+                    {
+                        process.Refresh();
+                        if (!process.HasExited)
+                            process.Kill();
 
-                foreach (var process in processes)
-                    process.Kill();
-
-                await Task.Delay(100);
+                        await Task.Delay(50);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceWarning($"Exception while trying to kill process ({i}/5)\r\n{ex}");
+                }
             }
 
             return !Process.GetProcessesByName(processName).Any();
         }
-
-
 
         private static bool ShouldCheckForUpdates()
         {
@@ -202,12 +221,6 @@ namespace Lensert.Installer
 
             // should check if last update time has been more than one hour
             return (DateTime.UtcNow - logFileInfo.LastWriteTimeUtc).Hours > 1;
-        }
-        
-        private static async Task<string> DownloadString(string url)
-        {
-            using (var httpClient = new HttpClient())
-                return await httpClient.GetStringAsync(url);
         }
 
         private static async Task<string> DownloadFileToTemp(string url)
