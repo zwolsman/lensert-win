@@ -29,12 +29,10 @@ namespace Lensert.Core
             [SettingType.FullscreenHotkey] = typeof(FullScreenshot),
             [SettingType.SelectAreaHotkey] = typeof(UserSelectionScreenshot),
             [SettingType.SelectWindowHotkey] = typeof(SelectWindowScreenshot),
-            [SettingType.CurrentWindowHotkey] = typeof(CurrentWindowScreenshot),
             [SettingType.ClipboardHotkey] = typeof(ClipboardScreenshot),
             [SettingType.FullscreenClipboardHotkey] = typeof(FullScreenshot),
             [SettingType.SelectAreaClipboardHotkey] = typeof(UserSelectionScreenshot),
             [SettingType.SelectWindowClipboardHotkey] = typeof(SelectWindowScreenshot),
-            [SettingType.CurrentWindowClipboardHotkey] = typeof(CurrentWindowScreenshot)
         };
 
         private static readonly IDictionary<SettingType, IScreenshotHandler> _hotkeyHandlerDictionary = new Dictionary<SettingType, IScreenshotHandler>
@@ -42,12 +40,10 @@ namespace Lensert.Core
             [SettingType.FullscreenHotkey] = _lensertUploader,
             [SettingType.SelectAreaHotkey] = _lensertUploader,
             [SettingType.SelectWindowHotkey] = _lensertUploader,
-            [SettingType.CurrentWindowHotkey] = _lensertUploader,
             [SettingType.ClipboardHotkey] = _lensertUploader,
             [SettingType.FullscreenClipboardHotkey] = _clipboardHandler,
             [SettingType.SelectAreaClipboardHotkey] = _clipboardHandler,
             [SettingType.SelectWindowClipboardHotkey] = _clipboardHandler,
-            [SettingType.CurrentWindowClipboardHotkey] = _clipboardHandler
         };
         
         public HotkeyHandler()

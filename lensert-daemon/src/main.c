@@ -158,7 +158,13 @@ static int RegisterHotkeys(int hotkeys)
 			return ERR; // TODO: Show error
 
 		if (!RegisterHotKey(NULL, i, modifier, vk))
-			return ERR;
+		{
+			char buf[MAX_PATH];
+			snprintf(buf, sizeof(buf), "Lensert failed to register %s", g_Hotkeys[i].Name);
+
+			ShowNotification("Hotkey", buf);
+		}
+		// return ERR;
 
 		g_Hotkeys[i].EventLParam = (modifier & 0xFFFF) | (vk << 16);
 	}
