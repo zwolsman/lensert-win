@@ -6,28 +6,27 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
-using Lensert.Core;
 
-namespace Lensert.Helpers
+namespace Lensert.Core.ScreenshotHandler
 {
-    public class LensertClient : IImageUploader
+    internal sealed class LensertUploader : BaseImageUploader
     {
         private const string API_URL = "https://lensert.com/upload";
 
         private static readonly HttpClient _httpClient;
         private static readonly JavaScriptSerializer _javaScriptSerializer;
 
-        static LensertClient()
+        static LensertUploader()
         {
             _httpClient = new HttpClient();
             _javaScriptSerializer = new JavaScriptSerializer();
         }
 
-        public async Task<string> UploadImageAsync(Image bitmap)
+        protected override async Task<string> UploadAsync(Image screenshot)
         {
             using (var memoryStream = new MemoryStream())
             {
-                bitmap.Save(memoryStream, ImageFormat.Png);
+                screenshot.Save(memoryStream, ImageFormat.Png);
                 memoryStream.Seek(0, SeekOrigin.Begin);
 
                 var streamContent = new StreamContent(memoryStream);

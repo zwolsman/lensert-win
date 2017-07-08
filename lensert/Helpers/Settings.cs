@@ -14,11 +14,15 @@ namespace Lensert.Helpers
 
         private static readonly Dictionary<SettingType, object> _defaultSettings = new Dictionary<SettingType, object>
         {
-            [SettingType.SelectAreaHotkey] = "Control, Shift, A", // new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.A),
-            [SettingType.SelectWindowHotkey] = "Control, Shift, W", // new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.W),
-            [SettingType.CurrentWindowHotkey] = "Control, Shift, Alt, A", //new Hotkey(Modifiers.Control | Modifiers.Shift | Modifiers.Alt, Keys.A),
-            [SettingType.FullscreenHotkey] = "Control, Shift, F", //new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.F),
-            [SettingType.ClipboardHotkey] = "Control, Shift, C", //new Hotkey(Modifiers.Control | Modifiers.Shift, Keys.C),
+            [SettingType.SelectAreaHotkey] = "Control, Shift, A",
+            [SettingType.SelectWindowHotkey] = "Control, Shift, W", 
+            [SettingType.CurrentWindowHotkey] = "Control, Shift, Alt, A", 
+            [SettingType.FullscreenHotkey] = "Control, Shift, F",
+            [SettingType.ClipboardHotkey] = "Control, Shift, C",
+            [SettingType.SelectAreaClipboardHotkey] = "Alt, Shift, A",
+            [SettingType.SelectWindowClipboardHotkey] = "Alt, Shift, W",
+            [SettingType.CurrentWindowClipboardHotkey] = "Alt, Shift, Alt, A",
+            [SettingType.FullscreenClipboardHotkey] = "Alt, Shift, F",
             [SettingType.StartupOnLogon] = true,
             [SettingType.CheckForUpdates] = true,
             [SettingType.SaveBackup] = true
@@ -110,6 +114,10 @@ namespace Lensert.Helpers
         CurrentWindowHotkey,
         FullscreenHotkey,
         ClipboardHotkey,
+        SelectAreaClipboardHotkey,
+        SelectWindowClipboardHotkey,
+        CurrentWindowClipboardHotkey,
+        FullscreenClipboardHotkey,
         StartupOnLogon,
         CheckForUpdates,
         SaveBackup

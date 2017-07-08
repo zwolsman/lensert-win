@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Runtime;
 using System.Threading.Tasks;
 using Lensert.Core;
+using Lensert.Core.ScreenshotHandler;
 using Lensert.Helpers;
 using Nito.AsyncEx;
 using NLog;
@@ -75,7 +76,7 @@ namespace Lensert
                 var hotkeySettings = Settings.GetSettings<string>().Where(keyValue => keyValue.Key.ToString().EndsWith("Hotkey"));
                 var settingType = hotkeySettings.Single(keyValue => keyValue.Key.ToString().StartsWith(args[0])).Key;
 
-                var hotkeyHandler = new LensertHotkeyHandler(new LensertClient());
+                var hotkeyHandler = new HotkeyHandler();
                 await hotkeyHandler.HandleHotkey(settingType);
             }
             else if (args.Length == 3 && args[0] == "--show-notification")

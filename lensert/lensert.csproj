@@ -77,11 +77,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\LensertHotkeyHandler.cs" />
-    <Compile Include="Core\IImageUploader.cs" />
+    <Compile Include="Core\ScreenshotHandler\BaseImageUploader.cs" />
+    <Compile Include="Core\ScreenshotHandler\ClipboardHandler.cs" />
+    <Compile Include="Core\ScreenshotHandler\IScreenshotHandler.cs" />
+    <Compile Include="Core\HotkeyHandler.cs" />
     <Compile Include="Core\Screenshot\Factories\ClipboardScreenshot.cs" />
     <Compile Include="Core\NotificationProvider.cs" />
-    <Compile Include="Helpers\LensertClient.cs" />
+    <Compile Include="Core\ScreenshotHandler\LensertUploader.cs" />
     <Compile Include="Core\Screenshot\Factories\CurrentWindowScreenshot.cs" />
     <Compile Include="Helpers\Settings.cs" />
     <Compile Include="Core\Screenshot\SelectionForm.cs">
